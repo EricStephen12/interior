@@ -1,220 +1,241 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { MinusIcon, PlusIcon, TrashIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
-import { useCart } from '@/lib/cart-context'
+import React, { useState } from 'react';
+import { ShoppingBag, Truck, CreditCard, MessageCircle, MapPin, ChevronRight, CheckCircle2 } from 'lucide-react';
+import Link from 'next/link';
+import { useCart } from '@/lib/cart-context';
+
+const DELIVERY_ZONES = [
+  { id: 'abuja', name: 'Abuja (Within City)', price: 5000 },
+  { id: 'benin', name: 'Benin City', price: 7500 },
+  { id: 'other', name: 'Other Locations (Request Quote)', price: 0 }
+];
 
 export default function CheckoutPage() {
-  const { state, updateQuantity, removeFromCart, clearCart } = useCart()
-  const { items: cartItems } = state
+  const { state } = useCart();
+  const [selectedZone, setSelectedZone] = useState(DELIVERY_ZONES[0]);
+  const [paymentMethod, setPaymentMethod] = useState('whatsapp');
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    address: ''
+  });
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0)
-  const shipping = subtotal > 1000 ? 0 : 150
-  const tax = subtotal * 0.08
-  const total = subtotal + shipping + tax
+  const cartTotal = state.items.reduce((acc, item) => {
+    const price = item.variant?.promo_price || item.variant?.price || 0
+    return acc + (price * item.quantity)
+  }, 0);
+  const total = cartTotal + selectedZone.price;
 
-  const handleQuantityChange = (itemId: string, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      removeFromCart(itemId)
-    } else {
-      updateQuantity(itemId, newQuantity)
-    }
-  }
+  const handleCompleteOrder = (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const handleCheckout = () => {
-    // In a real app, this would integrate with payment processor
-    alert('Order placed successfully! Thank you for shopping with interiors.')
-    clearCart()
-  }
+    const itemsList = state.items.map(i => `${i.product?.name} (${i.variant?.size?.name}) x${i.quantity}`).join(', ');
+    const text = `New Order Details:
+Name: ${formData.name}
+Phone: ${formData.phone}
+Address: ${formData.address}
+Zone: ${selectedZone.name}
+Items: ${itemsList}
+Total: ₦${total.toLocaleString()}
+Payment: ${paymentMethod === 'whatsapp' ? 'Confirm via WhatsApp' : 'Online Payment'}`;
 
-  if (cartItems.length === 0) {
-    return (
-      <div className="min-h-screen bg-amber-50 flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center"
-        >
-          <ShoppingBagIcon className="mx-auto h-24 w-24 text-amber-400 mb-6" />
-          <h2 className="text-3xl font-serif font-bold text-amber-900 mb-4">
-            Your cart is empty
-          </h2>
-          <p className="text-amber-700 mb-8 max-w-md mx-auto">
-            Add some beautiful furniture pieces to your cart to get started with your order.
-          </p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => window.location.href = '/products'}
-            className="bg-amber-700 hover:bg-amber-800 text-white font-semibold py-3 px-8 rounded-lg transition-colors shadow-lg"
-          >
-            Continue Shopping
-          </motion.button>
-        </motion.div>
-      </div>
-    )
-  }
+    const encodedText = encodeURIComponent(text);
+    window.open(`https://wa.me/2349033333333?text=${encodedText}`, '_blank');
+  };
 
   return (
-    <div className="min-h-screen bg-amber-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-12"
-        >
-          {/* Cart Items */}
-          <div className="space-y-6">
-            <h2 className="text-3xl font-serif font-bold text-amber-900 mb-6">
-              Shopping Cart
-            </h2>
+    <div className="pt-24 sm:pt-32 pb-24 bg-slate-50/50 min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="text-3xl sm:text-4xl font-black text-blue-950 tracking-tight mb-12">Checkout</h1>
 
-            {cartItems.map((item) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="bg-white rounded-lg shadow-lg overflow-hidden"
-              >
-                <div className="p-6">
-                  <div className="flex items-center space-x-4">
-                    {/* Product Image */}
-                    <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
-                      <img
-                        src={item.product.images[0] || "/images/hero/jason-wang-8J49mtYWu7E-unsplash.jpg"}
-                        alt={item.product.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+        <form onSubmit={handleCompleteOrder} className="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
-                    {/* Product Info */}
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-amber-900 mb-1">
-                        {item.product.name}
-                      </h3>
-                      <p className="text-sm text-amber-600 mb-2">
-                        Code: {item.product.productCode}
-                      </p>
-                      <p className="text-2xl font-bold text-amber-600">
-                        ${item.product.price.toLocaleString()}
-                      </p>
-                    </div>
-
-                    {/* Quantity Controls */}
-                    <div className="flex items-center space-x-3">
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                        className="p-2 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded-full transition-colors"
-                      >
-                        <MinusIcon className="h-4 w-4" />
-                      </motion.button>
-
-                      <span className="text-lg font-semibold text-amber-900 min-w-[3rem] text-center">
-                        {item.quantity}
-                      </span>
-
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                        className="p-2 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded-full transition-colors"
-                      >
-                        <PlusIcon className="h-4 w-4" />
-                      </motion.button>
-                    </div>
-
-                    {/* Remove Button */}
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => removeFromCart(item.id)}
-                      className="p-2 bg-red-100 hover:bg-red-200 text-red-800 rounded-full transition-colors"
-                    >
-                      <TrashIcon className="h-4 w-4" />
-                    </motion.button>
-                  </div>
+          <div className="lg:col-span-2 space-y-8">
+            {/* Delivery Information */}
+            <div className="bg-white rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-12 shadow-sm border border-slate-100 space-y-8">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-10 h-10 bg-blue-950 rounded-2xl flex items-center justify-center text-white">
+                  <MapPin className="w-5 h-5" />
                 </div>
-              </motion.div>
-            ))}
-          </div>
+                <h2 className="text-2xl font-bold text-blue-950">Delivery Information</h2>
+              </div>
 
-          {/* Order Summary */}
-          <div className="space-y-6">
-            <h2 className="text-3xl font-serif font-bold text-amber-900 mb-6">
-              Order Summary
-            </h2>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white rounded-lg shadow-lg p-6"
-            >
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <span className="text-amber-700">Subtotal ({cartItems.length} items)</span>
-                  <span className="font-semibold text-amber-900">${subtotal.toLocaleString()}</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Full Name</label>
+                  <input
+                    required
+                    type="text"
+                    className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-sky-600 shadow-inner"
+                    placeholder="Enter your full name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  />
                 </div>
-
-                <div className="flex justify-between">
-                  <span className="text-amber-700">Shipping</span>
-                  <span className="font-semibold text-amber-900">
-                    {shipping === 0 ? 'FREE' : `$${shipping.toLocaleString()}`}
-                  </span>
-                </div>
-
-                <div className="flex justify-between">
-                  <span className="text-amber-700">Tax</span>
-                  <span className="font-semibold text-amber-900">${tax.toLocaleString()}</span>
-                </div>
-
-                <div className="border-t border-amber-200 pt-4">
-                  <div className="flex justify-between text-xl font-bold">
-                    <span className="text-amber-900">Total</span>
-                    <span className="text-amber-600">${total.toLocaleString()}</span>
-                  </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Phone Number</label>
+                  <input
+                    required
+                    type="text"
+                    className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-sky-600 shadow-inner"
+                    placeholder="e.g. 08012345678"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  />
                 </div>
               </div>
 
-              {/* Checkout Button */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleCheckout}
-                className="w-full mt-6 bg-amber-700 hover:bg-amber-800 text-white font-semibold py-4 px-6 rounded-lg transition-colors shadow-lg"
-              >
-                Complete Order
-              </motion.button>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Delivery Address</label>
+                <textarea
+                  required
+                  rows={3}
+                  className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-sky-600 shadow-inner resize-none"
+                  placeholder="Full street address, apartment, suite, etc."
+                  value={formData.address}
+                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                />
+              </div>
 
-              <p className="text-xs text-amber-600 mt-3 text-center">
-                Secure checkout powered by Stripe
-              </p>
-            </motion.div>
+              <div className="space-y-4">
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Select Delivery Zone</label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {DELIVERY_ZONES.map(zone => (
+                    <button
+                      key={zone.id}
+                      type="button"
+                      onClick={() => setSelectedZone(zone)}
+                      className={`p-6 rounded-3xl border-2 text-left transition-all ${selectedZone.id === zone.id ? 'border-sky-600 bg-sky-50/50' : 'border-slate-50 bg-slate-50 hover:border-sky-200'}`}
+                    >
+                      <p className="font-bold text-blue-950 text-sm mb-1">{zone.name}</p>
+                      <p className="text-sky-600 font-black">₦{zone.price.toLocaleString()}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-            {/* Order Notes */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="bg-white rounded-lg shadow-lg p-6"
-            >
-              <h3 className="text-lg font-semibold text-amber-900 mb-3">
-                Order Notes
-              </h3>
-              <textarea
-                placeholder="Special delivery instructions or notes..."
-                className="w-full p-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white"
-                rows={3}
-              />
-            </motion.div>
+            {/* Payment Method */}
+            <div className="bg-white rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-12 shadow-sm border border-slate-100 space-y-8">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-10 h-10 bg-blue-950 rounded-2xl flex items-center justify-center text-white">
+                  <CreditCard className="w-5 h-5" />
+                </div>
+                <h2 className="text-2xl font-bold text-blue-950">Payment Method</h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <PaymentOption
+                  active={paymentMethod === 'whatsapp'}
+                  onClick={() => setPaymentMethod('whatsapp')}
+                  icon={MessageCircle}
+                  title="Pay & Confirm on WhatsApp"
+                  description="Chat with our agent to confirm and finalize payment."
+                  color="text-green-600"
+                />
+                <PaymentOption
+                  active={paymentMethod === 'online'}
+                  onClick={() => setPaymentMethod('online')}
+                  icon={CreditCard}
+                  title="Online Payment"
+                  description="Pay securely via Paystack/Stripe (Coming Soon)"
+                  disabled={true}
+                />
+              </div>
+            </div>
           </div>
-        </motion.div>
+
+          <div className="space-y-8">
+            {/* Order Summary */}
+            <div className="bg-blue-950 text-white rounded-[2rem] sm:rounded-[3rem] p-8 sm:p-10 shadow-xl shadow-blue-100 lg:sticky lg:top-32">
+              <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
+                <ShoppingBag className="w-6 h-6 text-sky-400" />
+                Order Summary
+              </h2>
+
+              <div className="space-y-6 mb-8 max-h-[300px] overflow-auto pr-2 custom-scrollbar">
+                {state.items.length > 0 ? state.items.map((item, idx) => {
+                  const itemPrice = item.variant?.promo_price || item.variant?.price || 0
+                  return (
+                    <div key={idx} className="flex justify-between items-start gap-4 pb-4 border-b border-blue-900 last:border-0 last:pb-0">
+                      <div className="flex-1">
+                        <p className="font-bold text-sm leading-tight mb-1">{item.product?.name}</p>
+                        <p className="text-sky-400 text-[10px] font-black uppercase tracking-widest leading-none">
+                          {item.variant?.size?.name} • Qty: {item.quantity}
+                        </p>
+                      </div>
+                      <p className="font-black">₦{(itemPrice * item.quantity).toLocaleString()}</p>
+                    </div>
+                  )
+                }) : (
+                  <p className="text-sky-300 text-sm italic opacity-50">Your cart is empty.</p>
+                )}
+              </div>
+
+              <div className="space-y-4 pt-8 border-t border-blue-900/50">
+                <div className="flex justify-between text-slate-400 text-sm font-medium">
+                  <span>Subtotal</span>
+                  <span>₦{cartTotal.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-slate-400 text-sm font-medium">
+                  <span>Delivery ({selectedZone.name})</span>
+                  <span>₦{selectedZone.price.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-2xl font-black pt-4">
+                  <span>Total</span>
+                  <span className="text-sky-400">₦{total.toLocaleString()}</span>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={state.items.length === 0}
+                className="w-full mt-10 bg-sky-600 hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-5 rounded-2xl flex items-center justify-center gap-3 shadow-2xl transition-all transform active:scale-95 group"
+              >
+                {paymentMethod === 'whatsapp' ? (
+                  <>
+                    <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                    COMPLETE ON WHATSAPP
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="w-5 h-5" />
+                    PAY SECURELY
+                  </>
+                )}
+              </button>
+
+              <p className="text-[10px] text-center mt-6 text-slate-500 uppercase tracking-[0.2em] font-black leading-relaxed">
+                Authored by Smart Best Brands
+              </p>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
-  )
+  );
 }
 
+function PaymentOption({ icon: Icon, title, description, active, onClick, color, disabled }: { icon: React.ElementType, title: string, description: string, active: boolean, onClick: () => void, color?: string, disabled?: boolean }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`p-6 rounded-3xl border-2 text-left transition-all relative ${active ? 'border-sky-600 bg-sky-50/50' : 'border-slate-50 bg-slate-50 hover:border-sky-200'} ${disabled ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
+    >
+      <div className={`mb-4 w-10 h-10 rounded-xl flex items-center justify-center bg-white shadow-sm ${color || 'text-sky-600'}`}>
+        <Icon className="w-5 h-5" />
+      </div>
+      <h4 className="font-bold text-blue-950 text-sm mb-2">{title}</h4>
+      <p className="text-xs text-slate-500 leading-relaxed font-medium">{description}</p>
+      {active && (
+        <div className="absolute top-6 right-6 text-sky-600">
+          <CheckCircle2 className="w-5 h-5 fill-sky-600 text-white" />
+        </div>
+      )}
+    </button>
+  );
+}

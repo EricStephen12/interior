@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useReducer, ReactNode } from 'react'
-import { Product, CartItem } from '@/lib/supabase'
+import { Product, CartItem, ProductVariant } from '@/lib/supabase'
 
 interface CartState {
   items: CartItem[]
@@ -9,7 +9,7 @@ interface CartState {
 }
 
 type CartAction =
-  | { type: 'ADD_ITEM'; product: Product; quantity?: number }
+  | { type: 'ADD_ITEM'; product: Product; variant: ProductVariant; quantity?: number }
   | { type: 'REMOVE_ITEM'; itemId: string }
   | { type: 'UPDATE_QUANTITY'; itemId: string; quantity: number }
   | { type: 'CLEAR_CART' }
@@ -17,7 +17,7 @@ type CartAction =
 
 interface CartContextType {
   state: CartState
-  addToCart: (product: Product, quantity?: number) => void
+  addToCart: (product: Product, variant: ProductVariant, quantity?: number) => void
   removeFromCart: (itemId: string) => void
   updateQuantity: (itemId: string, quantity: number) => void
   clearCart: () => void
@@ -29,13 +29,13 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
     case 'ADD_ITEM': {
-      const existingItem = state.items.find(item => item.product.id === action.product.id)
+      const existingItem = state.items.find(item => item.product_variant_id === action.variant.id)
 
       if (existingItem) {
         return {
           ...state,
           items: state.items.map(item =>
-            item.product.id === action.product.id
+            item.product_variant_id === action.variant.id
               ? { ...item, quantity: item.quantity + (action.quantity || 1) }
               : item
           )
@@ -44,7 +44,8 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
 
       const newItem: CartItem = {
         id: Date.now().toString(),
-        product_id: action.product.id,
+        product_variant_id: action.variant.id,
+        variant: action.variant,
         product: action.product,
         quantity: action.quantity || 1
       }
@@ -103,8 +104,8 @@ const initialState: CartState = {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, initialState)
 
-  const addToCart = (product: Product, quantity = 1) => {
-    dispatch({ type: 'ADD_ITEM', product, quantity })
+  const addToCart = (product: Product, variant: ProductVariant, quantity = 1) => {
+    dispatch({ type: 'ADD_ITEM', product, variant, quantity })
   }
 
   const removeFromCart = (itemId: string) => {

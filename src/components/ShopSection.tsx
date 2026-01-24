@@ -1,293 +1,482 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef } from 'react'
-import { HeartIcon, ShoppingCartIcon } from '@heroicons/react/24/outline'
-import { StarIcon } from '@heroicons/react/24/solid'
-import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
-import { Product } from '@/lib/supabase'
+import { useState, useEffect, useRef } from 'react'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
+import {
+  ShoppingCartIcon,
+  Search,
+  SlidersHorizontal,
+  ArrowRight,
+  Ruler,
+  DollarSign,
+  Tag,
+  Layers,
+  Filter,
+  X
+} from 'lucide-react'
 import { useCart } from '@/lib/cart-context'
+import Image from 'next/image'
+import Link from 'next/link'
 
-// Mock data for demonstration - matching the exact products from the image
-const mockProducts: Product[] = [
+const BRANDS = ['All', 'Vitafoam', 'Mouka', 'Sara Foam', 'Royal Foam', 'Green Earth', 'Uni Foam', 'Hara Foam']
+const CATEGORIES = ['All', 'Mattresses', 'Pillows', 'Beddings', 'Furniture']
+const SIZES = ['All', 'Single', 'Double', 'Family', 'King']
+const PRICE_RANGES = ['All', 'Under 50k', '50k - 200k', '200k - 500k', 'Above 500k']
+
+const mockProducts = [
   {
     id: '1',
-    name: 'Villa Cherie Caramel beige sofa set - Michael Amini',
-    price: 12098.00,
-    originalPrice: 16131.00,
-    description: 'Luxury caramel beige sofa set with premium design.',
-    category: 'Sofas',
-    images: ['/images/Velvet 4-Piece Sectional, Gray Modular Sofa with Ottoman for Large Living Room (145_7_)｜Homary.jpeg'],
-    specifications: {
-      weight: '416 kg',
-      length: '598 cm',
-      width: '386 cm',
-      depth: '254 cm',
-      volume: '8.67472'
-    },
-    productCode: '01A1C000106',
+    name: 'Vitafoam Grandeur Mattress',
+    brand: 'Vitafoam',
+    category: 'Mattresses',
+    size: 'King',
+    price: 185000,
+    promo_price: 165000,
+    is_negotiable: true,
+    images: [
+      '/images/Modern Luxury Home Furniture Bedroom Bed Set Queen King Size Headboard Stainless Steel Base Bed.jpeg',
+      '/images/Marshmallow Bed Frame.jpeg'
+    ],
+    description: 'Ultra-premium memory foam mattress for maximum comfort.',
     in_stock: true,
-    created_at: new Date().toISOString()
   },
   {
     id: '2',
-    name: 'London place 3-seater sofa - Michael Amini',
-    price: 3104.00,
-    originalPrice: 4139.00,
-    description: 'Elegant 3-seater sofa with sophisticated design.',
-    category: 'Sofas',
-    images: ['/images/2230mm Modern White Velvet 3-Seater Sofa Channel Tufted Upholstered Luxury Solid Wood｜Homary.jpeg'],
-    specifications: {
-      weight: '75 kg',
-      length: '262 cm',
-      width: '107 cm',
-      depth: '109 cm',
-      volume: '3.055706'
-    },
-    productCode: '01A1C00099',
+    name: 'Mouka Flora Mattress',
+    brand: 'Mouka',
+    category: 'Mattresses',
+    size: 'Double',
+    price: 95000,
+    is_negotiable: false,
+    images: [
+      '/images/Marshmallow Bed Frame.jpeg',
+      '/images/Modern Luxury Home Furniture Bedroom Bed Set Queen King Size Headboard Stainless Steel Base Bed.jpeg'
+    ],
+    description: 'Classic comfort with Mouka durability.',
     in_stock: true,
-    created_at: new Date().toISOString()
   },
   {
     id: '3',
-    name: 'London place chair - Michael Amini',
-    price: 1489.00,
-    originalPrice: 1985.00,
-    description: 'Stylish accent chair with premium upholstery.',
-    category: 'Chairs',
-    images: ['/images/2 - Piece Classic Teddy Tufted Upholstered Living Room Set With Pocket green.jpeg'],
-    specifications: {
-      weight: '25 kg',
-      length: '158 cm',
-      width: '107 cm',
-      depth: '80 cm',
-      volume: '1.35248'
-    },
-    productCode: '02A1C00057',
+    name: 'Royal Foam Executive Pillow',
+    brand: 'Royal Foam',
+    category: 'Pillows',
+    size: 'Single',
+    price: 12500,
+    is_negotiable: false,
+    images: [
+      '/images/Modern Throw Pillow & Decorative Accent Pillows for Sofas, Chairs & Beds _ CB2.jpeg',
+      '/images/Decorative Pillow Covers, White Geometric, Cotton, Set Of 6, 18x18 _ Color_ White _ Size_ Os.jpeg'
+    ],
+    description: 'Soft and supportive pillow for a restful sleep.',
     in_stock: true,
-    created_at: new Date().toISOString()
   },
   {
     id: '4',
-    name: 'Etro curved sectional sofa',
-    price: 4444.00,
-    originalPrice: 5925.00,
-    description: 'Modern curved sectional sofa with contemporary style.',
-    category: 'Sofas',
-    images: ['/images/Timber Olio Green Sofa.jpeg'],
-    specifications: {
-      weight: '165 kg',
-      length: '690 cm',
-      width: '530 cm',
-      depth: '375 cm',
-      volume: '5.49'
-    },
-    productCode: '01AREA0001',
+    name: 'Luxury Cotton Bedding Set',
+    brand: 'Sara Foam',
+    category: 'Beddings',
+    size: 'Family',
+    price: 45000,
+    promo_price: 38000,
+    is_negotiable: true,
+    images: [
+      '/images/Decorative Pillow Covers, White Geometric, Cotton, Set Of 6, 18x18 _ Color_ White _ Size_ Os.jpeg',
+      '/images/Modern Throw Pillow & Decorative Accent Pillows for Sofas, Chairs & Beds _ CB2.jpeg'
+    ],
+    description: 'Premium quality cotton sheets.',
     in_stock: true,
-    created_at: new Date().toISOString()
-  }
+  },
+  {
+    id: '5',
+    name: 'Uni Foam Supreme',
+    brand: 'Uni Foam',
+    category: 'Mattresses',
+    size: 'King',
+    price: 650000,
+    is_negotiable: true,
+    images: [
+      '/images/Marshmallow Bed Frame.jpeg',
+      '/images/Modern Luxury Home Furniture Bedroom Bed Set Queen King Size Headboard Stainless Steel Base Bed.jpeg'
+    ],
+    description: 'The pinnacle of sleeping luxury.',
+    in_stock: true,
+  },
+  {
+    id: '6',
+    name: 'Green Earth Eco-Pillow',
+    brand: 'Green Earth',
+    category: 'Pillows',
+    size: 'Double',
+    price: 18000,
+    is_negotiable: false,
+    images: [
+      '/images/Modern Throw Pillow & Decorative Accent Pillows for Sofas, Chairs & Beds _ CB2.jpeg',
+      '/images/Decorative Pillow Covers, White Geometric, Cotton, Set Of 6, 18x18 _ Color_ White _ Size_ Os.jpeg'
+    ],
+    description: 'Sustainable comfort for your neck.',
+    in_stock: true,
+  },
 ]
 
 export default function ShopSection() {
-  const [products, setProducts] = useState<Product[]>(mockProducts)
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(mockProducts)
+  const [selectedBrand, setSelectedBrand] = useState('All')
   const [selectedCategory, setSelectedCategory] = useState('All')
-  const [sortBy, setSortBy] = useState('featured')
-  const [wishlist, setWishlist] = useState<string[]>([])
-  const { addToCart: addToCartContext } = useCart()
+  const [selectedSize, setSelectedSize] = useState('All')
+  const [selectedPrice, setSelectedPrice] = useState('All')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filteredProducts, setFilteredProducts] = useState(mockProducts)
+  const [showFilters, setShowFilters] = useState(false)
 
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
-
-  const categories = ['All', 'Sofas', 'Tables', 'Chairs', 'Storage']
+  const containerRef = useRef(null)
+  const isInView = useInView(containerRef, { once: true, margin: "-100px" })
 
   useEffect(() => {
-    let filtered = products
+    let result = mockProducts
 
-    // Filter by category
-    if (selectedCategory !== 'All') {
-      filtered = filtered.filter(product => product.category === selectedCategory)
+    // Brand Filter
+    if (selectedBrand !== 'All') result = result.filter(p => p.brand === selectedBrand)
+
+    // Category Filter
+    if (selectedCategory !== 'All') result = result.filter(p => p.category === selectedCategory)
+
+    // Size Filter
+    if (selectedSize !== 'All') result = result.filter(p => p.size === selectedSize)
+
+    // Price Filter
+    if (selectedPrice !== 'All') {
+      result = result.filter(p => {
+        const price = p.promo_price || p.price
+        if (selectedPrice === 'Under 50k') return price < 50000
+        if (selectedPrice === '50k - 200k') return price >= 50000 && price <= 200000
+        if (selectedPrice === '200k - 500k') return price > 200000 && price <= 500000
+        if (selectedPrice === 'Above 500k') return price > 500000
+        return true
+      })
     }
 
-    // Sort products
-    switch (sortBy) {
-      case 'price-low':
-        filtered = [...filtered].sort((a, b) => a.price - b.price)
-        break
-      case 'price-high':
-        filtered = [...filtered].sort((a, b) => b.price - a.price)
-        break
-      case 'name':
-        filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name))
-        break
-      default:
-        // Keep original order for 'featured'
-        break
+    // Search Filter
+    if (searchQuery) {
+      result = result.filter(p =>
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.brand.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     }
 
-    setFilteredProducts(filtered)
-  }, [products, selectedCategory, sortBy])
+    setFilteredProducts(result)
+  }, [selectedBrand, selectedCategory, selectedSize, selectedPrice, searchQuery])
 
-  const toggleWishlist = (productId: string) => {
-    setWishlist(prev => 
-      prev.includes(productId) 
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
-    )
+  const clearFilters = () => {
+    setSelectedBrand('All')
+    setSelectedCategory('All')
+    setSelectedSize('All')
+    setSelectedPrice('All')
+    setSearchQuery('')
   }
 
-  const addToCart = (product: Product) => {
-    addToCartContext(product, 1)
-  }
+  const isFiltered = selectedBrand !== 'All' || selectedCategory !== 'All' || selectedSize !== 'All' || selectedPrice !== 'All' || searchQuery !== ''
 
   return (
-    <section ref={ref} className="py-20 bg-amber-50">
+    <section ref={containerRef} className="py-16 sm:py-24 md:py-32 bg-white selection:bg-sky-100 min-h-screen font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-amber-900 mb-6">
-            SHOP PRODUCTS
-          </h2>
-        </motion.div>
 
-        {/* Filters and Sorting */}
+        {/* Elite Header */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-16 sm:mb-24">
+          <div className="max-w-2xl">
+            <motion.span
+              initial={{ opacity: 0, x: -20 }}
+              animate={isInView ? { opacity: 1, x: 0 } : {}}
+              className="inline-block text-[10px] font-black tracking-[0.4em] text-sky-600 uppercase mb-4 sm:mb-6"
+            >
+              Curated Collections
+            </motion.span>
+            <motion.h3
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.2 }}
+              className="text-4xl sm:text-5xl md:text-7xl font-black text-blue-950 tracking-[-0.04em] leading-[0.9] font-display"
+            >
+              The Art of <br />
+              <span className="text-sky-600 font-display">Modern Living.</span>
+            </motion.h3>
+          </div>
+
+          {/* Elite Search */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ delay: 0.4 }}
+            className="w-full max-w-md relative group"
+          >
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-sky-600 transition-colors" />
+            <input
+              type="text"
+              placeholder="Search by brand or design..."
+              className="w-full pl-14 pr-6 py-4 sm:py-5 bg-slate-50 border border-transparent rounded-2xl focus:ring-0 focus:bg-white focus:border-sky-100 transition-all text-sm font-bold text-blue-950 placeholder:text-slate-300 shadow-inner"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </motion.div>
+        </div>
+
+        {/* Elite Filters Controls */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex flex-col sm:flex-row justify-between items-center mb-12 gap-4"
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.5 }}
+          className="space-y-6 sm:space-y-8 mb-12 sm:mb-20"
         >
-          {/* Category Filter */}
-          <div className="flex items-center gap-4">
-            <span className="text-amber-900 font-medium">CATEGORY</span>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-amber-200 bg-white text-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
-            >
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
+          <div className="flex items-center justify-between border-b border-slate-100 pb-6">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all font-black text-[10px] uppercase tracking-widest
+                  ${showFilters ? 'bg-blue-950 text-white' : 'bg-slate-50 text-blue-950 hover:bg-slate-100'}`}
+              >
+                <SlidersHorizontal className="w-4 h-4" />
+                {showFilters ? 'Hide Filters' : 'Refine Search'}
+              </button>
+
+              {isFiltered && (
+                <button
+                  onClick={clearFilters}
+                  className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-red-500 transition-colors px-4"
+                >
+                  <X className="w-4 h-4" /> Reset Filters
+                </button>
+              )}
+            </div>
+
+            <p className="hidden md:block text-[10px] font-black text-slate-300 uppercase tracking-widest">
+              Showing {filteredProducts.length} Results
+            </p>
           </div>
 
-          {/* Sort Dropdown */}
-          <div className="flex items-center gap-4">
-            <span className="text-amber-900 font-medium">ALL ITEMS</span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-amber-200 bg-white text-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
-            >
-              <option value="featured">SORT BY FEATURED</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="name">Name: A to Z</option>
-            </select>
-          </div>
+          {/* Expanded Filter UI */}
+          <AnimatePresence>
+            {showFilters && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden space-y-8 pb-8"
+              >
+                {/* Brand Filter */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-slate-400">
+                    <Tag className="w-3 h-3" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Select Brand</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {BRANDS.map((brand) => (
+                      <button
+                        key={brand}
+                        onClick={() => setSelectedBrand(brand)}
+                        className={`px-4 sm:px-6 py-2 rounded-xl text-[9px] font-black tracking-widest uppercase transition-all
+                          ${selectedBrand === brand
+                            ? 'bg-sky-600 text-white shadow-lg shadow-sky-200'
+                            : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                      >
+                        {brand}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
+                  {/* Category Filter */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-slate-400">
+                      <Layers className="w-3 h-3" />
+                      <span className="text-[10px] font-black uppercase tracking-widest">Product Type</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {CATEGORIES.map((cat) => (
+                        <button
+                          key={cat}
+                          onClick={() => setSelectedCategory(cat)}
+                          className={`px-5 py-2.5 rounded-xl text-[9px] font-black tracking-widest uppercase transition-all
+                            ${selectedCategory === cat
+                              ? 'bg-blue-950 text-white shadow-xl'
+                              : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Size Filter */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-slate-400">
+                      <Ruler className="w-3 h-3" />
+                      <span className="text-[10px] font-black uppercase tracking-widest">Global Sizing</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {SIZES.map((size) => (
+                        <button
+                          key={size}
+                          onClick={() => setSelectedSize(size)}
+                          className={`px-5 py-2.5 rounded-xl text-[9px] font-black tracking-widest uppercase transition-all
+                            ${selectedSize === size
+                              ? 'bg-blue-950 text-white shadow-xl'
+                              : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Price Filter */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-slate-400">
+                      <DollarSign className="w-3 h-3" />
+                      <span className="text-[10px] font-black uppercase tracking-widest">Price Range</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {PRICE_RANGES.map((range) => (
+                        <button
+                          key={range}
+                          onClick={() => setSelectedPrice(range)}
+                          className={`px-5 py-2.5 rounded-xl text-[9px] font-black tracking-widest uppercase transition-all
+                            ${selectedPrice === range
+                              ? 'bg-blue-950 text-white shadow-xl'
+                              : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                        >
+                          {range}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
 
         {/* Product Grid */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {filteredProducts.map((product, index) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -5 }}
-              className="bg-gray-50 rounded-lg shadow-lg overflow-hidden group"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 sm:gap-y-16">
+          <AnimatePresence mode='popLayout'>
+            {filteredProducts.map((product, idx) => (
+              <ProductCard key={product.id} product={product} index={idx} />
+            ))}
+          </AnimatePresence>
+        </div>
+
+        {/* Empty State */}
+        {filteredProducts.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="py-24 sm:py-32 text-center"
+          >
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-slate-50 rounded-full flex items-center justify-center text-slate-200 mx-auto mb-6 sm:mb-8">
+              <Search className="w-8 h-8 sm:w-10 sm:h-10" />
+            </div>
+            <h3 className="text-xl sm:text-2xl font-black text-blue-950 mb-2">No Matches Found</h3>
+            <p className="text-slate-400 font-medium">Try adjusting your filters or search criteria.</p>
+            <button
+              onClick={clearFilters}
+              className="mt-6 sm:mt-8 text-sky-600 font-black text-[10px] uppercase tracking-widest hover:text-blue-950 transition-colors"
             >
-                   {/* Product Image */}
-                   <div className="aspect-[5/4] relative overflow-hidden">
-                     <img
-                       src={product.images[0] || "/images/hero/jason-wang-8J49mtYWu7E-unsplash.jpg"}
-                       alt={product.name}
-                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                     />
-
-                     {/* Image Carousel Dots */}
-                     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                       <div className="w-2 h-2 bg-white rounded-full opacity-80"></div>
-                       <div className="w-2 h-2 bg-white/50 rounded-full"></div>
-                       <div className="w-2 h-2 bg-white/50 rounded-full"></div>
-                     </div>
-
-                     {/* Shopping Bag Icon */}
-                     <button className="absolute top-4 right-4 p-2 bg-white/90 rounded-full hover:bg-white transition-colors shadow-lg">
-                       <ShoppingCartIcon className="h-5 w-5 text-amber-800" />
-                     </button>
-                   </div>
-
-              {/* Product Info */}
-              <div className="p-8">
-                {/* Product Name */}
-                <h3 className="text-lg font-serif font-semibold text-amber-900 mb-3">
-                  {product.name}
-                </h3>
-
-                {/* Pricing with Discount */}
-                <div className="flex items-center space-x-3 mb-6">
-                  <p className="text-2xl font-bold text-amber-800">
-                    USD {product.price.toLocaleString()}
-                  </p>
-                  {product.originalPrice && (
-                    <p className="text-lg text-amber-500 line-through">
-                      USD {product.originalPrice.toLocaleString()}
-                    </p>
-                  )}
-                </div>
-
-                {/* Specifications Grid */}
-                <div className="grid grid-cols-2 gap-4 mb-6 text-sm text-black">
-                  <div>
-                    <span className="font-medium">Weight:</span> {product.specifications.weight}
-                  </div>
-                  <div>
-                    <span className="font-medium">Length:</span> {product.specifications.length}
-                  </div>
-                  <div>
-                    <span className="font-medium">Depth:</span> {product.specifications.depth}
-                  </div>
-                  <div>
-                    <span className="font-medium">Width:</span> {product.specifications.width}
-                  </div>
-                  <div>
-                    <span className="font-medium">Volume:</span> {product.specifications.volume}
-                  </div>
-                  <div className="text-xs text-black font-medium">
-                    {product.productCode}
-                  </div>
-                </div>
-
-                {/* Browse Button */}
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => window.location.href = `/products/${product.id}`}
-                  className="w-full bg-amber-700 hover:bg-amber-800 text-white font-semibold py-4 px-6 rounded-lg transition-colors shadow-lg text-sm"
-                >
-                  BROWSE
-                </motion.button>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+              Exterminate All Filters &rarr;
+            </button>
+          </motion.div>
+        )}
       </div>
     </section>
+  );
+}
+
+function ProductCard({ product, index }: { product: any, index: number }) {
+  const [isHovered, setIsHovered] = useState(false)
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.8 }}
+      transition={{ duration: 0.5, delay: index * 0.05 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="group"
+    >
+      <Link href={`/products/${product.id}`}>
+        <div className="relative aspect-[4/5] bg-slate-100 overflow-hidden mb-6 cursor-pointer rounded-2xl sm:rounded-none">
+          {/* Primary Image */}
+          <Image
+            src={product.images[0]}
+            alt={product.name}
+            fill
+            className={`object-cover transition-all duration-[1.5s] ease-out 
+            ${isHovered ? 'scale-110 blur-[2px] opacity-0' : 'scale-100 opacity-100'}`}
+            sizes="(max-width: 768px) 100vw, 25vw"
+          />
+
+          {/* Secondary Image - Reveal on Hover */}
+          {product.images[1] && (
+            <Image
+              src={product.images[1]}
+              alt={product.name}
+              fill
+              className={`object-cover transition-all duration-[1s] ease-out
+              ${isHovered ? 'scale-105 opacity-100' : 'scale-125 opacity-0'}`}
+              sizes="(max-width: 768px) 100vw, 25vw"
+            />
+          )}
+
+          {/* Glassmorphic Brand Tag */}
+          <div className="absolute top-4 sm:top-6 left-4 sm:left-6 z-10">
+            <span className="glass px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[8px] sm:text-[9px] font-black text-blue-950 uppercase tracking-[0.2em] font-sans">
+              {product.brand}
+            </span>
+          </div>
+
+          {/* Promo Price Badge */}
+          {product.promo_price && (
+            <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-10">
+              <span className="bg-blue-950 text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[8px] sm:text-[9px] font-black uppercase tracking-[0.2em] shadow-xl font-sans">
+                Limited
+              </span>
+            </div>
+          )}
+
+          {/* Quick Add Overlay */}
+          <div className={`absolute inset-0 bg-blue-950/20 transition-opacity duration-500 flex items-center justify-center
+          ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+            <button className="bg-white text-blue-950 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shadow-2xl transform transition-all duration-500 scale-0 group-hover:scale-100 hover:bg-sky-600 hover:text-white">
+              <ShoppingCartIcon className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        <div className="space-y-2 sm:space-y-3 px-1 text-center lg:text-left">
+          <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] font-inter">
+            {product.category}
+          </p>
+          <h4 className="text-lg sm:text-xl font-bold text-blue-950 tracking-tight group-hover:text-sky-600 transition-colors duration-300 h-12 sm:h-14 overflow-hidden leading-tight font-display">
+            {product.name}
+          </h4>
+          <div className="flex items-center justify-center lg:justify-start gap-3 sm:gap-4">
+            <span className="text-lg sm:text-xl font-black text-blue-950">₦{product.price.toLocaleString()}</span>
+            {product.promo_price && (
+              <span className="text-[10px] sm:text-xs text-slate-300 line-through font-bold">₦{product.promo_price.toLocaleString()}</span>
+            )}
+          </div>
+
+          {/* Reveal Link */}
+          <div className="overflow-hidden pt-1">
+            <motion.div
+              animate={{ y: isHovered ? 0 : 20 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-center gap-2 text-[9px] sm:text-[10px] font-black text-sky-600 tracking-widest uppercase cursor-pointer justify-center lg:justify-start font-sans"
+            >
+              View Essence <ArrowRight className="w-3 h-3" />
+            </motion.div>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
   )
 }

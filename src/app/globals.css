@@ -15,66 +15,53 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-playfair);
     font-feature-settings: 'liga' 1, 'kern' 1;
     letter-spacing: -0.025em;
-  }
-
-  h1 {
-    font-weight: 700;
-    line-height: 1.1;
-  }
-
-  h2 {
-    font-weight: 600;
-    line-height: 1.2;
-  }
-
-  h3 {
-    font-weight: 600;
-    line-height: 1.3;
-  }
-
-  p {
-    line-height: 1.6;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-amber-700 hover:bg-amber-800 text-white font-semibold py-4 px-6 rounded-lg transition-colors duration-200 shadow-lg;
+    @apply bg-blue-950 hover:bg-sky-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-xl shadow-blue-900/10 active:scale-95;
   }
-  
+
   .btn-secondary {
-    @apply bg-amber-100 hover:bg-amber-200 text-amber-900 font-medium py-3 px-6 rounded-lg transition-colors duration-200;
+    @apply bg-sky-50 hover:bg-sky-100 text-sky-950 font-bold py-4 px-8 rounded-2xl transition-all duration-300;
   }
-  
-  .text-luxury {
-    @apply text-amber-900;
+
+  .bg-deep-blue {
+    @apply bg-blue-950;
   }
-  
-  .bg-luxury {
-    @apply bg-gradient-to-br from-amber-50 to-amber-100;
+
+  .text-sky {
+    @apply text-sky-600;
   }
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #fef7ed;
+  background: #f8fafc;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #92400e;
-  border-radius: 4px;
+  background: #0f172a;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #78350f;
+  background: #1e293b;
 }

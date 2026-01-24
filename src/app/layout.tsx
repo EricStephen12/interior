@@ -29,8 +29,8 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "FurniLux - Luxury Furniture Store",
-  description: "Discover premium furniture that transforms your space into a haven of comfort and style.",
+  title: "Smart Best Brands - Premium Home & Comfort",
+  description: "Authentic premium mattresses, pillows, and furniture from Nigeria&apos;s leading brands. Smart Best Brands - quality you can trust.",
 };
 
 export default function RootLayout({

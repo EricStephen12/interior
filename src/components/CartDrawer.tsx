@@ -5,7 +5,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { motion } from 'framer-motion'
 import { XMarkIcon, ShoppingCartIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outline'
 import { useCart } from '@/lib/cart-context'
-import { Product } from '@/lib/supabase'
+import Image from 'next/image'
 
 interface CartDrawerProps {
   isOpen: boolean
@@ -16,7 +16,10 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { state, updateQuantity, removeFromCart } = useCart()
   const { items: cartItems } = state
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0)
+  const subtotal = cartItems.reduce((sum, item) => {
+    const price = item.variant?.promo_price || item.variant?.price || 0
+    return sum + (price * item.quantity)
+  }, 0)
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -86,22 +89,23 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                                   animate={{ opacity: 1, x: 0 }}
                                   className="flex py-6"
                                 >
-                                  <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-amber-200">
-                                    <img
-                                      src={item.product.images[0] || "/images/hero/jason-wang-8J49mtYWu7E-unsplash.jpg"}
-                                      alt={item.product.name}
-                                      className="h-full w-full object-cover"
+                                  <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-sky-100 relative">
+                                    <Image
+                                      src={item.product?.images?.[0] || "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=2070&auto=format&fit=crop"}
+                                      alt={item.product?.name || 'Product'}
+                                      fill
+                                      className="object-cover"
                                     />
                                   </div>
 
                                   <div className="ml-4 flex flex-1 flex-col">
                                     <div>
-                                      <div className="flex justify-between text-base font-medium text-gray-900">
-                                        <h3>{item.product.name}</h3>
-                                        <p className="ml-4">${(item.product.price * item.quantity).toLocaleString()}</p>
+                                      <div className="flex justify-between text-base font-bold text-blue-950">
+                                        <h3>{item.product?.name}</h3>
+                                        <p className="ml-4">₦{((item.variant?.promo_price || item.variant?.price || 0) * item.quantity).toLocaleString()}</p>
                                       </div>
-                                      <p className="mt-1 text-sm text-gray-500">
-                                        {item.product.specifications.length} × {item.product.specifications.width} × {item.product.specifications.depth}
+                                      <p className="mt-1 text-sm text-gray-500 italic">
+                                        Size: {item.variant?.size?.name || 'Standard'}
                                       </p>
                                     </div>
                                     <div className="flex flex-1 items-end justify-between text-sm">
@@ -125,7 +129,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                                         <button
                                           type="button"
                                           onClick={() => removeFromCart(item.id)}
-                                          className="font-medium text-amber-600 hover:text-amber-500"
+                                          className="font-medium text-sky-600 hover:text-sky-500"
                                         >
                                           Remove
                                         </button>
@@ -143,12 +147,12 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     {/* Footer */}
                     {cartItems.length > 0 && (
                       <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-                        <div className="flex justify-between text-base font-medium text-gray-900">
+                        <div className="flex justify-between text-lg font-black text-blue-950">
                           <p>Subtotal</p>
-                          <p>${subtotal.toLocaleString()}</p>
+                          <p>₦{subtotal.toLocaleString()}</p>
                         </div>
-                        <p className="mt-0.5 text-sm text-gray-500">
-                          Shipping and taxes calculated at checkout.
+                        <p className="mt-1 text-xs font-bold text-gray-400 uppercase tracking-widest">
+                          Delivery calculated at checkout.
                         </p>
                         <div className="mt-6">
                           <motion.button
@@ -157,7 +161,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             onClick={() => {
                               window.location.href = '/checkout'
                             }}
-                            className="w-full bg-amber-700 hover:bg-amber-800 text-white font-semibold py-4 px-6 rounded-lg transition-colors shadow-lg"
+                            className="w-full bg-blue-950 hover:bg-sky-600 text-white font-bold py-5 rounded-2xl transition-all shadow-xl shadow-blue-900/10"
                           >
                             Checkout
                           </motion.button>
@@ -167,7 +171,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             or{' '}
                             <button
                               type="button"
-                              className="font-medium text-amber-600 hover:text-amber-500"
+                              className="font-medium text-indigo-600 hover:text-indigo-500"
                               onClick={onClose}
                             >
                               Continue Shopping
