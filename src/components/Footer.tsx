@@ -129,7 +129,7 @@ function FooterSection({ title, links }: { title: string, links: { label: string
   )
 }
 
-function SocialLink({ icon: Icon, href }: { icon: any, href: string }) {
+function SocialLink({ icon: Icon, href }: { icon: React.ElementType, href: string }) {
   return (
     <motion.a
       whileHover={{ y: -5 }}

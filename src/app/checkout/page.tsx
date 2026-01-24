@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShoppingBag, Truck, CreditCard, MessageCircle, MapPin, ChevronRight, CheckCircle2 } from 'lucide-react';
-import Link from 'next/link';
+import { ShoppingBag, CreditCard, MessageCircle, MapPin, CheckCircle2 } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 
 const DELIVERY_ZONES = [

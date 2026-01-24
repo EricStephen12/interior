@@ -187,7 +187,7 @@ export default function AccountLayout({
   );
 }
 
-function NavItem({ href, icon: Icon, children, active, onClick }: { href: string; icon: any; children: React.ReactNode, active?: boolean, onClick?: () => void }) {
+function NavItem({ href, icon: Icon, children, active, onClick }: { href: string; icon: React.ElementType; children: React.ReactNode, active?: boolean, onClick?: () => void }) {
   return (
     <Link
       href={href}

@@ -9,9 +9,7 @@ import {
     Trash2,
     Package,
     Tag as TagIcon,
-    Ruler,
     Image as ImageIcon,
-    AlertTriangle,
     Zap,
     CheckCircle2,
     Info,
@@ -115,7 +113,7 @@ export default function EditProductPage() {
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4">Brand Lineage</label>
                                     <select className="w-full bg-slate-50 border-transparent focus:border-sky-600 focus:bg-white focus:ring-4 focus:ring-sky-50 rounded-2xl px-6 py-4 text-sm font-bold text-blue-950 outline-none transition-all appearance-none cursor-pointer">
-                                        <option defaultValue={mockProduct.brand}>{mockProduct.brand}</option>
+                                        <option value={mockProduct.brand}>{mockProduct.brand}</option>
                                         <option>Mouka</option>
                                         <option>Sara Foam</option>
                                     </select>
@@ -123,7 +121,7 @@ export default function EditProductPage() {
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4">Category</label>
                                     <select className="w-full bg-slate-50 border-transparent focus:border-sky-600 focus:bg-white focus:ring-4 focus:ring-sky-50 rounded-2xl px-6 py-4 text-sm font-bold text-blue-950 outline-none transition-all appearance-none cursor-pointer">
-                                        <option defaultValue={mockProduct.category}>{mockProduct.category}</option>
+                                        <option value={mockProduct.category}>{mockProduct.category}</option>
                                         <option>Pillows</option>
                                         <option>Furniture</option>
                                     </select>

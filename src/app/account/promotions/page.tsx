@@ -19,7 +19,20 @@ import {
     Layout
 } from 'lucide-react';
 
-const mockPromotions = [
+interface Promotion {
+    id: string;
+    title: string;
+    type: string;
+    discountType: string;
+    discountValue: number;
+    status: 'ACTIVE' | 'SCHEDULED' | 'EXPIRED';
+    validUntil: string;
+    target: string;
+    impressions: number;
+    conversions: number;
+}
+
+const mockPromotions: Promotion[] = [
     {
         id: '1',
         title: 'New Year Comfort Bash',
@@ -196,7 +209,7 @@ export default function PromotionsPage() {
     );
 }
 
-function StatCard({ icon: Icon, label, value, subValue, color }: any) {
+function StatCard({ icon: Icon, label, value, subValue, color }: { icon: React.ElementType, label: string, value: string, subValue: string, color: string }) {
     return (
         <div className="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm group hover:shadow-xl hover:shadow-blue-950/5 transition-all">
             <div className={`w-12 h-12 ${color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500`}>
@@ -211,14 +224,14 @@ function StatCard({ icon: Icon, label, value, subValue, color }: any) {
     );
 }
 
-function StatusBadge({ status }: { status: string }) {
-    const styles: any = {
+function StatusBadge({ status }: { status: 'ACTIVE' | 'SCHEDULED' | 'EXPIRED' }) {
+    const styles: Record<string, string> = {
         ACTIVE: 'bg-emerald-50 text-emerald-600',
         SCHEDULED: 'bg-sky-50 text-sky-600',
         EXPIRED: 'bg-slate-50 text-slate-400'
     };
 
-    const icons: any = {
+    const icons: Record<string, React.ElementType> = {
         ACTIVE: CheckCircle2,
         SCHEDULED: Clock,
         EXPIRED: XCircle

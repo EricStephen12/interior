@@ -7,11 +7,8 @@ import {
     Save,
     Upload,
     Loader2,
-    Trash,
     Settings,
-    ShieldCheck,
     CreditCard,
-    Ruler,
     Tag,
     Info
 } from 'lucide-react';
@@ -28,7 +25,7 @@ export default function CreateProductPage() {
         // Logic will be wired to Prisma later
         setTimeout(() => {
             setLoading(false);
-            router.push('/admin/products');
+            router.push('/account/products');
         }, 1500);
     };
 
@@ -38,7 +35,7 @@ export default function CreateProductPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-center gap-6">
                     <Link
-                        href="/admin/products"
+                        href="/account/products"
                         className="w-12 h-12 bg-white rounded-2xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-100 transition-all group"
                     >
                         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -51,13 +48,13 @@ export default function CreateProductPage() {
 
                 <div className="flex items-center gap-4">
                     <button
-                        onClick={() => router.push('/admin/products')}
+                        onClick={() => router.push('/account/products')}
                         className="px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-950 transition-colors"
                     >
                         Cancel
                     </button>
                     <button
-                        onClick={handleSubmit} // Using simple click for demo
+                        onClick={handleSubmit}
                         disabled={loading}
                         className="bg-blue-950 hover:bg-sky-600 text-white px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-2xl shadow-blue-950/20 disabled:opacity-50"
                     >

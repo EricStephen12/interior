@@ -66,7 +66,7 @@ export default function FAQPage() {
                 <div className="mt-12 sm:mt-20 p-8 sm:p-12 bg-blue-950 rounded-[2rem] sm:rounded-[3rem] text-center text-white relative overflow-hidden">
                     <div className="relative z-10">
                         <h2 className="text-2xl font-bold mb-4">Still have questions?</h2>
-                        <p className="text-sky-200 mb-8 max-w-sm mx-auto">Can't find the answer you're looking for? Please chat with our friendly team.</p>
+                        <p className="text-sky-200 mb-8 max-w-sm mx-auto">Can&apos;t find the answer you&apos;re looking for? Please chat with our friendly team.</p>
                         <a href="/contact" className="inline-block bg-sky-600 hover:bg-sky-700 text-white font-bold py-4 px-10 rounded-2xl shadow-xl transition-all">
                             Get in Touch
                         </a>

@@ -14,7 +14,7 @@ export default function ContactPage() {
               </h1>
               <p className="text-lg text-gray-600 leading-relaxed">
                 Have questions about our products or delivery? Our team is ready to assist you.
-                Whether you prefer a quick chat on WhatsApp or a detailed email, we're here to help.
+                Whether you prefer a quick chat on WhatsApp or a detailed email, we&apos;re here to help.
               </p>
             </div>
 
@@ -92,7 +92,7 @@ export default function ContactPage() {
   );
 }
 
-function ContactInfo({ icon: Icon, title, value, link, color }: any) {
+function ContactInfo({ icon: Icon, title, value, link, color }: { icon: React.ElementType, title: string, value: string, link?: string, color?: string }) {
   return (
     <div className="group">
       <div className="flex items-center gap-4 mb-2">

@@ -57,7 +57,7 @@ export default function SettingsPage() {
     );
 }
 
-function SettingsSection({ icon: Icon, title, description, children }: any) {
+function SettingsSection({ icon: Icon, title, description, children }: { icon: React.ElementType, title: string, description: string, children: React.ReactNode }) {
     return (
         <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-xl shadow-blue-950/5">
             <div className="flex items-center gap-6 mb-10">
@@ -74,7 +74,7 @@ function SettingsSection({ icon: Icon, title, description, children }: any) {
     );
 }
 
-function InputGroup({ label, value, placeholder, disabled }: any) {
+function InputGroup({ label, value, placeholder, disabled }: { label: string, value?: string, placeholder?: string, disabled?: boolean }) {
     return (
         <div className="space-y-2">
             <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">{label}</label>

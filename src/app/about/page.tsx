@@ -63,7 +63,7 @@ export default function AboutPage() {
     );
 }
 
-function ValueCard({ icon: Icon, title, description }: any) {
+function ValueCard({ icon: Icon, title, description }: { icon: React.ElementType, title: string, description: string }) {
     return (
         <div className="flex flex-col items-center text-center group">
             <div className="w-16 h-16 bg-sky-50 text-sky-600 rounded-3xl flex items-center justify-center mb-6 group-hover:bg-sky-600 group-hover:text-white transition-all duration-500">

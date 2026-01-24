@@ -7,7 +7,6 @@ import {
   Users,
   DollarSign,
   TrendingUp,
-  User,
   Heart,
   History,
   ArrowRight
@@ -210,7 +209,7 @@ function CustomerOverview() {
   );
 }
 
-function StatCard({ title, value, change, icon: Icon, color }: any) {
+function StatCard({ title, value, change, icon: Icon, color }: { title: string, value: string, change: string | number, icon: React.ElementType, color: string }) {
   const isBlue = color === 'blue-950';
 
   return (

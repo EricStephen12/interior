@@ -11,10 +11,8 @@ import {
   DollarSign,
   Tag,
   Layers,
-  Filter,
   X
 } from 'lucide-react'
-import { useCart } from '@/lib/cart-context'
 import Image from 'next/image'
 import Link from 'next/link'
 

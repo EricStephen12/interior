@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Save, Upload, Loader2, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Save, Upload, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function CreateBrandPage() {
