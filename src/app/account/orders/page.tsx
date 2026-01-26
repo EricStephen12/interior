@@ -22,68 +22,69 @@ export default function OrdersPage() {
   const isAdmin = user?.role === 'ADMIN';
 
   return (
-    <div className="space-y-8 font-sans">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+    <div className="space-y-12 font-sans selection:bg-secondary">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-8">
         <div>
-          <h1 className="text-3xl font-black text-blue-950 tracking-tight">
-            {isAdmin ? 'Store Dispatch' : 'Order Trajectory'}
+          <span className="text-[10px] font-black tracking-[0.5em] text-accent uppercase mb-4 block underline decoration-accent/20 underline-offset-8">Order History</span>
+          <h1 className="text-5xl font-black text-primary tracking-tight">
+            {isAdmin ? 'Store Dispatch' : 'Vault Trajectory'}
           </h1>
-          <p className="text-slate-500 font-medium mt-1">
-            {isAdmin ? 'Manage and fulfill global order essences.' : 'Trace the path of your curated comfort.'}
+          <p className="text-slate-400 font-light mt-4 uppercase tracking-widest text-xs">
+            {isAdmin ? 'Manage and fulfill global order essences.' : 'Trace the path of your curated investment pieces.'}
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-6 py-4 bg-white border border-slate-100 rounded-2xl font-black text-[10px] uppercase tracking-widest text-slate-400 hover:text-blue-950 transition-all shadow-xl shadow-blue-900/5">
+        <div className="flex items-center gap-4">
+          <button className="flex items-center gap-3 px-8 py-4 bg-white border border-primary/5 rounded-none font-black text-[10px] uppercase tracking-widest text-slate-400 hover:text-primary transition-all shadow-xl shadow-black/5">
             <Filter className="w-4 h-4" />
             Filter Status
           </button>
           {isAdmin && (
-            <button className="flex items-center gap-2 px-6 py-4 bg-blue-950 hover:bg-sky-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-blue-950/20">
+            <button className="flex items-center gap-3 px-8 py-4 bg-primary hover:bg-accent text-white rounded-none font-black text-[10px] uppercase tracking-widest transition-all shadow-2xl">
               Export Dossier
             </button>
           )}
         </div>
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-blue-950/5 overflow-hidden">
+      <div className="bg-white rounded-none border border-primary/5 shadow-2xl shadow-black/5 overflow-hidden">
         <table className="w-full text-left">
-          <thead className="bg-slate-50/50">
-            <tr className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-              <th className="px-8 py-6">Identity</th>
-              {isAdmin && <th className="px-8 py-6">Recipient</th>}
-              <th className="px-8 py-6">Timeline</th>
-              <th className="px-8 py-6">Condition</th>
-              <th className="px-8 py-6">Value</th>
-              <th className="px-8 py-6 text-right">Protocol</th>
+          <thead className="bg-secondary/10">
+            <tr className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+              <th className="px-10 py-8 border-b border-primary/5">Identity</th>
+              {isAdmin && <th className="px-10 py-8 border-b border-primary/5">Patron</th>}
+              <th className="px-10 py-8 border-b border-primary/5">Timeline</th>
+              <th className="px-10 py-8 border-b border-primary/5">Condition</th>
+              <th className="px-10 py-8 border-b border-primary/5">Valuation</th>
+              <th className="px-10 py-8 border-b border-primary/5 text-right">Protocol</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-50">
+          <tbody className="divide-y divide-primary/5">
             {[1, 2, 3].map((i) => (
-              <tr key={i} className="hover:bg-slate-50/50 transition-colors group">
-                <td className="px-8 py-6 font-black text-blue-950">
-                  #SBB-2024-{100 + i}
+              <tr key={i} className="hover:bg-secondary/10 transition-colors group">
+                <td className="px-10 py-8 font-black text-primary tabular-nums">
+                  #EXR-BP-{100 + i}
                 </td>
                 {isAdmin && (
-                  <td className="px-8 py-6">
+                  <td className="px-10 py-8">
                     <div>
-                      <p className="font-bold text-blue-950">Patron Name {i}</p>
-                      <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Abuja Zone</p>
+                      <p className="font-bold text-primary">Patron Name {i}</p>
+                      <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none mt-1">Global Registry</p>
                     </div>
                   </td>
                 )}
-                <td className="px-8 py-6 text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+                <td className="px-10 py-8 text-[11px] font-medium text-slate-500 uppercase tracking-widest tabular-nums">
                   Oct {20 + i}, 2026
                 </td>
-                <td className="px-8 py-6">
+                <td className="px-10 py-8">
                   <StatusBadge status={i === 1 ? 'delivered' : i === 2 ? 'shipped' : 'processing'} />
                 </td>
-                <td className="px-8 py-6 font-black text-blue-950">
-                  ₦ 145,000
+                <td className="px-10 py-8 font-black text-primary tabular-nums">
+                  $ {i},145.00
                 </td>
-                <td className="px-8 py-6 text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    <button className="p-3 bg-slate-50 text-slate-300 hover:text-sky-600 hover:bg-white rounded-xl transition-all shadow-sm">
-                      <Eye className="w-4 h-4" />
+                <td className="px-10 py-8 text-right">
+                  <div className="flex items-center justify-end gap-3">
+                    <button className="p-4 bg-white text-slate-300 hover:text-accent hover:bg-primary rounded-none transition-all shadow-sm border border-primary/5">
+                      <Eye className="w-5 h-5" />
                     </button>
                   </div>
                 </td>
@@ -94,17 +95,17 @@ export default function OrdersPage() {
       </div>
 
       {!isAdmin && (
-        <div className="bg-blue-950 rounded-[2.5rem] p-12 text-white shadow-2xl shadow-blue-950/20 relative overflow-hidden group">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
-            <div className="max-w-md">
-              <h3 className="text-2xl font-black uppercase tracking-tight mb-4">Awaiting Essence?</h3>
-              <p className="text-sky-100 font-medium">Our logistics team ensures every mattress essence is handled with white-glove care. Delivery protocols are typically finalized within 48 hours for Abuja zones.</p>
+        <div className="bg-primary rounded-none p-16 text-white shadow-2xl relative overflow-hidden group">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-12 relative z-10">
+            <div className="max-w-xl">
+              <h3 className="text-4xl text-luxury mb-6">Awaiting <br /><span className="text-accent italic">Essence?</span></h3>
+              <p className="text-white/60 font-light text-lg leading-relaxed">Our logistics team ensures every investment essence is handled with white-glove precision. Vault protocols are typically finalized within 48 laboratory hours for global zones.</p>
             </div>
-            <button className="whitespace-nowrap px-8 py-4 bg-sky-600 hover:bg-white hover:text-sky-600 font-black text-[10px] uppercase tracking-widest rounded-2xl transition-all shadow-xl">
-              Contact Dispatch Protocol
+            <button className="whitespace-nowrap px-10 py-6 bg-accent hover:bg-white hover:text-primary font-black text-[10px] uppercase tracking-[0.4em] rounded-none transition-all duration-700 shadow-2xl">
+              Initiate Dispatch Protocol
             </button>
           </div>
-          <Package className="absolute right-[-20px] top-[-20px] w-64 h-64 opacity-[0.03] group-hover:rotate-12 transition-transform duration-1000" />
+          <Package className="absolute right-[-40px] top-[-40px] w-96 h-96 opacity-[0.02] group-hover:rotate-12 transition-transform duration-[2s]" />
         </div>
       )}
     </div>
@@ -113,11 +114,11 @@ export default function OrdersPage() {
 
 function StatusBadge({ status }: { status: string }) {
   const styles = {
-    pending: "text-amber-500 bg-amber-50",
-    processing: "text-blue-500 bg-blue-50",
-    shipped: "text-sky-500 bg-sky-50",
-    delivered: "text-emerald-500 bg-emerald-50",
-    cancelled: "text-rose-500 bg-rose-50",
+    pending: "text-accent bg-accent/10 border border-accent/20",
+    processing: "text-slate-400 bg-slate-50 border border-slate-200",
+    shipped: "text-primary bg-secondary/30 border border-primary/10",
+    delivered: "text-primary bg-primary/5 border border-primary/10",
+    cancelled: "text-red-800 bg-red-50 border border-red-100",
   }[status] || "";
 
   const icon = {
@@ -129,7 +130,7 @@ function StatusBadge({ status }: { status: string }) {
   }[status];
 
   return (
-    <span className={`flex items-center gap-2 w-fit px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${styles}`}>
+    <span className={`flex items-center gap-3 w-fit px-5 py-2 rounded-none text-[9px] font-black uppercase tracking-widest ${styles}`}>
       {icon}
       <span>{status}</span>
     </span>

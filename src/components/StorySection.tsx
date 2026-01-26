@@ -17,9 +17,9 @@ export default function StorySection() {
           {/* Main Large Image */}
           <div className="lg:col-span-7">
             <RevealImage
-              src="/images/hero/mahmoud-azmy-MPd1Vcdvg1w-unsplash.jpg"
-              alt="Luxury Living"
-              className="aspect-[4/5] md:aspect-[16/10] rounded-[4rem]"
+              src="/images/exricx/luxury_lifestyle_jewelry_1769449345647.png"
+              alt="EXRICX BEAUTY Luxury Lifestyle"
+              className="aspect-[4/5] md:aspect-[16/10] rounded-none shadow-2xl"
             />
           </div>
 
@@ -28,20 +28,20 @@ export default function StorySection() {
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
               viewport={{ once: true }}
-              className="glass p-8 sm:p-12 md:p-20 rounded-[2rem] sm:rounded-[3rem] space-y-6 sm:space-y-8"
+              className="glass-light p-12 sm:p-16 md:p-24 rounded-none space-y-10 editorial-shadow"
             >
-              <span className="text-[10px] font-black tracking-[0.5em] text-sky-600 uppercase">Our Legacy</span>
-              <h3 className="text-4xl md:text-6xl font-black text-blue-950 tracking-[-0.04em] leading-[0.9]">
-                Authenticity as a <br />
-                <span className="text-sky-600 font-display italic">Standard.</span>
+              <span className="text-[10px] font-black tracking-[0.5em] text-accent uppercase">The Genesis</span>
+              <h3 className="text-5xl md:text-7xl text-luxury text-primary">
+                Precision as a <br />
+                <span className="text-accent italic">Philosophy.</span>
               </h3>
-              <p className="text-lg text-slate-500 font-medium leading-[1.6]">
-                Smart Best Brands was established with a singular mission: to bring Nigeria&apos;s most trusted home brands under one roof. We understand that your home is your sanctuary, and the foundation of that sanctuary begins with rest.
+              <p className="text-xl text-text-muted font-light leading-[1.8]">
+                Born from the engineering excellence of the EXRICX tech lab, EXRICX BEAUTY was established to bridge the gap between technological precision and timeless elegance. We believe beauty is a science of details.
               </p>
-              <div className="pt-4">
-                <div className="w-12 h-[1px] bg-blue-950"></div>
+              <div className="pt-8">
+                <div className="w-20 h-[1px] bg-primary/20"></div>
               </div>
             </motion.div>
           </div>
@@ -55,36 +55,36 @@ export default function StorySection() {
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, delay: 0.2 }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
               viewport={{ once: true }}
-              className="space-y-10"
+              className="space-y-12"
             >
               <div>
-                <span className="text-[10px] font-black tracking-[0.5em] text-sky-600 uppercase mb-6 block">Our Promise</span>
-                <h3 className="text-4xl md:text-6xl font-black text-blue-950 tracking-[-0.04em] leading-[0.9]">
-                  Curating the <br />
-                  <span className="text-blue-950/20">Invisible Details.</span>
+                <span className="text-[10px] font-black tracking-[0.5em] text-accent uppercase mb-8 block">Our Vision</span>
+                <h3 className="text-5xl md:text-7xl text-luxury text-primary">
+                  Mastering the <br />
+                  <span className="text-primary/20">Art of Essence.</span>
                 </h3>
               </div>
 
-              <p className="text-lg text-slate-500 font-medium leading-[1.6]">
-                By partnering directly with industry leaders like Vitafoam, Mouka, and Royal Foam, we ensure that every product you purchase is 100% authentic and backed by a full manufacturer warranty.
+              <p className="text-xl text-text-muted font-light leading-[1.8]">
+                By integrating lab-tested quality with artisanal craftsmanship, we ensure every jewelry piece and signature fragrance carries the signature of EXRICX: unapologetic luxury backed by technical mastery.
               </p>
 
-              <div className="flex gap-12">
+              <div className="flex gap-16">
                 <div>
-                  <h4 className="font-black text-4xl text-blue-950 leading-none mb-2">07</h4>
-                  <p className="text-[9px] font-black tracking-widest text-slate-300 uppercase">Legacy Brands</p>
+                  <h4 className="text-6xl text-luxury text-primary leading-none mb-3">24k</h4>
+                  <p className="text-[10px] font-black tracking-widest text-text-muted uppercase">Purity Standard</p>
                 </div>
                 <div>
-                  <h4 className="font-black text-4xl text-blue-950 leading-none mb-2">24/7</h4>
-                  <p className="text-[9px] font-black tracking-widest text-slate-300 uppercase">White Glove Support</p>
+                  <h4 className="text-6xl text-luxury text-primary leading-none mb-3">0.01</h4>
+                  <p className="text-[10px] font-black tracking-widest text-text-muted uppercase">Micron Precision</p>
                 </div>
               </div>
 
-              <div className="pt-6">
-                <button className="text-[10px] font-black tracking-[0.3em] text-blue-950 uppercase border-b-2 border-sky-600 pb-2 hover:text-sky-600 transition-colors">
-                  Meet the Artisans
+              <div className="pt-10">
+                <button className="text-[10px] font-black tracking-[0.4em] text-primary uppercase border-b border-accent pb-4 hover:tracking-[0.6em] transition-all duration-700">
+                  Explore the Lab &rarr;
                 </button>
               </div>
             </motion.div>
@@ -95,16 +95,16 @@ export default function StorySection() {
             <div className="grid grid-cols-12 gap-4">
               <div className="col-span-8">
                 <RevealImage
-                  src="/images/hero/Luxury MasterBedroom - Nesreen Maher.jpeg"
-                  alt="Elite Detail"
-                  className="aspect-square rounded-[3rem]"
+                  src="/images/exricx/luxury_perfume_detail_1769449375639.png"
+                  alt="EXRICX BEAUTY Detail"
+                  className="aspect-square rounded-none shadow-xl"
                 />
               </div>
               <div className="col-span-4 self-end -mb-12">
                 <RevealImage
-                  src="/images/hero/jason-wang-8J49mtYWu7E-unsplash.jpg"
-                  alt="Elite Texture"
-                  className="aspect-[3/4] rounded-2xl"
+                  src="/images/exricx/luxury_beauty_hero_v2_1769449281975.png"
+                  alt="EXRICX BEAUTY Essence"
+                  className="aspect-[3/4] rounded-none border-l-8 border-secondary shadow-lg"
                 />
               </div>
             </div>
@@ -139,7 +139,7 @@ function RevealImage({ src, alt, className }: { src: string, alt: string, classN
         initial={{ translateZ: 0, scaleY: 1 }}
         animate={isInView ? { scaleY: 0 } : {}}
         transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-        className="absolute inset-0 bg-blue-950 origin-top z-10"
+        className="absolute inset-0 bg-primary origin-top z-10"
       />
     </div>
   )

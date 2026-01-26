@@ -37,8 +37,8 @@ export default function AccountLayout({
 
   if (isLoading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-slate-50">
-        <div className="w-8 h-8 border-4 border-blue-950/20 border-t-blue-950 rounded-full animate-spin" />
+      <div className="h-screen flex items-center justify-center bg-white">
+        <div className="w-12 h-12 border-2 border-primary/20 border-t-accent rounded-none animate-spin" />
       </div>
     );
   }
@@ -61,22 +61,22 @@ export default function AccountLayout({
   }
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="bg-blue-950 p-2 rounded-lg group-hover:bg-sky-600 transition-colors">
-            <Home className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-blue-950">
-              Smart Best
+    <div className="flex flex-col h-full bg-white border-r border-primary/5">
+      <div className="p-8 border-b border-primary/5 flex items-center justify-between">
+        <Link href="/" className="flex flex-col group">
+          <div className="flex items-center gap-4 mb-2">
+            <div className="bg-primary p-2.5 rounded-none group-hover:bg-accent transition-all duration-500 shadow-xl">
+              <Home className="w-5 h-5 text-white" />
+            </div>
+            <h1 className="text-2xl font-black text-primary tracking-[0.2em] uppercase">
+              EXRICX
             </h1>
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-              {isAdmin ? 'Admin Dashboard' : 'Customer Account'}
-            </p>
           </div>
+          <p className="text-[9px] font-black uppercase tracking-[0.4em] text-accent underline decoration-accent/20 underline-offset-4">
+            {isAdmin ? 'Lab Authority' : 'Member Registry'}
+          </p>
         </Link>
-        <button className="md:hidden p-2 text-slate-400" onClick={() => setIsSidebarOpen(false)}>
+        <button className="md:hidden p-2 text-primary" onClick={() => setIsSidebarOpen(false)}>
           <X className="w-6 h-6" />
         </button>
       </div>
@@ -115,26 +115,26 @@ export default function AccountLayout({
         </div>
       </nav>
 
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-        <div className="px-4 py-3 mb-4 bg-slate-50 rounded-xl">
-          <p className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">Logged in as</p>
-          <p className="text-[10px] font-bold text-blue-950 truncate">{user.email}</p>
+      <div className="p-8 border-t border-primary/5 bg-secondary/10">
+        <div className="px-6 py-4 mb-6 bg-white border border-primary/5 rounded-none shadow-sm">
+          <p className="text-[8px] font-black text-accent uppercase tracking-widest mb-1">Authenticated via</p>
+          <p className="text-[11px] font-medium text-primary truncate tabular-nums">{user.email}</p>
         </div>
         <button
           onClick={logout}
-          className="flex items-center gap-3 px-4 py-3 w-full text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors"
+          className="flex items-center justify-center gap-3 px-6 py-4 w-full text-[10px] font-black uppercase tracking-[0.3em] text-red-800 bg-white border border-red-50 hover:bg-red-50 transition-all rounded-none"
         >
           <LogOut className="w-5 h-5" />
-          Sign Out
+          Exit Registry
         </button>
       </div>
     </div>
   );
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">
+    <div className="flex h-screen bg-white text-primary font-sans selection:bg-secondary">
       {/* Desktop Sidebar */}
-      <aside className="w-64 hidden md:flex flex-col flex-shrink-0">
+      <aside className="w-80 hidden md:flex flex-col flex-shrink-0">
         {sidebarContent}
       </aside>
 
@@ -147,14 +147,14 @@ export default function AccountLayout({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsSidebarOpen(false)}
-              className="fixed inset-0 bg-blue-950/20 backdrop-blur-sm z-40 md:hidden"
+              className="fixed inset-0 bg-primary/20 backdrop-blur-sm z-40 md:hidden"
             />
             <motion.aside
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 left-0 w-72 z-50 md:hidden"
+              className="fixed inset-y-0 left-0 w-80 z-50 md:hidden"
             >
               {sidebarContent}
             </motion.aside>
@@ -165,20 +165,20 @@ export default function AccountLayout({
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Mobile Header */}
-        <header className="md:hidden bg-white border-b border-gray-200 p-4 flex items-center justify-between flex-shrink-0">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="bg-blue-950 p-1.5 rounded-lg">
-              <Home className="w-4 h-4 text-white" />
+        <header className="md:hidden bg-white border-b border-primary/5 p-6 flex items-center justify-between flex-shrink-0">
+          <Link href="/" className="flex items-center gap-4">
+            <div className="bg-primary p-2 shadow-xl">
+              <Home className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-blue-950 tracking-tight">Smart Best</span>
+            <span className="font-black text-primary tracking-[0.2em] uppercase text-xl">EXRICX</span>
           </Link>
-          <button className="p-2 text-blue-950" onClick={() => setIsSidebarOpen(true)}>
-            <Menu className="w-6 h-6" />
+          <button className="p-2 text-primary" onClick={() => setIsSidebarOpen(true)}>
+            <Menu className="w-8 h-8" />
           </button>
         </header>
 
-        <main className="flex-1 overflow-auto relative bg-gray-50">
-          <div className="max-w-7xl mx-auto p-4 md:p-8">
+        <main className="flex-1 overflow-auto relative bg-secondary/20">
+          <div className="max-w-7xl mx-auto p-8 md:p-16 lg:p-24">
             {children}
           </div>
         </main>
@@ -192,12 +192,12 @@ function NavItem({ href, icon: Icon, children, active, onClick }: { href: string
     <Link
       href={href}
       onClick={onClick}
-      className={`flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 group
+      className={`flex items-center gap-4 px-6 py-4 text-xs font-black uppercase tracking-[0.3em] rounded-none transition-all duration-700 group border-l-4
         ${active
-          ? 'bg-blue-950 text-white shadow-xl shadow-blue-950/10'
-          : 'text-gray-500 hover:bg-gray-100 hover:text-blue-950'}`}
+          ? 'bg-primary text-white border-accent shadow-2xl'
+          : 'text-slate-400 border-transparent hover:bg-secondary/30 hover:text-primary'}`}
     >
-      <Icon className={`w-5 h-5 transition-transform duration-500 ${active ? '' : 'group-hover:scale-110'}`} />
+      <Icon className={`w-5 h-5 transition-transform duration-700 ${active ? 'text-accent' : 'group-hover:scale-110'}`} />
       {children}
     </Link>
   );

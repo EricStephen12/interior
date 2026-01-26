@@ -29,8 +29,8 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Smart Best Brands - Premium Home & Comfort",
-  description: "Authentic premium mattresses, pillows, and furniture from Nigeria&apos;s leading brands. Smart Best Brands - quality you can trust.",
+  title: "EXRICX BEAUTY - High-End Jewelry & Fragrance",
+  description: "Where tech-precision meets timeless beauty. Premium necklaces, rings, earrings, and signature perfumes from the house of EXRICX.",
 };
 
 export default function RootLayout({

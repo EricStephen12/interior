@@ -7,83 +7,84 @@ export default function ContactPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
 
-          <div className="space-y-8 sm:space-y-12">
+          <div className="space-y-12 sm:space-y-16">
             <div>
-              <h1 className="text-5xl font-black text-blue-950 tracking-tight mb-6">
-                Get in <span className="text-sky-600">Touch.</span>
+              <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-8 block">Member Registry</span>
+              <h1 className="text-6xl md:text-8xl text-luxury text-primary mb-8">
+                The <span className="text-accent italic">Concierge.</span>
               </h1>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Have questions about our products or delivery? Our team is ready to assist you.
-                Whether you prefer a quick chat on WhatsApp or a detailed email, we&apos;re here to help.
+              <p className="text-xl text-text-muted font-light leading-relaxed">
+                Experience unparalleled support. Whether you require a private lab consultation, order logistics, or bespoke jewelry design, the EXRICX concierge is at your service.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
               <ContactInfo
                 icon={MessageCircle}
-                title="WhatsApp"
-                value="Chat with us now"
+                title="WhatsApp Direct"
+                value="Secure Channel"
                 link="https://wa.me/234XXXXXXXXXX"
-                color="text-green-600"
-              />
-              <ContactInfo
-                icon={Phone}
-                title="Call"
-                value="+234 (0) XXX XXX XXXX"
               />
               <ContactInfo
                 icon={Mail}
-                title="Email"
-                value="hello@smartbestbrands.com"
+                title="Global Office"
+                value="lab@exricx.beauty"
+              />
+              <ContactInfo
+                icon={Phone}
+                title="Concierge"
+                value="+234 (0) 900 EXRICX"
               />
               <ContactInfo
                 icon={MapPin}
-                title="Showroom"
-                value="Abuja & Benin City, Nigeria"
+                title="The Lab"
+                value="Lagos • London • Dubai"
               />
             </div>
 
-            <div className="p-8 bg-sky-50 rounded-[2rem] border border-sky-100 flex items-start gap-6">
-              <div className="bg-white p-3 rounded-2xl shadow-sm">
-                <Clock className="w-6 h-6 text-sky-600" />
+            <div className="p-10 bg-secondary/30 rounded-none border border-primary/5 flex items-start gap-8 editorial-shadow">
+              <div className="bg-white p-4 rounded-none shadow-sm flex-shrink-0">
+                <Clock className="w-8 h-8 text-accent" />
               </div>
               <div>
-                <h4 className="font-bold text-blue-950 mb-1">Response Time</h4>
-                <p className="text-sm text-gray-600">We typically respond within 15-30 minutes during business hours (8AM - 6PM).</p>
+                <h4 className="font-black text-primary uppercase tracking-widest mb-3">Priority Response</h4>
+                <p className="text-sm text-text-muted leading-relaxed font-light">Concierge members receive a response within 15 minutes. Public inquiries are processed within 2 laboratory hours.</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-50 rounded-[2.5rem] sm:rounded-[3rem] p-6 sm:p-12 shadow-sm border border-gray-100">
-            <h2 className="text-2xl font-bold text-blue-950 mb-8">Send a Message</h2>
-            <form className="space-y-6">
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Full Name</label>
-                  <input type="text" className="w-full px-5 py-4 bg-white border-none rounded-2xl focus:ring-2 focus:ring-indigo-600 shadow-sm" placeholder="John Doe" />
+          <div className="bg-white rounded-none p-8 sm:p-16 border border-primary/5 editorial-shadow">
+            <h2 className="text-4xl text-luxury text-primary mb-12">Submit Registry <br /><span className="text-accent italic">Inquiry</span></h2>
+            <form className="space-y-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Full Name</label>
+                  <input type="text" className="w-full px-0 py-4 bg-transparent border-b border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors tabular-nums" placeholder="Full Name" />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Phone Number</label>
-                  <input type="text" className="w-full px-5 py-4 bg-white border-none rounded-2xl focus:ring-2 focus:ring-indigo-600 shadow-sm" placeholder="080 1234 5678" />
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">WhatsApp / Phone</label>
+                  <input type="text" className="w-full px-0 py-4 bg-transparent border-b border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors tabular-nums" placeholder="+234..." />
                 </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Subject</label>
-                <select className="w-full px-5 py-4 bg-white border-none rounded-2xl focus:ring-2 focus:ring-indigo-600 shadow-sm">
-                  <option>Product Inquiry</option>
-                  <option>Delivery Status</option>
-                  <option>Bulk Orders</option>
-                  <option>Others</option>
+              <div className="space-y-4">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Conciergerie Subject</label>
+                <select className="w-full px-0 py-4 bg-transparent border-b border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors appearance-none">
+                  <option>Bespoke Jewelry Inquiry</option>
+                  <option>Fragrance Consultation</option>
+                  <option>VIP Vault Access</option>
+                  <option>Private Lab Tour</option>
                 </select>
               </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Message</label>
-                <textarea rows={5} className="w-full px-5 py-4 bg-white border-none rounded-2xl focus:ring-2 focus:ring-indigo-600 shadow-sm resize-none" placeholder="How can we help you?" />
+              <div className="space-y-4">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">The Message</label>
+                <textarea rows={5} className="w-full px-0 py-4 bg-transparent border-b border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors resize-none" placeholder="Describe your precision requirement..." />
               </div>
-              <button type="button" className="w-full flex items-center justify-center gap-2 bg-blue-950 hover:bg-sky-600 text-white font-bold py-5 rounded-2xl shadow-xl shadow-blue-100 transition-all transform active:scale-[0.98]">
-                <Send className="w-5 h-5" />
-                Send Message
-              </button>
+              <div className="pt-8">
+                <button type="button" className="btn-primary w-full flex items-center justify-center gap-4">
+                  <Send className="w-5 h-5" />
+                  Initiate Concierge Protocol
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -94,17 +95,17 @@ export default function ContactPage() {
 
 function ContactInfo({ icon: Icon, title, value, link, color }: { icon: React.ElementType, title: string, value: string, link?: string, color?: string }) {
   return (
-    <div className="group">
-      <div className="flex items-center gap-4 mb-2">
-        <Icon className={`w-5 h-5 ${color || 'text-indigo-600'}`} />
-        <h4 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em]">{title}</h4>
+    <div className="group border-l border-primary/10 pl-8">
+      <div className="flex items-center gap-4 mb-3">
+        <Icon className={`w-5 h-5 text-accent`} />
+        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">{title}</h4>
       </div>
       {link ? (
-        <a href={link} className="text-lg font-bold text-blue-950 hover:text-sky-600 transition-colors underline decoration-sky-200 decoration-4 underline-offset-4">
+        <a href={link} className="text-xl md:text-2xl font-light text-primary hover:text-accent transition-colors underline decoration-accent/20 underline-offset-8">
           {value}
         </a>
       ) : (
-        <p className="text-lg font-bold text-blue-950">{value}</p>
+        <p className="text-xl md:text-2xl font-light text-primary tracking-tight">{value}</p>
       )}
     </div>
   );

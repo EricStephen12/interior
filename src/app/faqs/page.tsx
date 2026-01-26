@@ -5,24 +5,24 @@ import { Plus, Minus, Search } from 'lucide-react';
 
 const faqs = [
     {
-        question: "Do you sell original mattresses?",
-        answer: "Absolutely. We are authorized distributors for all the brands listed on our site, including Vitafoam, Mouka, and Royal Foam. Every mattress comes in its original factory packaging with a valid manufacturer warranty."
+        question: "Are EXRICX pieces authenticated?",
+        answer: "Every piece from the EXRICX vault undergoes rigorous laboratory authentication. Jewelry is accompanied by a molecular certification and fragrances are verified for profile purity and age-stability."
     },
     {
-        question: "How long does delivery take?",
-        answer: "For locations within Abuja and Benin, delivery typically takes 24-48 hours. For other locations, it may take 3-5 business days depending on the size of the order and the brand's availability."
+        question: "What is the dispatch trajectory?",
+        answer: "Global express vaulting typically takes 3-7 business days. Priority members receive dispatch verification within 2 laboratory hours of order finalization."
     },
     {
-        question: "How do I pay for my order?",
-        answer: "You can pay securely online via our integrated payment gateway or opt for the 'Order on WhatsApp' method where we can arrange for bank transfers. We currently do not support Pay on Delivery for most large furniture items."
+        question: "Protocol for bespoke curation?",
+        answer: "Secure payments are processed via our encrypted gateway. For bespoke diamond curation or private fragrance batching, please initiate a Concierge Protocol via WhatsApp for personalized invoicing."
     },
     {
-        question: "Can I return a mattress?",
-        answer: "Due to hygiene reasons, mattresses cannot be returned once the nylon seal has been removed. However, if there is a factory defect, we will facilitate a replacement through the manufacturer's warranty process."
+        question: "Return and Exchange Registry?",
+        answer: "Due to the intimate nature of signature fragrances and molecular jewelry certifications, returns are only accepted for structural lab defects. Exchanges are available within 14 days for pristine, unsealed pieces."
     },
     {
-        question: "Do you offer bulk discounts?",
-        answer: "Yes, we offer special pricing for hotels, hospitals, and large corporate orders. Please reach out to us via our contact page for a custom quote."
+        question: "Bespoke Corporate Procurement?",
+        answer: "We offer tailored curation for private events and corporate registries. Please contact our Global Concierge for volume-based investment protocols."
     }
 ];
 
@@ -30,31 +30,32 @@ export default function FAQPage() {
     const [openIndex, setOpenIndex] = useState<number | null>(0);
 
     return (
-        <div className="pt-20 sm:pt-32 pb-16 sm:pb-24 bg-sky-50/20 min-h-screen">
-            <div className="max-w-3xl mx-auto px-4">
-                <div className="text-center mb-10 sm:mb-16">
-                    <h1 className="text-4xl sm:text-5xl font-black text-blue-950 tracking-tight mb-4">FAQs</h1>
-                    <p className="text-lg text-gray-600 font-medium">Everything you need to know about Smart Best Brands.</p>
+        <div className="pt-24 sm:pt-40 pb-16 sm:pb-32 bg-secondary/20 min-h-screen selection:bg-accent/20">
+            <div className="max-w-4xl mx-auto px-4">
+                <div className="text-center mb-16 sm:mb-24">
+                    <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-6 block">The Knowledge Base</span>
+                    <h1 className="text-5xl md:text-7xl text-luxury text-primary mb-6">Common <br /><span className="text-accent italic">Inquiries.</span></h1>
+                    <p className="text-lg text-text-muted font-light uppercase tracking-widest">Protocol Information for EXRICX LUXURY.</p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-6">
                     {faqs.map((faq, idx) => (
                         <div
                             key={idx}
-                            className={`rounded-[2rem] border transition-all duration-300 ${openIndex === idx ? 'bg-white border-sky-100 shadow-xl shadow-sky-600/10' : 'bg-transparent border-gray-100'}`}
+                            className={`rounded-none border transition-all duration-700 ${openIndex === idx ? 'bg-white border-primary/5 editorial-shadow' : 'bg-transparent border-primary/5 hover:border-accent/40'}`}
                         >
                             <button
                                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-                                className="w-full flex items-center justify-between p-8 text-left"
+                                className="w-full flex items-center justify-between p-10 text-left"
                             >
-                                <span className="text-lg font-bold text-blue-950 pr-8">{faq.question}</span>
-                                <div className={`p-2 rounded-xl transition-colors ${openIndex === idx ? 'bg-sky-600 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                                <span className="text-xl font-bold text-primary pr-8 uppercase tracking-tight">{faq.question}</span>
+                                <div className={`p-3 rounded-none transition-all duration-500 ${openIndex === idx ? 'bg-primary text-white shadow-xl' : 'bg-secondary text-primary'}`}>
                                     {openIndex === idx ? <Minus className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
                                 </div>
                             </button>
                             {openIndex === idx && (
-                                <div className="px-8 pb-8 animate-in fade-in slide-in-from-top-4 duration-300">
-                                    <p className="text-gray-600 leading-relaxed font-medium border-t border-gray-50 pt-4">
+                                <div className="px-10 pb-10 animate-in fade-in slide-in-from-top-4 duration-700">
+                                    <p className="text-text-muted leading-relaxed font-light text-lg border-t border-primary/5 pt-8">
                                         {faq.answer}
                                     </p>
                                 </div>
@@ -63,17 +64,17 @@ export default function FAQPage() {
                     ))}
                 </div>
 
-                <div className="mt-12 sm:mt-20 p-8 sm:p-12 bg-blue-950 rounded-[2rem] sm:rounded-[3rem] text-center text-white relative overflow-hidden">
+                <div className="mt-24 sm:mt-32 p-10 sm:p-20 bg-primary rounded-none text-center text-white relative overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.3)]">
                     <div className="relative z-10">
-                        <h2 className="text-2xl font-bold mb-4">Still have questions?</h2>
-                        <p className="text-sky-200 mb-8 max-w-sm mx-auto">Can&apos;t find the answer you&apos;re looking for? Please chat with our friendly team.</p>
-                        <a href="/contact" className="inline-block bg-sky-600 hover:bg-sky-700 text-white font-bold py-4 px-10 rounded-2xl shadow-xl transition-all">
-                            Get in Touch
+                        <h2 className="text-4xl text-luxury mb-8">Unresolved <br /><span className="text-accent italic">Curiosity?</span></h2>
+                        <p className="text-white/60 mb-12 max-w-sm mx-auto font-light text-lg">Our Global Concierge is available for deeper laboratory and investment inquiries.</p>
+                        <a href="/contact" className="btn-primary !bg-white !text-primary hover:!bg-accent hover:!text-white py-6">
+                            Initiate Protocol
                         </a>
                     </div>
                     {/* Decorative elements */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-sky-600/20 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-600/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl"></div>
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-accent/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-[100px]"></div>
+                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-[100px]"></div>
                 </div>
             </div>
         </div>

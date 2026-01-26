@@ -16,102 +16,87 @@ import {
 import Image from 'next/image'
 import Link from 'next/link'
 
-const BRANDS = ['All', 'Vitafoam', 'Mouka', 'Sara Foam', 'Royal Foam', 'Green Earth', 'Uni Foam', 'Hara Foam']
-const CATEGORIES = ['All', 'Mattresses', 'Pillows', 'Beddings', 'Furniture']
-const SIZES = ['All', 'Single', 'Double', 'Family', 'King']
-const PRICE_RANGES = ['All', 'Under 50k', '50k - 200k', '200k - 500k', 'Above 500k']
+const THE_COLLECTION = ['All', 'EXRICX Signature', 'Noir Collection', 'Luxe Lab', 'Artisan Gold']
+const CATEGORIES = ['All', 'Necklaces', 'Rings', 'Earrings', 'Fragrance']
+const SIZES = ['All', 'Standard', 'Petite', 'Custom']
+const PRICE_RANGES = ['All', 'Under $200', '$200 - $1,000', '$1,000 - $5,000', 'Above $5,000']
 
 const mockProducts = [
   {
     id: '1',
-    name: 'Vitafoam Grandeur Mattress',
-    brand: 'Vitafoam',
-    category: 'Mattresses',
-    size: 'King',
-    price: 185000,
-    promo_price: 165000,
-    is_negotiable: true,
+    name: 'EXRICX Diamond Petal Necklace',
+    brand: 'EXRICX Signature',
+    category: 'Necklaces',
+    size: 'Standard',
+    price: 4500,
+    promo_price: 3950,
+    is_negotiable: false,
     images: [
-      '/images/Modern Luxury Home Furniture Bedroom Bed Set Queen King Size Headboard Stainless Steel Base Bed.jpeg',
-      '/images/Marshmallow Bed Frame.jpeg'
+      '/images/exricx/luxury_diamond_necklace_1769449448575.png',
+      '/images/exricx/luxury_lifestyle_jewelry_1769449345647.png'
     ],
-    description: 'Ultra-premium memory foam mattress for maximum comfort.',
+    description: 'A masterpiece of precision. Hand-set diamonds in a floral petal arrangement, suspended on an 18k white gold chain.',
     in_stock: true,
   },
   {
     id: '2',
-    name: 'Mouka Flora Mattress',
-    brand: 'Mouka',
-    category: 'Mattresses',
-    size: 'Double',
-    price: 95000,
+    name: 'Lab-Grown Emerald Solitaire',
+    brand: 'Luxe Lab',
+    category: 'Rings',
+    size: 'Custom',
+    price: 1250,
     is_negotiable: false,
     images: [
-      '/images/Marshmallow Bed Frame.jpeg',
-      '/images/Modern Luxury Home Furniture Bedroom Bed Set Queen King Size Headboard Stainless Steel Base Bed.jpeg'
+      '/images/exricx/luxury_gold_ring_1769449479727.png',
+      '/images/exricx/luxury_lifestyle_jewelry_1769449345647.png'
     ],
-    description: 'Classic comfort with Mouka durability.',
+    description: 'Technical precision meets natural beauty. A vibrant 2-carat emerald set in recycled 18k yellow gold.',
     in_stock: true,
   },
   {
     id: '3',
-    name: 'Royal Foam Executive Pillow',
-    brand: 'Royal Foam',
-    category: 'Pillows',
-    size: 'Single',
-    price: 12500,
+    name: 'L\'Or de Jardin Parfum',
+    brand: 'EXRICX Signature',
+    category: 'Fragrance',
+    size: 'Standard',
+    price: 245,
     is_negotiable: false,
     images: [
-      '/images/Modern Throw Pillow & Decorative Accent Pillows for Sofas, Chairs & Beds _ CB2.jpeg',
-      '/images/Decorative Pillow Covers, White Geometric, Cotton, Set Of 6, 18x18 _ Color_ White _ Size_ Os.jpeg'
+      '/images/exricx/luxury_perfume_detail_1769449375639.png',
+      '/images/exricx/luxury_beauty_hero_v2_1769449281975.png'
     ],
-    description: 'Soft and supportive pillow for a restful sleep.',
+    description: 'A scent born in the lab, inspired by nature. Notes of jasmine, golden amber, and tech-distilled cedar.',
     in_stock: true,
   },
   {
     id: '4',
-    name: 'Luxury Cotton Bedding Set',
-    brand: 'Sara Foam',
-    category: 'Beddings',
-    size: 'Family',
-    price: 45000,
-    promo_price: 38000,
-    is_negotiable: true,
+    name: 'EXRICX Pearl Droplets',
+    brand: 'Artisan Gold',
+    category: 'Earrings',
+    size: 'Standard',
+    price: 850,
+    promo_price: 720,
+    is_negotiable: false,
     images: [
-      '/images/Decorative Pillow Covers, White Geometric, Cotton, Set Of 6, 18x18 _ Color_ White _ Size_ Os.jpeg',
-      '/images/Modern Throw Pillow & Decorative Accent Pillows for Sofas, Chairs & Beds _ CB2.jpeg'
+      '/images/exricx/luxury_earrings_pearl_1769449548067.png',
+      '/images/exricx/luxury_lifestyle_jewelry_1769449345647.png'
     ],
-    description: 'Premium quality cotton sheets.',
+    description: 'Lustrous south sea pearls suspended from intricate 14k white gold loops with micro-diamond accents.',
     in_stock: true,
   },
   {
     id: '5',
-    name: 'Uni Foam Supreme',
-    brand: 'Uni Foam',
-    category: 'Mattresses',
-    size: 'King',
-    price: 650000,
-    is_negotiable: true,
-    images: [
-      '/images/Marshmallow Bed Frame.jpeg',
-      '/images/Modern Luxury Home Furniture Bedroom Bed Set Queen King Size Headboard Stainless Steel Base Bed.jpeg'
-    ],
-    description: 'The pinnacle of sleeping luxury.',
-    in_stock: true,
-  },
-  {
-    id: '6',
-    name: 'Green Earth Eco-Pillow',
-    brand: 'Green Earth',
-    category: 'Pillows',
-    size: 'Double',
-    price: 18000,
+    name: 'EXRICX NOIR Signature',
+    brand: 'Noir Collection',
+    category: 'Fragrance',
+    size: 'Standard',
+    price: 320,
     is_negotiable: false,
     images: [
-      '/images/Modern Throw Pillow & Decorative Accent Pillows for Sofas, Chairs & Beds _ CB2.jpeg',
-      '/images/Decorative Pillow Covers, White Geometric, Cotton, Set Of 6, 18x18 _ Color_ White _ Size_ Os.jpeg'
+      '/images/exricx/luxury_beauty_hero_v2_1769449281975.png',
+      '/images/exricx/luxury_perfume_detail_1769449375639.png'
     ],
-    description: 'Sustainable comfort for your neck.',
+    description: 'The ultimate expression of tech-luxury. A deep, mysterious fragrance for the modern woman.',
     in_stock: true,
   },
 ]
@@ -131,7 +116,7 @@ export default function ShopSection() {
   useEffect(() => {
     let result = mockProducts
 
-    // Brand Filter
+    // Collection Filter
     if (selectedBrand !== 'All') result = result.filter(p => p.brand === selectedBrand)
 
     // Category Filter
@@ -144,10 +129,10 @@ export default function ShopSection() {
     if (selectedPrice !== 'All') {
       result = result.filter(p => {
         const price = p.promo_price || p.price
-        if (selectedPrice === 'Under 50k') return price < 50000
-        if (selectedPrice === '50k - 200k') return price >= 50000 && price <= 200000
-        if (selectedPrice === '200k - 500k') return price > 200000 && price <= 500000
-        if (selectedPrice === 'Above 500k') return price > 500000
+        if (selectedPrice === 'Under $200') return price < 200
+        if (selectedPrice === '$200 - $1,000') return price >= 200 && price <= 1000
+        if (selectedPrice === '$1,000 - $5,000') return price > 1000 && price <= 5000
+        if (selectedPrice === 'Above $5,000') return price > 5000
         return true
       })
     }
@@ -156,7 +141,8 @@ export default function ShopSection() {
     if (searchQuery) {
       result = result.filter(p =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.brand.toLowerCase().includes(searchQuery.toLowerCase())
+        p.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.category.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
 
@@ -174,7 +160,7 @@ export default function ShopSection() {
   const isFiltered = selectedBrand !== 'All' || selectedCategory !== 'All' || selectedSize !== 'All' || selectedPrice !== 'All' || searchQuery !== ''
 
   return (
-    <section ref={containerRef} className="py-16 sm:py-24 md:py-32 bg-white selection:bg-sky-100 min-h-screen font-sans">
+    <section ref={containerRef} className="py-16 sm:py-24 md:py-32 bg-white selection:bg-secondary min-h-screen font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Elite Header */}
@@ -183,18 +169,18 @@ export default function ShopSection() {
             <motion.span
               initial={{ opacity: 0, x: -20 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
-              className="inline-block text-[10px] font-black tracking-[0.4em] text-sky-600 uppercase mb-4 sm:mb-6"
+              className="inline-block text-[10px] font-black tracking-[0.4em] text-accent uppercase mb-4 sm:mb-6"
             >
-              Curated Collections
+              The Exricx Collection
             </motion.span>
             <motion.h3
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.2 }}
-              className="text-4xl sm:text-5xl md:text-7xl font-black text-blue-950 tracking-[-0.04em] leading-[0.9] font-display"
+              className="text-4xl sm:text-5xl md:text-7xl font-black text-primary tracking-[-0.04em] leading-[0.9] font-display"
             >
-              The Art of <br />
-              <span className="text-sky-600 font-display">Modern Living.</span>
+              Precision <br />
+              <span className="text-accent font-display">In every Detail.</span>
             </motion.h3>
           </div>
 
@@ -205,11 +191,11 @@ export default function ShopSection() {
             transition={{ delay: 0.4 }}
             className="w-full max-w-md relative group"
           >
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-sky-600 transition-colors" />
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-accent transition-colors" />
             <input
               type="text"
-              placeholder="Search by brand or design..."
-              className="w-full pl-14 pr-6 py-4 sm:py-5 bg-slate-50 border border-transparent rounded-2xl focus:ring-0 focus:bg-white focus:border-sky-100 transition-all text-sm font-bold text-blue-950 placeholder:text-slate-300 shadow-inner"
+              placeholder="Search the vault..."
+              className="w-full pl-14 pr-6 py-4 sm:py-5 bg-secondary/30 border border-transparent rounded-none focus:ring-0 focus:bg-white focus:border-accent/20 transition-all text-sm font-bold text-primary placeholder:text-slate-300"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -223,29 +209,29 @@ export default function ShopSection() {
           transition={{ delay: 0.5 }}
           className="space-y-6 sm:space-y-8 mb-12 sm:mb-20"
         >
-          <div className="flex items-center justify-between border-b border-slate-100 pb-6">
+          <div className="flex items-center justify-between border-b border-primary/10 pb-6">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all font-black text-[10px] uppercase tracking-widest
-                  ${showFilters ? 'bg-blue-950 text-white' : 'bg-slate-50 text-blue-950 hover:bg-slate-100'}`}
+                className={`flex items-center gap-3 px-6 py-3 rounded-none transition-all font-black text-[10px] uppercase tracking-widest
+                  ${showFilters ? 'bg-primary text-white' : 'bg-white text-primary hover:bg-secondary/50 border border-primary/10'}`}
               >
                 <SlidersHorizontal className="w-4 h-4" />
-                {showFilters ? 'Hide Filters' : 'Refine Search'}
+                {showFilters ? 'Close Vault' : 'Refine View'}
               </button>
 
               {isFiltered && (
                 <button
                   onClick={clearFilters}
-                  className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-red-500 transition-colors px-4"
+                  className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-red-800 hover:text-red-900 transition-colors px-4"
                 >
-                  <X className="w-4 h-4" /> Reset Filters
+                  <X className="w-4 h-4" /> Reset
                 </button>
               )}
             </div>
 
             <p className="hidden md:block text-[10px] font-black text-slate-300 uppercase tracking-widest">
-              Showing {filteredProducts.length} Results
+              Available: {filteredProducts.length} Pieces
             </p>
           </div>
 
@@ -262,17 +248,17 @@ export default function ShopSection() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2 text-slate-400">
                     <Tag className="w-3 h-3" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Select Brand</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest">Collection</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {BRANDS.map((brand) => (
+                    {THE_COLLECTION.map((brand: string) => (
                       <button
                         key={brand}
                         onClick={() => setSelectedBrand(brand)}
-                        className={`px-4 sm:px-6 py-2 rounded-xl text-[9px] font-black tracking-widest uppercase transition-all
+                        className={`px-4 sm:px-6 py-2 rounded-none text-[9px] font-black tracking-widest uppercase transition-all
                           ${selectedBrand === brand
-                            ? 'bg-sky-600 text-white shadow-lg shadow-sky-200'
-                            : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                            ? 'bg-accent text-white'
+                            : 'bg-white text-slate-400 hover:bg-secondary/30 border border-slate-100'}`}
                       >
                         {brand}
                       </button>
@@ -285,17 +271,17 @@ export default function ShopSection() {
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-slate-400">
                       <Layers className="w-3 h-3" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Product Type</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">Essence</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {CATEGORIES.map((cat) => (
                         <button
                           key={cat}
                           onClick={() => setSelectedCategory(cat)}
-                          className={`px-5 py-2.5 rounded-xl text-[9px] font-black tracking-widest uppercase transition-all
+                          className={`px-5 py-2.5 rounded-none text-[9px] font-black tracking-widest uppercase transition-all
                             ${selectedCategory === cat
-                              ? 'bg-blue-950 text-white shadow-xl'
-                              : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                              ? 'bg-primary text-white'
+                              : 'bg-white text-slate-400 hover:bg-secondary/30 border border-slate-100'}`}
                         >
                           {cat}
                         </button>
@@ -307,17 +293,17 @@ export default function ShopSection() {
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-slate-400">
                       <Ruler className="w-3 h-3" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Global Sizing</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">Sizing</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {SIZES.map((size) => (
                         <button
                           key={size}
                           onClick={() => setSelectedSize(size)}
-                          className={`px-5 py-2.5 rounded-xl text-[9px] font-black tracking-widest uppercase transition-all
+                          className={`px-5 py-2.5 rounded-none text-[9px] font-black tracking-widest uppercase transition-all
                             ${selectedSize === size
-                              ? 'bg-blue-950 text-white shadow-xl'
-                              : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                              ? 'bg-primary text-white'
+                              : 'bg-white text-slate-400 hover:bg-secondary/30 border border-slate-100'}`}
                         >
                           {size}
                         </button>
@@ -329,17 +315,17 @@ export default function ShopSection() {
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-slate-400">
                       <DollarSign className="w-3 h-3" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Price Range</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">Investment</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {PRICE_RANGES.map((range) => (
                         <button
                           key={range}
                           onClick={() => setSelectedPrice(range)}
-                          className={`px-5 py-2.5 rounded-xl text-[9px] font-black tracking-widest uppercase transition-all
+                          className={`px-5 py-2.5 rounded-none text-[9px] font-black tracking-widest uppercase transition-all
                             ${selectedPrice === range
-                              ? 'bg-blue-950 text-white shadow-xl'
-                              : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                              ? 'bg-primary text-white'
+                              : 'bg-white text-slate-400 hover:bg-secondary/30 border border-slate-100'}`}
                         >
                           {range}
                         </button>
@@ -368,16 +354,16 @@ export default function ShopSection() {
             animate={{ opacity: 1 }}
             className="py-24 sm:py-32 text-center"
           >
-            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-slate-50 rounded-full flex items-center justify-center text-slate-200 mx-auto mb-6 sm:mb-8">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-secondary/50 rounded-none flex items-center justify-center text-slate-200 mx-auto mb-6 sm:mb-8">
               <Search className="w-8 h-8 sm:w-10 sm:h-10" />
             </div>
-            <h3 className="text-xl sm:text-2xl font-black text-blue-950 mb-2">No Matches Found</h3>
-            <p className="text-slate-400 font-medium">Try adjusting your filters or search criteria.</p>
+            <h3 className="text-xl sm:text-2xl font-black text-primary mb-2">The Vault is Empty</h3>
+            <p className="text-slate-400 font-medium">Try adjusting your filters to find your essence.</p>
             <button
               onClick={clearFilters}
-              className="mt-6 sm:mt-8 text-sky-600 font-black text-[10px] uppercase tracking-widest hover:text-blue-950 transition-colors"
+              className="mt-6 sm:mt-8 text-accent font-black text-[10px] uppercase tracking-widest hover:text-primary transition-colors"
             >
-              Exterminate All Filters &rarr;
+              Reset Filters &rarr;
             </button>
           </motion.div>
         )}
@@ -401,14 +387,14 @@ function ProductCard({ product, index }: { product: any, index: number }) {
       className="group"
     >
       <Link href={`/products/${product.id}`}>
-        <div className="relative aspect-[4/5] bg-slate-100 overflow-hidden mb-6 cursor-pointer rounded-2xl sm:rounded-none">
+        <div className="relative aspect-[4/5] bg-secondary/10 overflow-hidden mb-8 cursor-pointer rounded-none border border-primary/5 group-hover:border-accent/20 transition-all duration-700">
           {/* Primary Image */}
           <Image
             src={product.images[0]}
             alt={product.name}
             fill
-            className={`object-cover transition-all duration-[1.5s] ease-out 
-            ${isHovered ? 'scale-110 blur-[2px] opacity-0' : 'scale-100 opacity-100'}`}
+            className={`object-cover transition-all duration-[2s] ease-out 
+            ${isHovered ? 'scale-110 opacity-0' : 'scale-100 opacity-100'}`}
             sizes="(max-width: 768px) 100vw, 25vw"
           />
 
@@ -418,59 +404,50 @@ function ProductCard({ product, index }: { product: any, index: number }) {
               src={product.images[1]}
               alt={product.name}
               fill
-              className={`object-cover transition-all duration-[1s] ease-out
+              className={`object-cover transition-all duration-[1.5s] ease-out
               ${isHovered ? 'scale-105 opacity-100' : 'scale-125 opacity-0'}`}
               sizes="(max-width: 768px) 100vw, 25vw"
             />
           )}
 
           {/* Glassmorphic Brand Tag */}
-          <div className="absolute top-4 sm:top-6 left-4 sm:left-6 z-10">
-            <span className="glass px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[8px] sm:text-[9px] font-black text-blue-950 uppercase tracking-[0.2em] font-sans">
+          <div className="absolute top-6 left-6 z-10">
+            <span className="glass-light px-4 py-2 rounded-none text-[8px] font-black text-primary uppercase tracking-[0.3em] font-sans">
               {product.brand}
             </span>
           </div>
 
-          {/* Promo Price Badge */}
-          {product.promo_price && (
-            <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-10">
-              <span className="bg-blue-950 text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[8px] sm:text-[9px] font-black uppercase tracking-[0.2em] shadow-xl font-sans">
-                Limited
-              </span>
-            </div>
-          )}
-
           {/* Quick Add Overlay */}
-          <div className={`absolute inset-0 bg-blue-950/20 transition-opacity duration-500 flex items-center justify-center
+          <div className={`absolute inset-0 bg-primary/5 transition-opacity duration-700 flex items-end justify-center p-8
           ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-            <button className="bg-white text-blue-950 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shadow-2xl transform transition-all duration-500 scale-0 group-hover:scale-100 hover:bg-sky-600 hover:text-white">
-              <ShoppingCartIcon className="w-5 h-5" />
+            <button className="w-full bg-primary text-white py-4 rounded-none tracking-[0.4em] uppercase text-[9px] font-black hover:bg-accent transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 shadow-2xl">
+              Add to Vault
             </button>
           </div>
         </div>
 
-        <div className="space-y-2 sm:space-y-3 px-1 text-center lg:text-left">
-          <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] font-inter">
+        <div className="space-y-4 px-2 text-center lg:text-left">
+          <p className="text-[9px] font-black text-accent uppercase tracking-[0.4em]">
             {product.category}
           </p>
-          <h4 className="text-lg sm:text-xl font-bold text-blue-950 tracking-tight group-hover:text-sky-600 transition-colors duration-300 h-12 sm:h-14 overflow-hidden leading-tight font-display">
+          <h4 className="text-xl font-bold text-primary tracking-tight group-hover:text-accent transition-colors duration-500 h-14 overflow-hidden leading-tight font-display">
             {product.name}
           </h4>
-          <div className="flex items-center justify-center lg:justify-start gap-3 sm:gap-4">
-            <span className="text-lg sm:text-xl font-black text-blue-950">₦{product.price.toLocaleString()}</span>
+          <div className="flex items-center justify-center lg:justify-start gap-4">
+            <span className="text-2xl font-light text-primary tabular-nums">${product.price.toLocaleString()}</span>
             {product.promo_price && (
-              <span className="text-[10px] sm:text-xs text-slate-300 line-through font-bold">₦{product.promo_price.toLocaleString()}</span>
+              <span className="text-xs text-text-muted line-through font-light tabular-nums">${product.promo_price.toLocaleString()}</span>
             )}
           </div>
 
           {/* Reveal Link */}
-          <div className="overflow-hidden pt-1">
+          <div className="overflow-hidden pt-2 border-t border-primary/5">
             <motion.div
-              animate={{ y: isHovered ? 0 : 20 }}
-              transition={{ duration: 0.3 }}
-              className="flex items-center gap-2 text-[9px] sm:text-[10px] font-black text-sky-600 tracking-widest uppercase cursor-pointer justify-center lg:justify-start font-sans"
+              animate={{ x: isHovered ? 10 : 0 }}
+              transition={{ duration: 0.5 }}
+              className="flex items-center gap-3 text-[9px] font-black text-accent tracking-[0.5em] uppercase cursor-pointer justify-center lg:justify-start"
             >
-              View Essence <ArrowRight className="w-3 h-3" />
+              Reveal Essence <ArrowRight className="w-4 h-4" />
             </motion.div>
           </div>
         </div>

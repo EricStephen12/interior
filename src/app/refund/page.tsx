@@ -2,19 +2,24 @@ import React from 'react';
 
 export default function RefundPage() {
     return (
-        <div className="pt-20 sm:pt-32 pb-16 sm:pb-24 bg-white min-h-screen">
-            <div className="max-w-4xl mx-auto px-4 prose prose-sky">
-                <h1 className="text-4xl font-black text-blue-950 mb-8">Refund & Return Policy</h1>
-                <p className="text-gray-600 mb-6">We want you to be satisfied with your purchase. Please read our policy carefully.</p>
+        <div className="pt-24 sm:pt-40 pb-16 sm:pb-32 bg-white min-h-screen selection:bg-secondary">
+            <div className="max-w-4xl mx-auto px-4 prose prose-slate prose-lg">
+                <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-6 block">Investment Protection</span>
+                <h1 className="text-5xl md:text-7xl text-luxury text-primary mb-12">Exchange <span className="text-accent italic">Registry.</span></h1>
+                <p className="text-text-muted font-light leading-relaxed mb-12 text-xl">We ensure your total satisfaction with the EXRICX collection. Please review our laboratory exchange protocols.</p>
 
-                <h2 className="text-xl sm:text-2xl font-bold text-blue-900 mt-8 sm:mt-12 mb-4">1. Mattresses</h2>
-                <p className="text-gray-600">For hygiene reasons, mattresses cannot be returned or refunded once the original factory nylon has been opened or tampered with.</p>
+                <h2 className="text-2xl font-bold text-primary mt-16 mb-6 uppercase tracking-widest border-l-4 border-accent pl-6">1. Essence Curation</h2>
+                <p className="text-text-muted font-light leading-relaxed">For hygiene and profile preservation, signature fragrances cannot be returned once the molecular seal has been compromised or atmo-locked packaging opened.</p>
 
-                <h2 className="text-xl sm:text-2xl font-bold text-blue-900 mt-8 sm:mt-12 mb-4">2. Furniture</h2>
-                <p className="text-gray-600">Furniture items can only be returned if they are damaged upon delivery. Please inspect all items during the delivery process.</p>
+                <h2 className="text-2xl font-bold text-primary mt-12 mb-6 uppercase tracking-widest border-l-4 border-accent pl-6">2. Gemstone Artifacts</h2>
+                <p className="text-text-muted font-light leading-relaxed">Jewelry installments may be exchanged within 14 laboratory days provided they remain in pristine, vault-ready condition with all authentication tags intact.</p>
 
-                <h2 className="text-xl sm:text-2xl font-bold text-blue-900 mt-8 sm:mt-12 mb-4">3. Refund Process</h2>
-                <p className="text-gray-600">Eligible refunds will be processed within 7-14 business days via bank transfer or the original payment method.</p>
+                <h2 className="text-2xl font-bold text-primary mt-12 mb-6 uppercase tracking-widest border-l-4 border-accent pl-6">3. Refund Finalization</h2>
+                <p className="text-text-muted font-light leading-relaxed">Eligible valuation adjustments will be processed within 7-14 business days via the original encrypted payment channel.</p>
+
+                <div className="mt-20 pt-12 border-t border-primary/5">
+                    <p className="text-[10px] font-black text-accent uppercase tracking-[0.5em]">EXRICX BEAUTY • EST. 2026</p>
+                </div>
             </div>
         </div>
     );

@@ -25,9 +25,9 @@ export default function Header() {
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
-        ? 'bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-lg'
+      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+      className={`sticky top-0 z-50 transition-all duration-700 ${isScrolled
+        ? 'glass-light border-b border-primary/5 editorial-shadow'
         : 'bg-transparent'
         }`}
     >
@@ -35,11 +35,11 @@ export default function Header() {
         <div className="flex justify-between items-center h-20">
           {/* Left Navigation */}
           <nav className="hidden md:flex space-x-8">
-            <Link href="/products" className={`${isScrolled ? 'text-blue-950 font-bold' : 'text-blue-950 font-medium'} hover:text-sky-600 transition-colors text-xs uppercase tracking-widest`}>
-              SHOP ALL
+            <Link href="/products" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-colors text-xs uppercase tracking-widest`}>
+              JEWELRY
             </Link>
-            <Link href="/#products" className={`${isScrolled ? 'text-blue-950 font-bold' : 'text-blue-950 font-medium'} hover:text-sky-600 transition-colors text-xs uppercase tracking-widest`}>
-              BRANDS
+            <Link href="/products?category=Fragrance" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-colors text-xs uppercase tracking-widest`}>
+              FRAGRANCE
             </Link>
           </nav>
 
@@ -47,16 +47,16 @@ export default function Header() {
           <Link href="/" className="flex flex-col items-center">
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className={`tracking-tight transition-all duration-300 leading-none ${isScrolled
-                ? 'text-blue-950 font-black text-2xl'
-                : 'text-blue-950 font-black text-3xl'
+              className={`tracking-[0.3em] font-black transition-all duration-300 leading-none ${isScrolled
+                ? 'text-primary text-xl'
+                : 'text-primary text-2xl'
                 }`}
               style={{ fontFamily: 'var(--font-montserrat)' }}
             >
-              SMART BEST
+              EXRICX
             </motion.div>
-            <span className={`text-[10px] tracking-[0.2em] font-bold text-sky-600 uppercase ${isScrolled ? 'hidden' : 'block'}`}>
-              Brands
+            <span className={`text-[9px] tracking-[0.5em] font-black text-accent uppercase mt-1 ${isScrolled ? 'hidden' : 'block'}`}>
+              BEAUTY
             </span>
           </Link>
 
@@ -64,17 +64,17 @@ export default function Header() {
           <div className="flex items-center gap-2 sm:gap-4 md:gap-8">
             {/* Desktop Only Right Nav */}
             <nav className="hidden md:flex items-center space-x-8 mr-4">
-              <Link href="/about" className={`${isScrolled ? 'text-blue-950 font-bold' : 'text-blue-950 font-medium'} hover:text-sky-600 transition-colors text-xs uppercase tracking-widest`}>
+              <Link href="/about" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-colors text-xs uppercase tracking-widest`}>
                 ABOUT
               </Link>
-              <Link href="/contact" className={`${isScrolled ? 'text-blue-950 font-bold' : 'text-blue-950 font-medium'} hover:text-sky-600 transition-colors text-xs uppercase tracking-widest`}>
+              <Link href="/contact" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-colors text-xs uppercase tracking-widest`}>
                 CONTACT
               </Link>
-              <div className="h-4 w-[1px] bg-slate-200" />
+              <div className="h-4 w-[1px] bg-primary/10" />
             </nav>
 
-            <Link href="/account" className="p-2 sm:px-4 bg-sky-50 text-blue-950 rounded-lg hover:bg-blue-950 hover:text-white transition-all shadow-sm hidden sm:block">
-              <span className="text-[10px] font-black uppercase tracking-widest">Account</span>
+            <Link href="/account" className="px-5 py-2.5 bg-primary text-white hover:bg-accent transition-all duration-500 shadow-sm hidden sm:block">
+              <span className="text-[9px] font-black uppercase tracking-[0.2em]">Account</span>
             </Link>
 
             {/* Cart Button - ALWAYS VISIBLE */}
@@ -82,12 +82,12 @@ export default function Header() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={toggleCart}
-              className={`p-2 transition-colors relative ${isScrolled ? 'text-blue-950 hover:text-sky-600' : 'text-blue-950 hover:text-sky-600'
+              className={`p-2 transition-colors relative ${isScrolled ? 'text-primary hover:text-accent' : 'text-primary hover:text-accent'
                 }`}
             >
               <ShoppingCartIcon className="h-6 w-6" />
               {state.items.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-sky-600 text-white text-[10px] font-black rounded-full h-5 w-5 flex items-center justify-center shadow-lg shadow-sky-100">
+                <span className="absolute -top-1 -right-1 bg-accent text-white text-[9px] font-black rounded-none h-4 w-4 flex items-center justify-center shadow-2xl">
                   {state.items.length}
                 </span>
               )}
@@ -98,7 +98,7 @@ export default function Header() {
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className={`p-2 transition-colors ${isScrolled ? 'text-blue-950' : 'text-blue-950'
+                className={`p-2 transition-colors ${isScrolled ? 'text-primary' : 'text-primary'
                   }`}
               >
                 {isMenuOpen ? (
@@ -118,38 +118,38 @@ export default function Header() {
             opacity: isMenuOpen ? 1 : 0,
             height: isMenuOpen ? 'auto' : 0
           }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="md:hidden overflow-hidden"
         >
-          <div className={`py-8 px-4 space-y-6 border-t transition-colors ${isScrolled ? 'border-slate-100 bg-white' : 'bg-blue-950'}`}>
+          <div className={`py-12 px-6 space-y-8 border-t transition-colors ${isScrolled ? 'border-primary/5 bg-white' : 'bg-secondary'}`}>
             <Link
               href="/products"
-              className={`block transition-colors uppercase text-xs font-black tracking-widest ${isScrolled ? 'text-blue-950 hover:text-sky-600' : 'text-white hover:text-sky-400'}`}
+              className={`block transition-colors uppercase text-sm font-black tracking-[0.3em] ${isScrolled ? 'text-primary hover:text-accent' : 'text-primary hover:text-accent'}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              SHOP ALL
+              The Vault
             </Link>
             <Link
               href="/about"
-              className={`block transition-colors uppercase text-xs font-black tracking-widest ${isScrolled ? 'text-blue-950 hover:text-sky-600' : 'text-white hover:text-sky-400'}`}
+              className={`block transition-colors uppercase text-sm font-black tracking-[0.3em] ${isScrolled ? 'text-primary hover:text-accent' : 'text-primary hover:text-accent'}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              ABOUT US
+              The Lab
             </Link>
             <Link
               href="/contact"
-              className={`block transition-colors uppercase text-xs font-black tracking-widest ${isScrolled ? 'text-blue-950 hover:text-sky-600' : 'text-white hover:text-sky-400'}`}
+              className={`block transition-colors uppercase text-sm font-black tracking-[0.3em] ${isScrolled ? 'text-primary hover:text-accent' : 'text-primary hover:text-accent'}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              CONTACT
+              Concierge
             </Link>
-            <div className={`h-[1px] w-full ${isScrolled ? 'bg-slate-100' : 'bg-white/10'}`} />
+            <div className={`h-[1px] w-full ${isScrolled ? 'bg-primary/5' : 'bg-primary/10'}`} />
             <Link
               href="/account"
-              className={`block transition-colors uppercase text-xs font-black tracking-widest ${isScrolled ? 'text-sky-600 hover:text-blue-950' : 'text-sky-400 hover:text-white'}`}
+              className={`block transition-colors uppercase text-xs font-black tracking-[0.4em] ${isScrolled ? 'text-accent hover:text-primary' : 'text-accent hover:text-primary'}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              ACCOUNT DASHBOARD
+              Member Access
             </Link>
           </div>
         </motion.div>

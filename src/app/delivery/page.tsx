@@ -5,89 +5,90 @@ import { TruckIcon, ClockIcon, ShieldCheckIcon, PhoneIcon, MapPinIcon, CheckCirc
 
 export default function DeliveryPage() {
   return (
-    <div className="pt-16 min-h-screen bg-amber-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div className="pt-24 min-h-screen bg-secondary/20 selection:bg-accent/20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-32">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center mb-24"
         >
-          <h1 className="text-5xl font-serif font-bold text-amber-900 mb-6">
-            Delivery & Shipping
+          <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-6 block">Global Logistics</span>
+          <h1 className="text-6xl md:text-8xl text-luxury text-primary mb-8">
+            Secure <span className="text-accent italic">Transit.</span>
           </h1>
-          <p className="text-xl text-amber-800 max-w-3xl mx-auto">
-            We ensure your luxury furniture arrives safely and on time.
-            Our professional delivery team handles everything with care.
+          <p className="text-xl text-text-muted max-w-2xl mx-auto font-light leading-relaxed">
+            We ensure your investment arrives in pristine condition.
+            Our white-glove logistics team manages every essence with laboratory precision.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24">
           {/* Delivery Information */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="space-y-8"
+            transition={{ duration: 1, delay: 0.2 }}
+            className="space-y-12"
           >
             {/* Delivery Options */}
-            <div className="bg-white p-8 rounded-2xl shadow-lg">
-              <div className="flex items-center mb-6">
-                <TruckIcon className="h-8 w-8 text-amber-600 mr-3" />
-                <h2 className="text-2xl font-serif font-semibold text-amber-900">
-                  Delivery Options
+            <div className="bg-white p-10 sm:p-16 rounded-none border border-primary/5 editorial-shadow">
+              <div className="flex items-center mb-10">
+                <TruckIcon className="h-10 w-10 text-accent mr-6" />
+                <h2 className="text-3xl font-bold text-primary tracking-tight uppercase">
+                  Logistics Protocol
                 </h2>
               </div>
 
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <CheckCircleIcon className="h-6 w-6 text-green-600 mt-1 flex-shrink-0" />
+              <div className="space-y-10">
+                <div className="flex items-start space-x-6">
+                  <CheckCircleIcon className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                   <div>
-                    <h3 className="font-semibold text-amber-900 mb-2">Standard Delivery</h3>
-                    <p className="text-amber-700">Free delivery on orders over $1,000. Estimated 7-14 business days.</p>
+                    <h3 className="font-bold text-primary uppercase text-sm mb-3 tracking-widest">Global Express Vaulting</h3>
+                    <p className="text-text-muted font-medium text-sm leading-relaxed">Complimentary on investments over $5,000. Estimated delivery within 7 business days worldwide.</p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4">
-                  <CheckCircleIcon className="h-6 w-6 text-green-600 mt-1 flex-shrink-0" />
+                <div className="flex items-start space-x-6">
+                  <CheckCircleIcon className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                   <div>
-                    <h3 className="font-semibold text-amber-900 mb-2">Express Delivery</h3>
-                    <p className="text-amber-700">$150 fee. Estimated 3-7 business days for most items.</p>
+                    <h3 className="font-bold text-primary uppercase text-sm mb-3 tracking-widest">Molecular Packaging</h3>
+                    <p className="text-text-muted font-medium text-sm leading-relaxed">$50 flat fee. Includes temperature-controlled fragrance sealing and jewelry pressure-locking.</p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4">
-                  <CheckCircleIcon className="h-6 w-6 text-green-600 mt-1 flex-shrink-0" />
+                <div className="flex items-start space-x-6">
+                  <CheckCircleIcon className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                   <div>
-                    <h3 className="font-semibold text-amber-900 mb-2">White Glove Delivery</h3>
-                    <p className="text-amber-700">$250 fee. Includes assembly, placement, and debris removal.</p>
+                    <h3 className="font-bold text-primary uppercase text-sm mb-3 tracking-widest">White-Glove Handover</h3>
+                    <p className="text-text-muted font-medium text-sm leading-relaxed">$150 premium. Includes in-person authentication and personalized collection walkthrough.</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Shipping Areas */}
-            <div className="bg-white p-8 rounded-2xl shadow-lg">
-              <div className="flex items-center mb-6">
-                <MapPinIcon className="h-8 w-8 text-amber-600 mr-3" />
-                <h2 className="text-2xl font-serif font-semibold text-amber-900">
-                  Shipping Areas
+            <div className="bg-white p-10 sm:p-16 rounded-none border border-primary/5 editorial-shadow">
+              <div className="flex items-center mb-10">
+                <MapPinIcon className="h-10 w-10 text-accent mr-6" />
+                <h2 className="text-3xl font-bold text-primary tracking-tight uppercase">
+                  The Network
                 </h2>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <CheckCircleIcon className="h-5 w-5 text-green-600" />
-                  <span className="text-amber-700">Continental United States</span>
+              <div className="space-y-6">
+                <div className="flex items-center space-x-4">
+                  <CheckCircleIcon className="h-5 w-5 text-accent" />
+                  <span className="text-primary font-medium tracking-tight">Mainland Europe & United Kingdom</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <CheckCircleIcon className="h-5 w-5 text-green-600" />
-                  <span className="text-amber-700">Canada (additional fees may apply)</span>
+                <div className="flex items-center space-x-4">
+                  <CheckCircleIcon className="h-5 w-5 text-accent" />
+                  <span className="text-primary font-medium tracking-tight">Middle East & GCC Registry</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <ClockIcon className="h-5 w-5 text-amber-600" />
-                  <span className="text-amber-700">International shipping available upon request</span>
+                <div className="flex items-center space-x-4">
+                  <CheckCircleIcon className="h-5 w-5 text-accent" />
+                  <span className="text-primary font-medium tracking-tight">North America & Asia-Pacific Labs</span>
                 </div>
               </div>
             </div>
@@ -97,84 +98,86 @@ export default function DeliveryPage() {
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="space-y-8"
+            transition={{ duration: 1, delay: 0.4 }}
+            className="space-y-12"
           >
             {/* Delivery Process */}
-            <div className="bg-white p-8 rounded-2xl shadow-lg">
-              <div className="flex items-center mb-6">
-                <ClockIcon className="h-8 w-8 text-amber-600 mr-3" />
-                <h2 className="text-2xl font-serif font-semibold text-amber-900">
-                  Delivery Process
+            <div className="bg-white p-10 sm:p-16 rounded-none border border-primary/5 editorial-shadow">
+              <div className="flex items-center mb-10">
+                <ClockIcon className="h-10 w-10 text-accent mr-6" />
+                <h2 className="text-3xl font-bold text-primary tracking-tight uppercase">
+                  The Methodology
                 </h2>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex items-start space-x-4">
-                  <div className="bg-amber-100 text-amber-800 rounded-full w-8 h-8 flex items-center justify-center font-semibold text-sm">
-                    1
+              <div className="space-y-8">
+                <div className="flex items-start space-x-6">
+                  <div className="bg-secondary text-primary rounded-none border border-primary/5 w-10 h-10 flex items-center justify-center font-black text-xs shadow-sm">
+                    01
                   </div>
                   <div>
-                    <h3 className="font-semibold text-amber-900 mb-1">Order Processing</h3>
-                    <p className="text-amber-700 text-sm">We verify your order and prepare it for shipment within 1-2 business days.</p>
+                    <h3 className="font-bold text-primary uppercase text-sm mb-2 tracking-widest">Vault Allocation</h3>
+                    <p className="text-text-muted text-sm leading-relaxed">Your piece is moved from our high-security inventory to the clean-room packing facility.</p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4">
-                  <div className="bg-amber-100 text-amber-800 rounded-full w-8 h-8 flex items-center justify-center font-semibold text-sm">
-                    2
+                <div className="flex items-start space-x-6">
+                  <div className="bg-secondary text-primary rounded-none border border-primary/5 w-10 h-10 flex items-center justify-center font-black text-xs shadow-sm">
+                    02
                   </div>
                   <div>
-                    <h3 className="font-semibold text-amber-900 mb-1">Quality Check</h3>
-                    <p className="text-amber-700 text-sm">Every item undergoes final inspection before packaging.</p>
+                    <h3 className="font-bold text-primary uppercase text-sm mb-2 tracking-widest">Lab Authentication</h3>
+                    <p className="text-text-muted text-sm leading-relaxed">Final molecular and structural verification by our resident gemologists and perfumers.</p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4">
-                  <div className="bg-amber-100 text-amber-800 rounded-full w-8 h-8 flex items-center justify-center font-semibold text-sm">
-                    3
+                <div className="flex items-start space-x-6">
+                  <div className="bg-secondary text-primary rounded-none border border-primary/5 w-10 h-10 flex items-center justify-center font-black text-xs shadow-sm">
+                    03
                   </div>
                   <div>
-                    <h3 className="font-semibold text-amber-900 mb-1">Secure Packaging</h3>
-                    <p className="text-amber-700 text-sm">Professional packaging to ensure safe transit of your luxury items.</p>
+                    <h3 className="font-bold text-primary uppercase text-sm mb-2 tracking-widest">Encrypted Seal</h3>
+                    <p className="text-text-muted text-sm leading-relaxed">Atmospheric sealing for fragrances and tamper-evident locking for jewelry boxes.</p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4">
-                  <div className="bg-amber-100 text-amber-800 rounded-full w-8 h-8 flex items-center justify-center font-semibold text-sm">
-                    4
+                <div className="flex items-start space-x-6">
+                  <div className="bg-secondary text-primary rounded-none border border-primary/5 w-10 h-10 flex items-center justify-center font-black text-xs shadow-sm">
+                    04
                   </div>
                   <div>
-                    <h3 className="font-semibold text-amber-900 mb-1">Delivery & Setup</h3>
-                    <p className="text-amber-700 text-sm">Professional delivery team handles transportation and placement.</p>
+                    <h3 className="font-bold text-primary uppercase text-sm mb-2 tracking-widest">Concierge Dispatch</h3>
+                    <p className="text-text-muted text-sm leading-relaxed">Courier collection on a secure, private logistics channel for immediate tracking.</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Contact Information */}
-            <div className="bg-white p-8 rounded-2xl shadow-lg">
-              <div className="flex items-center mb-6">
-                <PhoneIcon className="h-8 w-8 text-amber-600 mr-3" />
-                <h2 className="text-2xl font-serif font-semibold text-amber-900">
-                  Need Help?
+            {/* Support Information */}
+            <div className="bg-primary p-10 text-white rounded-none shadow-2xl relative overflow-hidden group">
+              <div className="absolute inset-0 bg-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+              <div className="flex items-center mb-10 relative z-10">
+                <PhoneIcon className="h-10 w-10 text-accent mr-6" />
+                <h2 className="text-3xl font-bold uppercase tracking-tight">
+                  Concierge Live
                 </h2>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <PhoneIcon className="h-5 w-5 text-amber-600" />
-                  <span className="text-amber-700">Call us: +1 (555) 123-4567</span>
+              <div className="space-y-6 relative z-10">
+                <div className="flex items-center space-x-4">
+                  <PhoneIcon className="h-5 w-5 text-accent" />
+                  <span className="text-white/80 font-medium tracking-wide">+44 (0) 20 EXRICX LUX</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <ShieldCheckIcon className="h-5 w-5 text-amber-600" />
-                  <span className="text-amber-700">Email: delivery@interiors.com</span>
+                <div className="flex items-center space-x-4">
+                  <ShieldCheckIcon className="h-5 w-5 text-accent" />
+                  <span className="text-white/80 font-medium tracking-wide">logistics@exricx.beauty</span>
                 </div>
               </div>
 
-              <div className="mt-6 p-4 bg-amber-50 rounded-lg">
-                <p className="text-sm text-amber-800">
-                  <span className="font-semibold">Note:</span> For large furniture items, we recommend scheduling delivery during business hours when someone can be present to receive and inspect the items.
+              <div className="mt-10 p-6 bg-white/5 border border-white/10 rounded-none relative z-10">
+                <p className="text-[11px] text-accent font-black uppercase tracking-[0.2em] mb-2 leading-none">Confidential Note</p>
+                <p className="text-xs text-white/60 leading-relaxed font-light italic">
+                  For high-value vault transfers exceeding $50k, we require a 24-hour verification window before dispatch protocol.
                 </p>
               </div>
             </div>
@@ -185,33 +188,33 @@ export default function DeliveryPage() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-16"
+          transition={{ duration: 1, delay: 0.6 }}
+          className="mt-24 sm:mt-32"
         >
-          <div className="bg-white p-8 rounded-2xl shadow-lg">
-            <h2 className="text-3xl font-serif font-semibold text-amber-900 mb-8 text-center">
-              Frequently Asked Questions
+          <div className="bg-white p-10 sm:p-20 rounded-none border border-primary/5 editorial-shadow">
+            <h2 className="text-4xl text-luxury text-primary mb-16 text-center">
+              Logistics <span className="text-accent italic">Inquiries.</span>
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
               <div>
-                <h3 className="font-semibold text-amber-900 mb-2">Do you offer assembly services?</h3>
-                <p className="text-amber-700 text-sm">Yes! Our White Glove delivery service includes professional assembly and placement of your furniture items.</p>
+                <h3 className="font-bold text-primary uppercase text-sm mb-4 tracking-[0.2em]">Is the packaging discreet?</h3>
+                <p className="text-text-muted text-sm leading-relaxed">Absolutely. All EXRICX piece shipments use unmarked security outer-casing to ensure privacy and protection.</p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-amber-900 mb-2">What if my item arrives damaged?</h3>
-                <p className="text-amber-700 text-sm">We offer a 30-day return policy and will replace any damaged items at no additional cost to you.</p>
+                <h3 className="font-bold text-primary uppercase text-sm mb-4 tracking-[0.2em]">What about lab-to-lab handling?</h3>
+                <p className="text-text-muted text-sm leading-relaxed">Fragrances are kept in temperature-optimized environments through the entire transit chain to preserve the essence profile.</p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-amber-900 mb-2">Can I change my delivery date?</h3>
-                <p className="text-amber-700 text-sm">Yes, you can reschedule your delivery up to 48 hours before the scheduled date by contacting our customer service.</p>
+                <h3 className="font-bold text-primary uppercase text-sm mb-4 tracking-[0.2em]">Can I redirect a dispatch?</h3>
+                <p className="text-text-muted text-sm leading-relaxed">Due to security protocols, address redirection is only available within 2 laboratory hours of the initial order verification.</p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-amber-900 mb-2">Do you deliver to apartments?</h3>
-                <p className="text-amber-700 text-sm">Absolutely! We deliver to all residential locations including apartments, condos, and high-rise buildings.</p>
+                <h3 className="font-bold text-primary uppercase text-sm mb-4 tracking-[0.2em]">Do you service private addresses?</h3>
+                <p className="text-text-muted text-sm leading-relaxed">We deliver to all residential, corporate, and private lab destinations globally, including secure apartment complexes.</p>
               </div>
             </div>
           </div>

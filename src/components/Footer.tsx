@@ -8,35 +8,35 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-blue-950 text-white pt-32 pb-12 overflow-hidden relative">
+    <footer className="bg-primary text-white pt-32 pb-12 overflow-hidden relative border-t border-accent/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Top Section: Theatrical Brand Call */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 mb-32">
           <div className="space-y-10">
             <Link href="/" className="flex flex-col group">
-              <span className="text-5xl md:text-7xl font-black tracking-tighter leading-none text-white group-hover:text-sky-400 transition-colors duration-500">
-                SMART BEST
+              <span className="text-5xl md:text-7xl font-black tracking-[0.3em] leading-none text-white group-hover:text-accent transition-colors duration-500">
+                EXRICX
               </span>
-              <span className="text-xs tracking-[0.6em] font-black text-sky-600 uppercase mt-2">
-                Luxury Standard
+              <span className="text-[10px] tracking-[0.6em] font-black text-accent uppercase mt-2">
+                BEAUTY • PRECISION
               </span>
             </Link>
             <p className="text-xl text-slate-400 font-medium leading-relaxed max-w-md">
-              Elevating the Nigerian home with curated authenticity. The pinnacle of rest, strictly authenticated.
+              Where technology meets the art of beauty. Born from the EXRICX tech lab, curated for the modern woman.
             </p>
           </div>
 
-          <div className="glass-dark p-12 rounded-[3rem] space-y-8 self-center">
-            <h4 className="text-[10px] font-black tracking-[0.4em] text-sky-400 uppercase">Newsletter</h4>
-            <h3 className="text-3xl font-bold tracking-tight">Join the Elite Circle.</h3>
+          <div className="glass-dark p-12 rounded-none border border-white/5 space-y-8 self-center">
+            <h4 className="text-[10px] font-black tracking-[0.4em] text-accent uppercase">Newsletter</h4>
+            <h3 className="text-3xl font-bold tracking-tight">The Lab Report.</h3>
             <div className="relative">
               <input
                 type="email"
-                placeholder="Email address"
-                className="w-full bg-transparent border-b border-white/20 pb-4 text-white placeholder:text-slate-500 focus:outline-none focus:border-sky-400 transition-colors"
+                placeholder="Enter your email"
+                className="w-full bg-transparent border-b border-white/10 pb-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-accent transition-colors"
               />
-              <button className="absolute right-0 bottom-4 text-sky-400 hover:text-white transition-colors">
+              <button className="absolute right-0 bottom-4 text-accent hover:text-white transition-colors">
                 <ArrowUpRight className="w-5 h-5" />
               </button>
             </div>
@@ -46,21 +46,21 @@ export default function Footer() {
         {/* Middle Section: Links */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-32">
           <FooterSection
-            title="Collections"
+            title="The Vault"
             links={[
-              { label: 'Mattresses', href: '/products?category=Mattresses' },
-              { label: 'Pillows', href: '/products?category=Pillows' },
-              { label: 'Furniture', href: '/products?category=Furniture' },
-              { label: 'New Arrivals', href: '/products' }
+              { label: 'Necklaces', href: '/products?category=Necklaces' },
+              { label: 'Rings', href: '/products?category=Rings' },
+              { label: 'Earrings', href: '/products?category=Earrings' },
+              { label: 'Signature Fragrance', href: '/products?category=Fragrance' }
             ]}
           />
           <FooterSection
-            title="About"
+            title="The Origin"
             links={[
-              { label: 'Our Legacy', href: '/about' },
-              { label: 'Artisans', href: '/about' },
-              { label: 'Contact', href: '/contact' },
-              { label: 'FAQs', href: '/faqs' }
+              { label: 'The Lab', href: '/about' },
+              { label: 'EXRICX Tech', href: '#' },
+              { label: 'Contact Philanthropy', href: '/contact' },
+              { label: 'Global Concierge', href: '/faqs' }
             ]}
           />
           <FooterSection
@@ -68,11 +68,11 @@ export default function Footer() {
             links={[
               { label: 'Terms', href: '/terms' },
               { label: 'Privacy', href: '/privacy' },
-              { label: 'Refunds', href: '/refund' }
+              { label: 'Ethics Code', href: '/refund' }
             ]}
           />
           <div className="space-y-8">
-            <h4 className="text-[10px] font-black tracking-[0.4em] text-sky-400 uppercase">Connect</h4>
+            <h4 className="text-[10px] font-black tracking-[0.4em] text-accent uppercase">Connect</h4>
             <div className="flex gap-6">
               <SocialLink icon={Instagram} href="#" />
               <SocialLink icon={MessageCircle} href="#" />
@@ -80,21 +80,21 @@ export default function Footer() {
             </div>
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">
-                <MapPin className="w-4 h-4 text-sky-600" />
-                <span>Abuja • Benin City</span>
+                <MapPin className="w-4 h-4 text-accent" />
+                <span>Global Concierge • Lagos • London</span>
               </div>
               <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">
-                <Mail className="w-4 h-4 text-sky-600" />
-                <span>concierge@smartbest.com</span>
+                <Mail className="w-4 h-4 text-accent" />
+                <span>lab@exricx.beauty</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Section */}
-        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
+        <div className="pt-12 border-t border-white/5 flex flex-row justify-between items-center gap-8">
           <p className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase">
-            © {currentYear} Smart Best Brands. Crafted for Excellence.
+            © {currentYear} EXRICX BEAUTY. All Rights Reserved.
           </p>
           <div className="flex gap-8 text-[10px] font-black tracking-widest text-slate-500 uppercase">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
@@ -104,7 +104,7 @@ export default function Footer() {
       </div>
 
       {/* Decorative Gradient Line */}
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-sky-600/50 to-transparent"></div>
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent/30 to-transparent"></div>
     </footer>
   )
 }
@@ -112,7 +112,7 @@ export default function Footer() {
 function FooterSection({ title, links }: { title: string, links: { label: string, href: string }[] }) {
   return (
     <div className="space-y-8">
-      <h4 className="text-[10px] font-black tracking-[0.4em] text-sky-400 uppercase">{title}</h4>
+      <h4 className="text-[10px] font-black tracking-[0.4em] text-accent uppercase">{title}</h4>
       <ul className="space-y-4">
         {links.map((link, i) => (
           <li key={i}>
@@ -134,7 +134,7 @@ function SocialLink({ icon: Icon, href }: { icon: React.ElementType, href: strin
     <motion.a
       whileHover={{ y: -5 }}
       href={href}
-      className="w-12 h-12 glass-dark rounded-2xl flex items-center justify-center text-white hover:text-sky-400 transition-colors"
+      className="w-12 h-12 glass-dark rounded-none border border-white/5 flex items-center justify-center text-white hover:text-accent transition-colors"
     >
       <Icon className="w-5 h-5" />
     </motion.a>

@@ -1,11 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&family=Crimson+Text:wght@400;600&family=Montserrat:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #0a0a0a;
+  --color-secondary: #fdf8f5;
+  --color-accent: #d4af37;
+  --color-accent-light: #e5c05b;
+  --color-text-muted: #6b7280;
+  --color-surface: #ffffff;
+  --shadow-editorial: 0 50px 100px -20px rgba(0, 0, 0, 0.15);
+
+  --font-playfair: "Playfair Display", serif;
+  --font-inter: "Inter", sans-serif;
+  --font-crimson: "Crimson Text", serif;
+  --font-montserrat: "Montserrat", sans-serif;
+}
+
 :root {
   --font-playfair: 'Playfair Display', serif;
   --font-inter: 'Inter', sans-serif;
   --font-crimson: 'Crimson Text', serif;
   --font-montserrat: 'Montserrat', sans-serif;
+
+  /* EXRICX BEAUTY LUXURY PALETTE VARIABLES */
+  --primary: var(--color-primary);
+  --secondary: var(--color-secondary);
+  --accent: var(--color-accent);
 }
 
 @layer base {
@@ -16,6 +36,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
+    background-color: #ffffff;
+    color: var(--primary);
   }
 
   h1,
@@ -26,40 +48,50 @@
   h6 {
     font-family: var(--font-playfair);
     font-feature-settings: 'liga' 1, 'kern' 1;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.04em;
+    color: var(--primary);
+    font-weight: 800;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-blue-950 hover:bg-sky-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-xl shadow-blue-900/10 active:scale-95;
+    @apply bg-primary hover:bg-accent hover:border-accent text-white font-bold py-5 px-10 rounded-none border border-primary transition-all duration-700 tracking-[0.3em] uppercase text-[10px] active:scale-95 shadow-2xl;
   }
 
   .btn-secondary {
-    @apply bg-sky-50 hover:bg-sky-100 text-sky-950 font-bold py-4 px-8 rounded-2xl transition-all duration-300;
+    @apply bg-transparent hover:bg-primary hover:text-white text-primary font-bold py-5 px-10 rounded-none border border-primary transition-all duration-700 tracking-[0.3em] uppercase text-[10px] shadow-sm;
   }
 
-  .bg-deep-blue {
-    @apply bg-blue-950;
+  .glass-light {
+    @apply bg-white/60 backdrop-blur-2xl border border-white/20 shadow-2xl;
   }
 
-  .text-sky {
-    @apply text-sky-600;
+  .glass-dark {
+    @apply bg-black/40 backdrop-blur-2xl border border-white/5 shadow-2xl;
+  }
+
+  .editorial-shadow {
+    @apply shadow-editorial;
+  }
+
+  .text-luxury {
+    @apply font-playfair tracking-[-0.05em] leading-[0.85];
   }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Ultra Minimalist */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f8fafc;
+  background: var(--secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0f172a;
-  border-radius: 10px;
+  background: var(--primary);
+  border-radius: 0px;
 }
 
 ::-webkit-scrollbar-thumb:hover {

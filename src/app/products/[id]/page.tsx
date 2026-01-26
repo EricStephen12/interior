@@ -18,28 +18,28 @@ import { motion } from 'framer-motion';
 
 const product = {
   id: '1',
-  name: 'Vitafoam Grandeur Mattress',
-  brand: 'Vitafoam',
-  description: 'Experience unparalleled luxury with the Vitafoam Grandeur. Crafted with high-density memory foam and a premium breathable cover, this mattress adapts to your body shape for optimal spinal alignment and pressure relief.',
-  firmness: 'Superior Hard',
-  material: 'High-Density Memory Foam',
-  finishing: 'Damascus Fabric Quilting',
-  isNegotiable: true,
+  name: 'EXRICX Diamond Petal Necklace',
+  brand: 'EXRICX Signature',
+  description: 'A masterpiece of precision engineering and artisanal craft. Hand-set diamonds in a fluid floral petal arrangement, suspended on an 18k white gold chain. Designed in the EXRICX tech lab for the modern woman who demands molecular perfection.',
+  material: '18k White Gold',
+  gemstone: 'D-Color VVS1 Diamonds',
+  origin: 'EXRICX Tech Lab',
+  isNegotiable: false,
   features: [
-    'Authentic Vitafoam quality',
-    '10-Year Manufacturer Warranty',
-    'Memory foam for pressure relief',
-    'Breathable premium fabric finishing'
+    'Conflict-free lab-certified diamonds',
+    'Molecular-level precision setting',
+    'Hand-finished 18k white gold',
+    'Signature EXRICX authentication chip'
   ],
   images: [
-    '/images/hero/jason-wang-8J49mtYWu7E-unsplash.jpg',
-    '/images/hero/mahmoud-azmy-MPd1Vcdvg1w-unsplash.jpg'
+    '/images/exricx/luxury_diamond_necklace_1769449448575.png',
+    '/images/exricx/luxury_lifestyle_jewelry_1769449345647.png'
   ],
   variants: [
-    { id: 'v1', size: { name: 'Single (3.5x6)' }, price: 125000, promo_price: 110000 },
-    { id: 'v2', size: { name: 'Double (4.5x6)' }, price: 155000, promo_price: 140000 },
-    { id: 'v3', size: { name: 'Family (6x6)' }, price: 185000, promo_price: 165000 },
-    { id: 'v4', size: { name: 'King (6x7)' }, price: 215000, promo_price: 195000 }
+    { id: 'v1', size: { name: '0.5 Carat Total' }, price: 2500, promo_price: 2100 },
+    { id: 'v2', size: { name: '1.0 Carat Total' }, price: 4500, promo_price: 3950 },
+    { id: 'v3', size: { name: '2.5 Carat Total' }, price: 9800, promo_price: 8900 },
+    { id: 'v4', size: { name: '5.0 Carat Statement' }, price: 18500, promo_price: 16500 }
   ]
 };
 
@@ -49,50 +49,50 @@ export default function ProductDetailsPage() {
   const [activeImage, setActiveImage] = useState(product.images[0]);
 
   const handleWhatsAppOrder = () => {
-    const text = `Hello Smart Best Brands, I would like to order the ${product.name} (${selectedVariant.size.name})${product.isNegotiable ? ' - I am interested in negotiating the price' : ''}. Current Price: ₦${(selectedVariant.promo_price || selectedVariant.price).toLocaleString()}. URL: ${window.location.href}`;
+    const text = `Hello EXRICX BEAUTY, I would like to order the ${product.name} (${selectedVariant.size.name}). Current Price: $${(selectedVariant.promo_price || selectedVariant.price).toLocaleString()}. URL: ${window.location.href}`;
     const encodedText = encodeURIComponent(text);
     window.open(`https://wa.me/2349033333333?text=${encodedText}`, '_blank');
   };
 
   return (
-    <div className="pt-24 sm:pt-32 pb-24 bg-white selection:bg-sky-100">
+    <div className="pt-24 sm:pt-32 pb-24 bg-white selection:bg-secondary/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-8 sm:mb-12"
+          className="mb-8 sm:mb-16"
         >
-          <Link href="/products" className="inline-flex items-center gap-3 text-slate-400 hover:text-blue-950 transition-all font-black text-[10px] uppercase tracking-[0.3em] group">
-            <div className="p-2 rounded-full border border-slate-100 group-hover:border-blue-950 transition-colors">
-              <ArrowLeft className="w-3 h-3" />
+          <Link href="/products" className="inline-flex items-center gap-3 text-slate-400 hover:text-primary transition-all font-black text-[10px] uppercase tracking-[0.4em] group">
+            <div className="p-3 rounded-none border border-slate-100 group-hover:border-primary transition-colors">
+              <ArrowLeft className="w-4 h-4" />
             </div>
-            Back to Collections
+            The Vault
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
           {/* Image Gallery - Optimized */}
-          <div className="space-y-8">
+          <div className="space-y-12">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
-              className="aspect-[4/5] rounded-[2.5rem] sm:rounded-[4rem] overflow-hidden bg-slate-50 relative shadow-2xl shadow-blue-900/5 group"
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              className="aspect-[4/5] rounded-none overflow-hidden bg-secondary relative editorial-shadow group"
             >
               <Image
                 src={activeImage}
                 alt={product.name}
                 fill
-                className="object-cover transition-all duration-[2s] ease-out group-hover:scale-110"
+                className="object-cover transition-all duration-[2.5s] ease-out group-hover:scale-105"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-blue-950/20 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent pointer-events-none" />
 
-              <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 z-10">
-                <span className="glass px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black text-blue-950 uppercase tracking-[0.4em]">
-                  {product.brand} Essence
+              <div className="absolute bottom-8 left-8 z-10">
+                <span className="glass-light px-6 py-3 rounded-none text-[10px] font-black text-primary uppercase tracking-[0.4em] border border-white/20">
+                  {product.brand} • LAB CERTIFIED
                 </span>
               </div>
             </motion.div>
@@ -100,14 +100,14 @@ export default function ProductDetailsPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="flex gap-4 p-2 bg-slate-50/50 rounded-[2rem] sm:rounded-[3rem] w-fit"
+              transition={{ delay: 0.6 }}
+              className="flex gap-6 p-4 bg-secondary/20 rounded-none w-fit border border-primary/5"
             >
               {product.images.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveImage(img)}
-                  className={`w-16 h-16 sm:w-20 sm:h-20 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden border-2 transition-all relative ${activeImage === img ? 'border-sky-600 shadow-xl' : 'border-transparent grayscale hover:grayscale-0'}`}
+                  className={`w-20 h-20 sm:w-24 sm:h-24 rounded-none overflow-hidden border-2 transition-all relative ${activeImage === img ? 'border-accent shadow-2xl' : 'border-transparent grayscale opacity-60 hover:opacity-100 hover:grayscale-0'}`}
                 >
                   <Image
                     src={img}
@@ -123,57 +123,52 @@ export default function ProductDetailsPage() {
           {/* Product Info - Editorial Style */}
           <div className="flex flex-col pt-4">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="space-y-8"
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+              className="space-y-12"
             >
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black text-sky-600 uppercase tracking-[0.5em]">
-                  Official Brand Partner
+                <span className="text-[10px] font-black text-accent uppercase tracking-[0.6em]">
+                  The Signature Series
                 </span>
-                <button className="w-12 h-12 rounded-2xl border border-slate-100 flex items-center justify-center text-slate-200 hover:text-red-500 hover:border-red-100 transition-all active:scale-90">
+                <button className="w-12 h-12 rounded-none border border-slate-100 flex items-center justify-center text-slate-200 hover:text-accent hover:border-accent transition-all active:scale-95">
                   <Heart className="w-5 h-5" />
                 </button>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-blue-950 tracking-[-0.04em] leading-[0.9] font-display">
+              <h1 className="text-5xl sm:text-6xl md:text-8xl text-luxury text-primary">
                 {product.name}
               </h1>
 
               <div className="flex items-center gap-6">
-                <div className="flex text-amber-400 gap-1">
-                  {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-3 h-3 fill-current" />)}
+                <div className="flex text-accent gap-1">
+                  {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-4 h-4 fill-current" />)}
                 </div>
-                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
-                  Verified Excellence
+                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">
+                  Verified Laboratory Essence
                 </span>
               </div>
 
-              <div className="flex items-center gap-6 pb-8 border-b border-slate-100 flex-wrap">
-                <div className="flex items-baseline gap-4 sm:gap-6">
-                  <span className="text-4xl sm:text-6xl font-black text-blue-950 tracking-tighter">
-                    ₦{(selectedVariant.promo_price || selectedVariant.price).toLocaleString()}
+              <div className="flex items-center gap-8 pb-12 border-b border-primary/5 flex-wrap">
+                <div className="flex items-baseline gap-6">
+                  <span className="text-5xl sm:text-7xl font-light text-primary tabular-nums">
+                    ${(selectedVariant.promo_price || selectedVariant.price).toLocaleString()}
                   </span>
                   {selectedVariant.promo_price && (
-                    <span className="text-xl sm:text-2xl text-slate-300 line-through font-bold">
-                      ₦{selectedVariant.price.toLocaleString()}
+                    <span className="text-2xl text-slate-200 line-through font-light tabular-nums">
+                      ${selectedVariant.price.toLocaleString()}
                     </span>
                   )}
                 </div>
-                {product.isNegotiable && (
-                  <span className="bg-sky-50 text-sky-600 px-4 py-2 rounded-2xl text-[9px] font-black uppercase tracking-widest border border-sky-100 font-inter">
-                    Price Negotiable
-                  </span>
-                )}
               </div>
 
-              {/* Size Selector - Glass Style */}
-              <div className="space-y-6">
-                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
-                  <span>Dimensions</span>
-                  <span className="text-sky-600 cursor-pointer flex items-center gap-1 group">
-                    Measurement Protocol <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+              {/* Size Selector - Sharp Style */}
+              <div className="space-y-8">
+                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.5em] text-slate-400">
+                  <span>Investment Grade</span>
+                  <span className="text-accent cursor-pointer flex items-center gap-2 group">
+                    Authentication Protocol <ChevronRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
                   </span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -181,10 +176,10 @@ export default function ProductDetailsPage() {
                     <button
                       key={idx}
                       onClick={() => setSelectedVariant(v)}
-                      className={`px-6 py-5 rounded-2xl text-[10px] font-black border-2 transition-all uppercase tracking-[0.2em] relative overflow-hidden group
+                      className={`px-8 py-6 rounded-none text-[10px] font-black border-2 transition-all uppercase tracking-[0.3em] relative overflow-hidden group
                           ${selectedVariant.id === v.id
-                          ? 'border-blue-950 bg-blue-950 text-white shadow-2xl shadow-blue-200'
-                          : 'border-slate-50 bg-slate-50 text-blue-950 hover:border-sky-200'}`}
+                          ? 'border-primary bg-primary text-white shadow-[0_20px_50px_rgba(0,0,0,0.2)]'
+                          : 'border-secondary bg-secondary/30 text-primary hover:border-accent/40'}`}
                     >
                       {v.size.name}
                     </button>
@@ -193,30 +188,30 @@ export default function ProductDetailsPage() {
               </div>
 
               {/* Elite Attributes Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 pt-4">
-                <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
-                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2 font-inter">Firmness</p>
-                  <p className="text-[11px] font-black text-blue-950 uppercase tracking-wider">{product.firmness}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 pt-8 border-t border-primary/5">
+                <div className="p-8 bg-secondary/10 border-r border-primary/5">
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Material</p>
+                  <p className="text-[12px] font-black text-primary uppercase tracking-widest">{product.material}</p>
                 </div>
-                <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
-                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2 font-inter">Material</p>
-                  <p className="text-[11px] font-black text-blue-950 uppercase tracking-wider">{product.material}</p>
+                <div className="p-8 bg-secondary/10 border-r border-primary/5">
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Gemstone</p>
+                  <p className="text-[12px] font-black text-primary uppercase tracking-widest">{product.gemstone}</p>
                 </div>
-                <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
-                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2 font-inter">Finishing</p>
-                  <p className="text-[11px] font-black text-blue-950 uppercase tracking-wider">{product.finishing}</p>
+                <div className="p-8 bg-secondary/10">
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Origin</p>
+                  <p className="text-[12px] font-black text-primary uppercase tracking-widest">{product.origin}</p>
                 </div>
               </div>
 
               {/* Description Reveal */}
-              <div className="space-y-6">
-                <p className="text-lg sm:text-xl text-slate-500 font-medium leading-relaxed font-inter">
+              <div className="space-y-10">
+                <p className="text-xl text-text-muted font-light leading-[1.8] max-w-2xl">
                   {product.description}
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6">
                   {product.features.map((f, i) => (
-                    <div key={i} className="flex items-center gap-3 text-[10px] font-black text-slate-400 uppercase tracking-widest font-inter">
-                      <div className="w-1.5 h-1.5 bg-sky-600 rounded-full" />
+                    <div key={i} className="flex items-center gap-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
+                      <div className="w-10 h-[1px] bg-accent/40" />
                       {f}
                     </div>
                   ))}
@@ -224,41 +219,41 @@ export default function ProductDetailsPage() {
               </div>
 
               {/* High-End Actions */}
-              <div className="pt-12 grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="pt-16 grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <button
                   onClick={() => addToCart(product as any, selectedVariant as any)}
-                  className="btn-elite group flex items-center justify-center gap-4"
+                  className="btn-primary flex items-center justify-center gap-4 py-6"
                 >
-                  <ShoppingCart className="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
-                  RESERVE NOW
+                  <ShoppingCart className="w-5 h-5" />
+                  RESERVE PIECE
                 </button>
                 <button
                   onClick={handleWhatsAppOrder}
-                  className="flex items-center justify-center gap-4 border-2 border-slate-100 font-black text-[10px] tracking-[0.3em] uppercase py-5 rounded-full hover:bg-green-50 hover:border-green-100 hover:text-green-600 transition-all active:scale-95 px-6"
+                  className="flex items-center justify-center gap-4 border border-primary/10 bg-white font-black text-[10px] tracking-[0.4em] uppercase py-6 rounded-none hover:bg-secondary transition-all active:scale-95 px-8 editorial-shadow"
                 >
-                  <MessageCircle className="w-4 h-4" />
-                  WHATSAPP CONCIERGE
+                  <MessageCircle className="w-5 h-5 text-green-600" />
+                  THE CONCIERGE
                 </button>
               </div>
 
               {/* Trust Indicators */}
-              <div className="pt-12 flex flex-col sm:flex-row flex-wrap gap-8 sm:gap-12">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-sky-600">
-                    <ShieldCheck className="w-6 h-6" />
+              <div className="pt-16 flex flex-col sm:flex-row flex-wrap gap-12 sm:gap-20 border-t border-primary/5">
+                <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 rounded-none bg-secondary flex items-center justify-center text-accent shadow-sm">
+                    <ShieldCheck className="w-8 h-8" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-blue-950 uppercase tracking-widest leading-none mb-1 font-inter">Authenticity</p>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none font-inter">Strictly Certified</p>
+                    <p className="text-[11px] font-black text-primary uppercase tracking-[0.3em] leading-none mb-2">Molecular Purity</p>
+                    <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest leading-none">Strictly Certified</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-sky-600">
-                    <Truck className="w-6 h-6" />
+                <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 rounded-none bg-secondary flex items-center justify-center text-accent shadow-sm">
+                    <Truck className="w-8 h-8" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-blue-950 uppercase tracking-widest leading-none mb-1 font-inter">Logistics</p>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none font-inter">White Glove Delivery</p>
+                    <p className="text-[11px] font-black text-primary uppercase tracking-[0.3em] leading-none mb-2">Secure Transit</p>
+                    <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest leading-none">Global Vault Delivery</p>
                   </div>
                 </div>
               </div>

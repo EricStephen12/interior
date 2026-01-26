@@ -19,15 +19,15 @@ export default function HeroSection() {
         className="absolute inset-0 z-0"
       >
         <Image
-          src="/images/hero/jason-wang-8J49mtYWu7E-unsplash.jpg"
-          alt="Luxury Furniture Hero"
+          src="/images/exricx/luxury_beauty_hero_v2_1769449281975.png"
+          alt="EXRICX BEAUTY Luxury Jewelry and Fragrance"
           fill
           priority
           className="object-cover scale-110"
         />
-        {/* Lighter overlays to show more image */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-white/60"></div>
-        <div className="absolute inset-0 bg-blue-950/5"></div>
+        {/* Editorial Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-b from-secondary/80 via-secondary/10 to-secondary/40"></div>
+        <div className="absolute inset-0 bg-primary/5 mix-blend-multiply"></div>
       </motion.div>
 
       {/* Main Theatrical Content - Simplified */}
@@ -39,32 +39,32 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
-            className="text-[10px] font-black tracking-[0.5em] text-blue-950 uppercase mb-4 sm:mb-6"
+            className="text-[10px] font-black tracking-[0.5em] text-primary uppercase mb-4 sm:mb-6"
           >
-            Smart Best Brands
+            EXRICX BEAUTY • TECH PRECISION
           </motion.p>
 
           {/* Simplified Editorial Title */}
-          <div className="mb-8 sm:mb-12">
+          <div className="mb-12 sm:mb-20">
             <h1 className="flex flex-col items-center">
               <span className="block overflow-hidden pb-1">
                 <motion.span
-                  initial={{ y: "100%" }}
+                  initial={{ y: "110%" }}
                   animate={{ y: 0 }}
-                  transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                  className="block text-5xl sm:text-7xl md:text-[9rem] lg:text-[12rem] font-black leading-[0.8] tracking-[-0.04em] text-blue-950 font-sans"
+                  transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+                  className="block text-6xl sm:text-8xl md:text-[10rem] lg:text-[14rem] text-luxury text-primary"
                 >
-                  PURE
+                  PRECISE
                 </motion.span>
               </span>
               <span className="block overflow-hidden">
                 <motion.span
-                  initial={{ y: "100%" }}
+                  initial={{ y: "110%" }}
                   animate={{ y: 0 }}
-                  transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                  className="block text-5xl sm:text-7xl md:text-[9rem] lg:text-[12rem] font-black leading-[0.8] tracking-[-0.04em] text-sky-600 font-display"
+                  transition={{ duration: 1.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                  className="block text-6xl sm:text-8xl md:text-[10rem] lg:text-[14rem] text-luxury text-accent"
                 >
-                  COMFORT.
+                  BEAUTY.
                 </motion.span>
               </span>
             </h1>
@@ -100,11 +100,11 @@ export default function HeroSection() {
         transition={{ delay: 1.5 }}
         className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4"
       >
-        <div className="w-[1px] h-12 bg-gradient-to-b from-blue-950 to-transparent">
+        <div className="w-[1px] h-12 bg-gradient-to-b from-primary to-transparent">
           <motion.div
             animate={{ y: [0, 48, 0] }}
             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-            className="w-full h-1/4 bg-sky-600"
+            className="w-full h-1/4 bg-accent"
           />
         </div>
       </motion.div>
