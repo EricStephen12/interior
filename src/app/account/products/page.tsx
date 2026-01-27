@@ -20,8 +20,8 @@ import Image from 'next/image';
 const mockAdminProducts = [
   {
     id: '1',
-    name: 'EXRICX Diamond Petal Necklace',
-    brand: 'EXRICX Signature',
+    name: 'SHARERS Diamond Petal Necklace',
+    brand: 'SHARERS Signature',
     category: 'Jewelry',
     price: 3950,
     stock: 12,
@@ -31,7 +31,7 @@ const mockAdminProducts = [
   {
     id: '2',
     name: 'L\'Or de Jardin Parfum',
-    brand: 'EXRICX Signature',
+    brand: 'SHARERS Signature',
     category: 'Fragrance',
     price: 245,
     stock: 0,
@@ -40,7 +40,7 @@ const mockAdminProducts = [
   },
   {
     id: '3',
-    name: 'EXRICX Pearl Droplets',
+    name: 'SHARERS Pearl Droplets',
     brand: 'Artisan Gold',
     category: 'Jewelry',
     price: 720,

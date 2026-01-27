@@ -16,14 +16,14 @@ export default function Footer() {
           <div className="space-y-10">
             <Link href="/" className="flex flex-col group">
               <span className="text-5xl md:text-7xl font-black tracking-[0.3em] leading-none text-white group-hover:text-accent transition-colors duration-500">
-                EXRICX
+                SHARERS
               </span>
               <span className="text-[10px] tracking-[0.6em] font-black text-accent uppercase mt-2">
-                BEAUTY • PRECISION
+                GYM • PRECISION
               </span>
             </Link>
             <p className="text-xl text-slate-400 font-medium leading-relaxed max-w-md">
-              Where technology meets the art of beauty. Born from the EXRICX tech lab, curated for the modern woman.
+              Where technology meets the art of GYM. Born from the SHARERS tech lab, curated for the modern woman.
             </p>
           </div>
 
@@ -46,21 +46,21 @@ export default function Footer() {
         {/* Middle Section: Links */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-32">
           <FooterSection
-            title="The Vault"
+            title="The Boutique"
             links={[
-              { label: 'Necklaces', href: '/products?category=Necklaces' },
-              { label: 'Rings', href: '/products?category=Rings' },
-              { label: 'Earrings', href: '/products?category=Earrings' },
-              { label: 'Signature Fragrance', href: '/products?category=Fragrance' }
+              { label: 'Memberships', href: '/products?category=Memberships' },
+              { label: 'Performance Training', href: '/products?category=Training' },
+              { label: 'Bio-Recovery', href: '/products?category=Recovery' },
+              { label: 'Arena Gear', href: '/products?category=Apparel' }
             ]}
           />
           <FooterSection
-            title="The Origin"
+            title="The Foundation"
             links={[
-              { label: 'The Lab', href: '/about' },
-              { label: 'EXRICX Tech', href: '#' },
-              { label: 'Contact Philanthropy', href: '/contact' },
-              { label: 'Global Concierge', href: '/faqs' }
+              { label: 'The Facility', href: '/about' },
+              { label: 'Elite Coaches', href: '#' },
+              { label: 'Contact Support', href: '/contact' },
+              { label: 'Member Concierge', href: '/faqs' }
             ]}
           />
           <FooterSection
@@ -85,7 +85,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">
                 <Mail className="w-4 h-4 text-accent" />
-                <span>lab@exricx.beauty</span>
+                <span>lab@SHARERS.GYM</span>
               </div>
             </div>
           </div>
@@ -94,7 +94,7 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="pt-12 border-t border-white/5 flex flex-row justify-between items-center gap-8">
           <p className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase">
-            © {currentYear} EXRICX BEAUTY. All Rights Reserved.
+            © {currentYear} SHARERS GYM. All Rights Reserved.
           </p>
           <div className="flex gap-8 text-[10px] font-black tracking-widest text-slate-500 uppercase">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>

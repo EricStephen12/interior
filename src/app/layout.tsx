@@ -29,9 +29,11 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "EXRICX BEAUTY - High-End Jewelry & Fragrance",
-  description: "Where tech-precision meets timeless beauty. Premium necklaces, rings, earrings, and signature perfumes from the house of EXRICX.",
+  title: "SHARERS GYM - Elite Performance & High-Tech Recovery",
+  description: "Experience the pinnacle of human potential. From master-tier coaching to hyper-oxygen recovery protocols by the house of SHARERS.",
 };
+
+import { MembershipProvider } from "@/lib/membership-context";
 
 export default function RootLayout({
   children,
@@ -43,11 +45,13 @@ export default function RootLayout({
       <body
         className={`${playfair.variable} ${inter.variable} ${crimson.variable} ${montserrat.variable} font-sans antialiased`}
       >
-        <CartProvider>
-          <Layout>
-            {children}
-          </Layout>
-        </CartProvider>
+        <MembershipProvider>
+          <CartProvider>
+            <Layout>
+              {children}
+            </Layout>
+          </CartProvider>
+        </MembershipProvider>
       </body>
     </html>
   );

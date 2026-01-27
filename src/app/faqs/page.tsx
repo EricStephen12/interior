@@ -5,8 +5,8 @@ import { Plus, Minus, Search } from 'lucide-react';
 
 const faqs = [
     {
-        question: "Are EXRICX pieces authenticated?",
-        answer: "Every piece from the EXRICX vault undergoes rigorous laboratory authentication. Jewelry is accompanied by a molecular certification and fragrances are verified for profile purity and age-stability."
+        question: "Are SHARERS pieces authenticated?",
+        answer: "Every piece from the SHARERS vault undergoes rigorous laboratory authentication. Jewelry is accompanied by a molecular certification and fragrances are verified for profile purity and age-stability."
     },
     {
         question: "What is the dispatch trajectory?",
@@ -35,7 +35,7 @@ export default function FAQPage() {
                 <div className="text-center mb-16 sm:mb-24">
                     <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-6 block">The Knowledge Base</span>
                     <h1 className="text-5xl md:text-7xl text-luxury text-primary mb-6">Common <br /><span className="text-accent italic">Inquiries.</span></h1>
-                    <p className="text-lg text-text-muted font-light uppercase tracking-widest">Protocol Information for EXRICX LUXURY.</p>
+                    <p className="text-lg text-text-muted font-light uppercase tracking-widest">Protocol Information for SHARERS LUXURY.</p>
                 </div>
 
                 <div className="space-y-6">

@@ -34,12 +34,14 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Left Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            <Link href="/products" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-colors text-xs uppercase tracking-widest`}>
-              JEWELRY
+          <nav className="hidden md:flex space-x-10">
+            <Link href="/products" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-all duration-500 text-[10px] uppercase tracking-[0.4em] relative group`}>
+              THE VAULT
+              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-accent transition-all duration-500 group-hover:w-full"></span>
             </Link>
-            <Link href="/products?category=Fragrance" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-colors text-xs uppercase tracking-widest`}>
-              FRAGRANCE
+            <Link href="/products?category=Training" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-all duration-500 text-[10px] uppercase tracking-[0.4em] relative group`}>
+              ARENA
+              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-accent transition-all duration-500 group-hover:w-full"></span>
             </Link>
           </nav>
 
@@ -53,28 +55,29 @@ export default function Header() {
                 }`}
               style={{ fontFamily: 'var(--font-montserrat)' }}
             >
-              EXRICX
+              SHARERS
             </motion.div>
             <span className={`text-[9px] tracking-[0.5em] font-black text-accent uppercase mt-1 ${isScrolled ? 'hidden' : 'block'}`}>
-              BEAUTY
+              GYM
             </span>
           </Link>
 
-          {/* Action Group - Visible on All Viewports */}
-          <div className="flex items-center gap-2 sm:gap-4 md:gap-8">
+          {/* Action Group */}
+          <div className="flex items-center gap-6 sm:gap-10">
             {/* Desktop Only Right Nav */}
-            <nav className="hidden md:flex items-center space-x-8 mr-4">
-              <Link href="/about" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-colors text-xs uppercase tracking-widest`}>
+            <nav className="hidden md:flex items-center space-x-10 mr-4">
+              <Link href="/about" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-all duration-500 text-[10px] uppercase tracking-[0.4em] relative group`}>
                 ABOUT
+                <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-accent transition-all duration-500 group-hover:w-full"></span>
               </Link>
-              <Link href="/contact" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-colors text-xs uppercase tracking-widest`}>
+              <Link href="/contact" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-all duration-500 text-[10px] uppercase tracking-[0.4em] relative group`}>
                 CONTACT
+                <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-accent transition-all duration-500 group-hover:w-full"></span>
               </Link>
-              <div className="h-4 w-[1px] bg-primary/10" />
             </nav>
 
-            <Link href="/account" className="px-5 py-2.5 bg-primary text-white hover:bg-accent transition-all duration-500 shadow-sm hidden sm:block">
-              <span className="text-[9px] font-black uppercase tracking-[0.2em]">Account</span>
+            <Link href="/dashboard" className="px-5 py-2.5 bg-primary text-white hover:bg-accent transition-all duration-500 shadow-sm hidden sm:block">
+              <span className="text-[9px] font-black uppercase tracking-[0.2em]">The Pass</span>
             </Link>
 
             {/* Cart Button - ALWAYS VISIBLE */}

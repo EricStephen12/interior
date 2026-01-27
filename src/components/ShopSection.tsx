@@ -16,87 +16,86 @@ import {
 import Image from 'next/image'
 import Link from 'next/link'
 
-const THE_COLLECTION = ['All', 'EXRICX Signature', 'Noir Collection', 'Luxe Lab', 'Artisan Gold']
-const CATEGORIES = ['All', 'Necklaces', 'Rings', 'Earrings', 'Fragrance']
-const SIZES = ['All', 'Standard', 'Petite', 'Custom']
-const PRICE_RANGES = ['All', 'Under $200', '$200 - $1,000', '$1,000 - $5,000', 'Above $5,000']
+const THE_COLLECTION = ['All', 'Sharers Elite', 'Performance Lab', 'Apparel Core', 'Boutique']
+const CATEGORIES = ['All', 'Memberships', 'Training', 'Recovery', 'Apparel', 'Nutrition']
+const SIZES = ['All', 'Annual', 'Monthly', 'Drop-in', 'Custom']
+const PRICE_RANGES = ['All', 'Under $100', '$100 - $500', '$500 - $2,000', 'Above $2,000']
 
 const mockProducts = [
   {
     id: '1',
-    name: 'EXRICX Diamond Petal Necklace',
-    brand: 'EXRICX Signature',
-    category: 'Necklaces',
-    size: 'Standard',
-    price: 4500,
-    promo_price: 3950,
+    name: 'Sharers Obsidian Black Membership',
+    brand: 'Sharers Elite',
+    category: 'Memberships',
+    size: 'Annual',
+    price: 3200,
+    promo_price: 2850,
     is_negotiable: false,
     images: [
-      '/images/exricx/luxury_diamond_necklace_1769449448575.png',
-      '/images/exricx/luxury_lifestyle_jewelry_1769449345647.png'
+      'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1593079831268-3381b0db4a77?auto=format&fit=crop&w=800&q=80'
     ],
-    description: 'A masterpiece of precision. Hand-set diamonds in a floral petal arrangement, suspended on an 18k white gold chain.',
+    description: 'The pinnacle of access. Full diagnostic analysis, 24/7 hyper-recovery access, and global concierge for the elite athlete.',
     in_stock: true,
   },
   {
     id: '2',
-    name: 'Lab-Grown Emerald Solitaire',
-    brand: 'Luxe Lab',
-    category: 'Rings',
+    name: 'Neural Peak Training Session',
+    brand: 'Performance Lab',
+    category: 'Training',
     size: 'Custom',
-    price: 1250,
+    price: 450,
     is_negotiable: false,
     images: [
-      '/images/exricx/luxury_gold_ring_1769449479727.png',
-      '/images/exricx/luxury_lifestyle_jewelry_1769449345647.png'
+      'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&w=800&q=80'
     ],
-    description: 'Technical precision meets natural beauty. A vibrant 2-carat emerald set in recycled 18k yellow gold.',
+    description: 'Master-tier performance coaching. Focused on biometric feedback, strength optimization, and mental threshold expansion.',
     in_stock: true,
   },
   {
     id: '3',
-    name: 'L\'Or de Jardin Parfum',
-    brand: 'EXRICX Signature',
-    category: 'Fragrance',
-    size: 'Standard',
-    price: 245,
+    name: 'Hyper-Oxygen Recovery Protocol',
+    brand: 'Performance Lab',
+    category: 'Recovery',
+    size: 'Drop-in',
+    price: 350,
     is_negotiable: false,
     images: [
-      '/images/exricx/luxury_perfume_detail_1769449375639.png',
-      '/images/exricx/luxury_beauty_hero_v2_1769449281975.png'
+      'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&w=800&q=80'
     ],
-    description: 'A scent born in the lab, inspired by nature. Notes of jasmine, golden amber, and tech-distilled cedar.',
+    description: 'A transformative recovery experience. Cryotherapy, hyperbaric oxygen, and compression therapy for zero-point reset.',
     in_stock: true,
   },
   {
     id: '4',
-    name: 'EXRICX Pearl Droplets',
-    brand: 'Artisan Gold',
-    category: 'Earrings',
+    name: 'Sharers Performance Tech-Knit',
+    brand: 'Apparel Core',
+    category: 'Apparel',
     size: 'Standard',
-    price: 850,
-    promo_price: 720,
+    price: 85,
     is_negotiable: false,
     images: [
-      '/images/exricx/luxury_earrings_pearl_1769449548067.png',
-      '/images/exricx/luxury_lifestyle_jewelry_1769449345647.png'
+      'https://images.unsplash.com/photo-1581009146145-b5ef03a74e7f?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80'
     ],
-    description: 'Lustrous south sea pearls suspended from intricate 14k white gold loops with micro-diamond accents.',
+    description: 'High-compression, moisture-wicking technology. Designed for max tactical movement and sleek aesthetic.',
     in_stock: true,
   },
   {
     id: '5',
-    name: 'EXRICX NOIR Signature',
-    brand: 'Noir Collection',
-    category: 'Fragrance',
+    name: 'Sharers NOIR Isolate Alpha',
+    brand: 'Boutique',
+    category: 'Nutrition',
     size: 'Standard',
     price: 320,
     is_negotiable: false,
     images: [
-      '/images/exricx/luxury_beauty_hero_v2_1769449281975.png',
-      '/images/exricx/luxury_perfume_detail_1769449375639.png'
+      'https://images.unsplash.com/photo-1593079831268-3381b0db4a77?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=800&q=80'
     ],
-    description: 'The ultimate expression of tech-luxury. A deep, mysterious fragrance for the modern woman.',
+    description: 'The ultimate performance blend. High-purity, bio-available isolate with trace minerals designed for lean recovery.',
     in_stock: true,
   },
 ]
@@ -171,7 +170,7 @@ export default function ShopSection() {
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               className="inline-block text-[10px] font-black tracking-[0.4em] text-accent uppercase mb-4 sm:mb-6"
             >
-              The Exricx Collection
+              The SHARERS Collection
             </motion.span>
             <motion.h3
               initial={{ opacity: 0, y: 30 }}
@@ -339,11 +338,22 @@ export default function ShopSection() {
         </motion.div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 sm:gap-y-16">
+        {/* Product Grid - Dynamic Editorial Spacing */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-8 gap-y-24 sm:gap-y-32">
           <AnimatePresence mode='popLayout'>
-            {filteredProducts.map((product, idx) => (
-              <ProductCard key={product.id} product={product} index={idx} />
-            ))}
+            {filteredProducts.map((product, idx) => {
+              // Create an editorial rhythm: 1 large, 2 small, 1 medium
+              const isLarge = idx % 4 === 0;
+              const isMedium = idx % 4 === 3;
+              const colSpan = isLarge ? 'lg:col-span-7' : isMedium ? 'lg:col-span-5' : 'lg:col-span-4';
+              const mt = idx % 2 === 1 ? 'lg:mt-32' : 'lg:mt-0'; // Staggered vertical rhythm
+
+              return (
+                <div key={product.id} className={`${colSpan} ${mt}`}>
+                  <ProductCard product={product} index={idx} isLarge={isLarge} />
+                </div>
+              );
+            })}
           </AnimatePresence>
         </div>
 
@@ -372,83 +382,87 @@ export default function ShopSection() {
   );
 }
 
-function ProductCard({ product, index }: { product: any, index: number }) {
+import { useMembership } from '@/lib/membership-context'
+import { useRouter } from 'next/navigation'
+
+function ProductCard({ product, index, isLarge }: { product: any, index: number, isLarge?: boolean }) {
   const [isHovered, setIsHovered] = useState(false)
+  const { subscribe } = useMembership()
+  const router = useRouter()
+
+  const handleAction = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (product.category === 'Memberships') {
+      subscribe(30) // Default 30 sessions for demo
+      router.push('/dashboard')
+    }
+  }
 
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8 }}
-      transition={{ duration: 0.5, delay: index * 0.05 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ duration: 0.8, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group"
+      className="group relative"
     >
-      <Link href={`/products/${product.id}`}>
-        <div className="relative aspect-[4/5] bg-secondary/10 overflow-hidden mb-8 cursor-pointer rounded-none border border-primary/5 group-hover:border-accent/20 transition-all duration-700">
+      <Link href={product.category === 'Memberships' ? '#' : `/products/${product.id}`} onClick={product.category === 'Memberships' ? handleAction : undefined}>
+        <div className={`relative ${isLarge ? 'aspect-[16/10]' : 'aspect-[4/5]'} overflow-hidden mb-10 cursor-pointer bg-secondary/50 shadow-sm transition-all duration-700`}>
           {/* Primary Image */}
           <Image
             src={product.images[0]}
             alt={product.name}
             fill
-            className={`object-cover transition-all duration-[2s] ease-out 
-            ${isHovered ? 'scale-110 opacity-0' : 'scale-100 opacity-100'}`}
-            sizes="(max-width: 768px) 100vw, 25vw"
+            className={`object-cover transition-all duration-[1.5s] ease-out 
+            ${isHovered ? 'scale-110' : 'scale-100'}`}
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
 
-          {/* Secondary Image - Reveal on Hover */}
-          {product.images[1] && (
-            <Image
-              src={product.images[1]}
-              alt={product.name}
-              fill
-              className={`object-cover transition-all duration-[1.5s] ease-out
-              ${isHovered ? 'scale-105 opacity-100' : 'scale-125 opacity-0'}`}
-              sizes="(max-width: 768px) 100vw, 25vw"
-            />
-          )}
-
-          {/* Glassmorphic Brand Tag */}
-          <div className="absolute top-6 left-6 z-10">
-            <span className="glass-light px-4 py-2 rounded-none text-[8px] font-black text-primary uppercase tracking-[0.3em] font-sans">
+          {/* Glass Overlay Tag - Editorial Signature */}
+          <div className="absolute top-8 left-8 z-10 flex flex-col gap-2">
+            <span className="glass-light px-6 py-2 rounded-none text-[8px] font-black text-primary uppercase tracking-[0.4em] font-sans">
               {product.brand}
             </span>
           </div>
 
-          {/* Quick Add Overlay */}
-          <div className={`absolute inset-0 bg-primary/5 transition-opacity duration-700 flex items-end justify-center p-8
+          {/* Quick Reveal Overlay */}
+          <div className={`absolute inset-0 bg-primary/20 backdrop-blur-[2px] transition-opacity duration-700 flex items-center justify-center
           ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-            <button className="w-full bg-primary text-white py-4 rounded-none tracking-[0.4em] uppercase text-[9px] font-black hover:bg-accent transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 shadow-2xl">
-              Add to Vault
+            <div className="h-40 w-[1px] bg-white opacity-50 absolute"></div>
+            <button
+              onClick={handleAction}
+              className="bg-white text-primary px-8 py-4 rounded-none tracking-[0.4em] uppercase text-[9px] font-black hover:bg-accent hover:text-white transition-all duration-500 transform scale-95 group-hover:scale-100 shadow-2xl z-10"
+            >
+              {product.category === 'Memberships' ? 'START THE PROTOCOL' : 'REVEAL DETAILS'}
             </button>
           </div>
+
+          {/* Subtle Grain Overlay */}
+          <div className="absolute inset-0 grain-overlay pointer-events-none opacity-10"></div>
         </div>
 
-        <div className="space-y-4 px-2 text-center lg:text-left">
-          <p className="text-[9px] font-black text-accent uppercase tracking-[0.4em]">
-            {product.category}
-          </p>
-          <h4 className="text-xl font-bold text-primary tracking-tight group-hover:text-accent transition-colors duration-500 h-14 overflow-hidden leading-tight font-display">
-            {product.name}
-          </h4>
-          <div className="flex items-center justify-center lg:justify-start gap-4">
-            <span className="text-2xl font-light text-primary tabular-nums">${product.price.toLocaleString()}</span>
-            {product.promo_price && (
-              <span className="text-xs text-text-muted line-through font-light tabular-nums">${product.promo_price.toLocaleString()}</span>
-            )}
+        <div className="space-y-6 px-4">
+          <div className="flex items-center gap-4">
+            <div className="h-[1px] w-8 bg-accent opacity-30"></div>
+            <p className="text-[9px] font-black text-accent uppercase tracking-[0.5em]">
+              {product.category}
+            </p>
           </div>
 
-          {/* Reveal Link */}
-          <div className="overflow-hidden pt-2 border-t border-primary/5">
-            <motion.div
-              animate={{ x: isHovered ? 10 : 0 }}
-              transition={{ duration: 0.5 }}
-              className="flex items-center gap-3 text-[9px] font-black text-accent tracking-[0.5em] uppercase cursor-pointer justify-center lg:justify-start"
-            >
-              Reveal Essence <ArrowRight className="w-4 h-4" />
-            </motion.div>
+          <h4 className={`text-luxury ${isLarge ? 'text-4xl sm:text-6xl' : 'text-2xl sm:text-3xl'} text-primary tracking-tight group-hover:text-accent transition-colors duration-500 leading-tight`}>
+            {product.name}
+          </h4>
+
+          <div className="flex items-baseline gap-6">
+            <span className="text-3xl font-light text-primary tabular-nums">${product.price.toLocaleString()}</span>
+            {product.promo_price && (
+              <span className="text-sm text-text-muted line-through font-light tabular-nums">${product.promo_price.toLocaleString()}</span>
+            )}
           </div>
         </div>
       </Link>

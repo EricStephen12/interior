@@ -69,7 +69,7 @@ export default function AccountLayout({
               <Home className="w-5 h-5 text-white" />
             </div>
             <h1 className="text-2xl font-black text-primary tracking-[0.2em] uppercase">
-              EXRICX
+              SHARERS
             </h1>
           </div>
           <p className="text-[9px] font-black uppercase tracking-[0.4em] text-accent underline decoration-accent/20 underline-offset-4">
@@ -170,7 +170,7 @@ export default function AccountLayout({
             <div className="bg-primary p-2 shadow-xl">
               <Home className="w-5 h-5 text-white" />
             </div>
-            <span className="font-black text-primary tracking-[0.2em] uppercase text-xl">EXRICX</span>
+            <span className="font-black text-primary tracking-[0.2em] uppercase text-xl">SHARERS</span>
           </Link>
           <button className="p-2 text-primary" onClick={() => setIsSidebarOpen(true)}>
             <Menu className="w-8 h-8" />

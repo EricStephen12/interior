@@ -60,7 +60,7 @@ export default function LoginPage() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full bg-transparent border-b border-primary/10 focus:border-accent rounded-none py-4 pl-10 pr-4 text-sm font-medium text-primary outline-none transition-all tabular-nums"
-                                placeholder="name@exricx.luxury"
+                                placeholder="name@SHARERS.luxury"
                             />
                         </div>
                     </div>

@@ -119,7 +119,7 @@ function AdminOverview() {
             {[1, 2].map((i) => (
               <div key={i} className="pb-8 border-b border-white/5 last:border-0 last:pb-0">
                 <p className="text-[10px] font-black text-accent uppercase tracking-[0.4em] mb-4 underline decoration-accent/20 underline-offset-4">Vault Alert</p>
-                <p className="text-base font-light leading-relaxed mb-6 opacity-80">EXRICX Diamond Petal Necklace (1.0ct) is nearing procurement depletion in the London lab.</p>
+                <p className="text-base font-light leading-relaxed mb-6 opacity-80">SHARERS Diamond Petal Necklace (1.0ct) is nearing procurement depletion in the London lab.</p>
                 <button className="text-[9px] font-black uppercase tracking-[0.4em] px-6 py-3 border border-white/10 rounded-none hover:bg-white hover:text-primary transition-all">Restock Protocol</button>
               </div>
             ))}
@@ -173,7 +173,7 @@ function CustomerOverview() {
                   </div>
                   <div>
                     <p className="text-[10px] font-black text-accent uppercase tracking-[0.4em] mb-2">Vault Protocol #EXR-BP-881</p>
-                    <h3 className="text-2xl font-bold text-primary tracking-tight mb-2">EXRICX Diamond Petal Necklace</h3>
+                    <h3 className="text-2xl font-bold text-primary tracking-tight mb-2">SHARERS Diamond Petal Necklace</h3>
                     <p className="text-xs text-text-muted font-medium uppercase tracking-widest opacity-60">Status: In Secure Transit • 48h Remaining</p>
                   </div>
                 </div>

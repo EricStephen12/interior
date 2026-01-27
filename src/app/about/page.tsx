@@ -6,20 +6,20 @@ export default function AboutPage() {
     return (
         <div className="pt-20">
             {/* Hero Header */}
-            <div className="bg-primary py-24 sm:py-32 text-center relative overflow-hidden">
+            <div className="bg-primary py-32 sm:py-48 text-center relative overflow-hidden">
                 {/* Subtle Background Accent */}
                 <div className="absolute inset-0 opacity-10 pointer-events-none">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/20 blur-[120px] rounded-full"></div>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/20 blur-[150px] rounded-full"></div>
                 </div>
 
                 <div className="max-w-5xl mx-auto px-4 relative z-10">
-                    <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-8 block">The Origin</span>
-                    <h1 className="text-6xl md:text-8xl text-luxury text-white mb-8">
-                        Precision as a <span className="text-accent italic">Philosophy.</span>
+                    <span className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-12 block">OUR ORIGIN</span>
+                    <h1 className="text-7xl md:text-9xl text-luxury text-white mb-12">
+                        Excellence as a <span className="text-accent italic font-light">Lifestyle.</span>
                     </h1>
-                    <p className="text-slate-400 text-xl md:text-2xl font-light leading-relaxed max-w-3xl mx-auto uppercase tracking-wide">
-                        Born from the tech lab. Perfected by the artisan. <br />
-                        The collision of engineering and elegance.
+                    <p className="text-slate-400 text-xl md:text-2xl font-light leading-relaxed max-w-3xl mx-auto uppercase tracking-[0.2em]">
+                        From the master's chair to the performance floor. <br />
+                        SHARERS is the collision of elite architecture and athletic power.
                     </p>
                 </div>
             </div>
@@ -29,28 +29,28 @@ export default function AboutPage() {
             </section>
 
             {/* Values Section */}
-            <section className="py-24 sm:py-32 bg-white">
+            <section className="py-32 sm:py-48 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-24">
                         <ValueCard
                             icon={ShieldCheck}
-                            title="Lab Certified"
-                            description="Every gemstone and essence is tech-verified for purity and molecular precision."
+                            title="Master Tier"
+                            description="Our coaches and physiotherapists are top-tier professionals dedicated to the science of human potential."
                         />
                         <ValueCard
                             icon={Award}
-                            title="24k Standard"
-                            description="Unapologetic quality. We settle for nothing less than the pinnacle of material excellence."
+                            title="Elite Gear"
+                            description="From custom-machined rack systems to medical-grade recovery labs, we settle for nothing less than the best."
                         />
                         <ValueCard
                             icon={Truck}
-                            title="Secure Vaulting"
-                            description="Global white-glove delivery, ensuring your essence arrives in pristine condition."
+                            title="White Glove"
+                            description="Global delivery for apparel and seamless digital pass check-ins, ensuring your journey is elite."
                         />
                         <ValueCard
                             icon={Heart}
-                            title="Member Registry"
-                            description="Bespoke service tailored to the modern woman. Your precision, our priority."
+                            title="The Pass"
+                            description="Flexible session tracking tailored to your lifestyle. Your performance, our priority."
                         />
                     </div>
                 </div>
@@ -59,9 +59,9 @@ export default function AboutPage() {
             {/* Brands Grid - Refined into Collections */}
             <section className="py-32 bg-secondary/30">
                 <div className="max-w-7xl mx-auto px-4 text-center">
-                    <h2 className="text-accent font-black tracking-[0.5em] text-[10px] uppercase mb-16 underline decoration-accent/20 underline-offset-8">Signature Collections</h2>
+                    <h2 className="text-accent font-black tracking-[0.5em] text-[10px] uppercase mb-16 underline decoration-accent/20 underline-offset-8">Signature Protocols</h2>
                     <div className="flex flex-wrap justify-center items-center gap-12 md:gap-32 opacity-40 grayscale hover:grayscale-0 transition-all duration-1000">
-                        {['EXRICX SIGNATURE', 'NOIR COLLECTION', 'LUXE LAB', 'ARTISAN GOLD'].map(collection => (
+                        {['SHARERS ELITE', 'PERFORMANCE LAB', 'APPAREL CORE', 'BOUTIQUE'].map(collection => (
                             <span key={collection} className="text-xl md:text-2xl font-black text-primary tracking-[0.3em] font-sans">{collection}</span>
                         ))}
                     </div>

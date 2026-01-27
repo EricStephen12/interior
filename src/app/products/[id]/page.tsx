@@ -18,44 +18,54 @@ import { motion } from 'framer-motion';
 
 const product = {
   id: '1',
-  name: 'EXRICX Diamond Petal Necklace',
-  brand: 'EXRICX Signature',
-  description: 'A masterpiece of precision engineering and artisanal craft. Hand-set diamonds in a fluid floral petal arrangement, suspended on an 18k white gold chain. Designed in the EXRICX tech lab for the modern woman who demands molecular perfection.',
-  material: '18k White Gold',
-  gemstone: 'D-Color VVS1 Diamonds',
-  origin: 'EXRICX Tech Lab',
+  name: 'Sharers Obsidian Black Pass',
+  brand: 'Sharers Elite',
+  description: 'The definitive membership for the modern athlete. The Obsidian Black Pass grants unlimited access to the SHARERS performance floor, neural-recovery labs, and bespoke biomechanical coaching. This is not just entry; it is an invitation to peak evolution.',
+  material: 'Digital Asset / Biometric',
+  gemstone: 'Unlimited Access',
+  origin: 'SHARERS Performance Floor',
   isNegotiable: false,
   features: [
-    'Conflict-free lab-certified diamonds',
-    'Molecular-level precision setting',
-    'Hand-finished 18k white gold',
-    'Signature EXRICX authentication chip'
+    'Unlimited performance floor access',
+    'Daily Bio-Recovery protocol sessions',
+    'Personal Biometric dashboard',
+    'Priority Neural-Reset booking'
   ],
   images: [
-    '/images/exricx/luxury_diamond_necklace_1769449448575.png',
-    '/images/exricx/luxury_lifestyle_jewelry_1769449345647.png'
+    'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1593079831268-3381b0db4a77?auto=format&fit=crop&w=800&q=80'
   ],
   variants: [
-    { id: 'v1', size: { name: '0.5 Carat Total' }, price: 2500, promo_price: 2100 },
-    { id: 'v2', size: { name: '1.0 Carat Total' }, price: 4500, promo_price: 3950 },
-    { id: 'v3', size: { name: '2.5 Carat Total' }, price: 9800, promo_price: 8900 },
-    { id: 'v4', size: { name: '5.0 Carat Statement' }, price: 18500, promo_price: 16500 }
+    { id: 'v1', size: { name: '30 Sessions / Flex' }, price: 450, promo_price: 395 },
+    { id: 'v2', size: { name: 'Annual / Unlimited' }, price: 3200, promo_price: 2850 },
+    { id: 'v3', size: { name: 'Founder / Lifetime' }, price: 12500, promo_price: 11000 }
   ]
 };
 
+import { useMembership } from '@/lib/membership-context';
+import { useRouter } from 'next/navigation';
+
 export default function ProductDetailsPage() {
   const { addToCart } = useCart();
-  const [selectedVariant, setSelectedVariant] = useState(product.variants[2]);
+  const { subscribe } = useMembership();
+  const router = useRouter();
+  const [selectedVariant, setSelectedVariant] = useState(product.variants[1]);
   const [activeImage, setActiveImage] = useState(product.images[0]);
 
+  const handleAction = () => {
+    // If it's the membership pass, trigger subscribe
+    subscribe(30);
+    router.push('/dashboard');
+  };
+
   const handleWhatsAppOrder = () => {
-    const text = `Hello EXRICX BEAUTY, I would like to order the ${product.name} (${selectedVariant.size.name}). Current Price: $${(selectedVariant.promo_price || selectedVariant.price).toLocaleString()}. URL: ${window.location.href}`;
+    const text = `Hello SHARERS GYM, I would like to inquire about the ${product.name} (${selectedVariant.size.name}). Current Price: $${(selectedVariant.promo_price || selectedVariant.price).toLocaleString()}. URL: ${window.location.href}`;
     const encodedText = encodeURIComponent(text);
     window.open(`https://wa.me/2349033333333?text=${encodedText}`, '_blank');
   };
 
   return (
-    <div className="pt-24 sm:pt-32 pb-24 bg-white selection:bg-secondary/30">
+    <div className="pt-24 sm:pt-32 pb-24 bg-white selection:bg-secondary/30 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <motion.div
@@ -92,7 +102,7 @@ export default function ProductDetailsPage() {
 
               <div className="absolute bottom-8 left-8 z-10">
                 <span className="glass-light px-6 py-3 rounded-none text-[10px] font-black text-primary uppercase tracking-[0.4em] border border-white/20">
-                  {product.brand} • LAB CERTIFIED
+                  {product.brand} • ELITE TIER
                 </span>
               </div>
             </motion.div>
@@ -130,7 +140,7 @@ export default function ProductDetailsPage() {
             >
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-black text-accent uppercase tracking-[0.6em]">
-                  The Signature Series
+                  Performance Protocols
                 </span>
                 <button className="w-12 h-12 rounded-none border border-slate-100 flex items-center justify-center text-slate-200 hover:text-accent hover:border-accent transition-all active:scale-95">
                   <Heart className="w-5 h-5" />
@@ -146,7 +156,7 @@ export default function ProductDetailsPage() {
                   {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-4 h-4 fill-current" />)}
                 </div>
                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">
-                  Verified Laboratory Essence
+                  Elite Performance Verification
                 </span>
               </div>
 
@@ -168,7 +178,7 @@ export default function ProductDetailsPage() {
                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.5em] text-slate-400">
                   <span>Investment Grade</span>
                   <span className="text-accent cursor-pointer flex items-center gap-2 group">
-                    Authentication Protocol <ChevronRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                    Elite Onboarding <ChevronRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
                   </span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -190,15 +200,15 @@ export default function ProductDetailsPage() {
               {/* Elite Attributes Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 pt-8 border-t border-primary/5">
                 <div className="p-8 bg-secondary/10 border-r border-primary/5">
-                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Material</p>
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Tier</p>
                   <p className="text-[12px] font-black text-primary uppercase tracking-widest">{product.material}</p>
                 </div>
                 <div className="p-8 bg-secondary/10 border-r border-primary/5">
-                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Gemstone</p>
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Access</p>
                   <p className="text-[12px] font-black text-primary uppercase tracking-widest">{product.gemstone}</p>
                 </div>
                 <div className="p-8 bg-secondary/10">
-                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Origin</p>
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Location</p>
                   <p className="text-[12px] font-black text-primary uppercase tracking-widest">{product.origin}</p>
                 </div>
               </div>
@@ -221,17 +231,17 @@ export default function ProductDetailsPage() {
               {/* High-End Actions */}
               <div className="pt-16 grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <button
-                  onClick={() => addToCart(product as any, selectedVariant as any)}
+                  onClick={handleAction}
                   className="btn-primary flex items-center justify-center gap-4 py-6"
                 >
                   <ShoppingCart className="w-5 h-5" />
-                  RESERVE PIECE
+                  START PROTOCOL
                 </button>
                 <button
                   onClick={handleWhatsAppOrder}
                   className="flex items-center justify-center gap-4 border border-primary/10 bg-white font-black text-[10px] tracking-[0.4em] uppercase py-6 rounded-none hover:bg-secondary transition-all active:scale-95 px-8 editorial-shadow"
                 >
-                  <MessageCircle className="w-5 h-5 text-green-600" />
+                  <MessageCircle className="w-5 h-5 text-indigo-600" />
                   THE CONCIERGE
                 </button>
               </div>
@@ -243,8 +253,8 @@ export default function ProductDetailsPage() {
                     <ShieldCheck className="w-8 h-8" />
                   </div>
                   <div>
-                    <p className="text-[11px] font-black text-primary uppercase tracking-[0.3em] leading-none mb-2">Molecular Purity</p>
-                    <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest leading-none">Strictly Certified</p>
+                    <p className="text-[11px] font-black text-primary uppercase tracking-[0.3em] leading-none mb-2">Biometric verified</p>
+                    <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest leading-none">High-Purity Standards</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-6">
@@ -252,8 +262,8 @@ export default function ProductDetailsPage() {
                     <Truck className="w-8 h-8" />
                   </div>
                   <div>
-                    <p className="text-[11px] font-black text-primary uppercase tracking-[0.3em] leading-none mb-2">Secure Transit</p>
-                    <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest leading-none">Global Vault Delivery</p>
+                    <p className="text-[11px] font-black text-primary uppercase tracking-[0.3em] leading-none mb-2">Instant access</p>
+                    <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest leading-none">Official Member Registry</p>
                   </div>
                 </div>
               </div>
@@ -261,6 +271,7 @@ export default function ProductDetailsPage() {
           </div>
         </div>
       </div>
+      <div className="absolute inset-0 grain-overlay pointer-events-none opacity-5"></div>
     </div>
   );
 }

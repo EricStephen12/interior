@@ -166,11 +166,11 @@ export default function DeliveryPage() {
               <div className="space-y-6 relative z-10">
                 <div className="flex items-center space-x-4">
                   <PhoneIcon className="h-5 w-5 text-accent" />
-                  <span className="text-white/80 font-medium tracking-wide">+44 (0) 20 EXRICX LUX</span>
+                  <span className="text-white/80 font-medium tracking-wide">+44 (0) 20 SHARERS LUX</span>
                 </div>
                 <div className="flex items-center space-x-4">
                   <ShieldCheckIcon className="h-5 w-5 text-accent" />
-                  <span className="text-white/80 font-medium tracking-wide">logistics@exricx.beauty</span>
+                  <span className="text-white/80 font-medium tracking-wide">logistics@SHARERS.GYM</span>
                 </div>
               </div>
 
@@ -199,7 +199,7 @@ export default function DeliveryPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
               <div>
                 <h3 className="font-bold text-primary uppercase text-sm mb-4 tracking-[0.2em]">Is the packaging discreet?</h3>
-                <p className="text-text-muted text-sm leading-relaxed">Absolutely. All EXRICX piece shipments use unmarked security outer-casing to ensure privacy and protection.</p>
+                <p className="text-text-muted text-sm leading-relaxed">Absolutely. All SHARERS piece shipments use unmarked security outer-casing to ensure privacy and protection.</p>
               </div>
 
               <div>

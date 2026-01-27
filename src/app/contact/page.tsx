@@ -14,7 +14,7 @@ export default function ContactPage() {
                 The <span className="text-accent italic">Concierge.</span>
               </h1>
               <p className="text-xl text-text-muted font-light leading-relaxed">
-                Experience unparalleled support. Whether you require a private lab consultation, order logistics, or bespoke jewelry design, the EXRICX concierge is at your service.
+                Experience unparalleled support. Whether you require a private coaching consultation, membership logistics, or bespoke recovery protocol design, the SHARERS concierge is at your service.
               </p>
             </div>
 
@@ -27,17 +27,17 @@ export default function ContactPage() {
               />
               <ContactInfo
                 icon={Mail}
-                title="Global Office"
-                value="lab@exricx.beauty"
+                title="Performance Lab"
+                value="ops@SHARERS.GYM"
               />
               <ContactInfo
                 icon={Phone}
-                title="Concierge"
-                value="+234 (0) 900 EXRICX"
+                title="The Concierge"
+                value="+234 (0) 900 SHARERS"
               />
               <ContactInfo
                 icon={MapPin}
-                title="The Lab"
+                title="The Arena"
                 value="Lagos • London • Dubai"
               />
             </div>

@@ -6,7 +6,7 @@ export default function RefundPage() {
             <div className="max-w-4xl mx-auto px-4 prose prose-slate prose-lg">
                 <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-6 block">Investment Protection</span>
                 <h1 className="text-5xl md:text-7xl text-luxury text-primary mb-12">Exchange <span className="text-accent italic">Registry.</span></h1>
-                <p className="text-text-muted font-light leading-relaxed mb-12 text-xl">We ensure your total satisfaction with the EXRICX collection. Please review our laboratory exchange protocols.</p>
+                <p className="text-text-muted font-light leading-relaxed mb-12 text-xl">We ensure your total satisfaction with the SHARERS collection. Please review our laboratory exchange protocols.</p>
 
                 <h2 className="text-2xl font-bold text-primary mt-16 mb-6 uppercase tracking-widest border-l-4 border-accent pl-6">1. Essence Curation</h2>
                 <p className="text-text-muted font-light leading-relaxed">For hygiene and profile preservation, signature fragrances cannot be returned once the molecular seal has been compromised or atmo-locked packaging opened.</p>
@@ -18,7 +18,7 @@ export default function RefundPage() {
                 <p className="text-text-muted font-light leading-relaxed">Eligible valuation adjustments will be processed within 7-14 business days via the original encrypted payment channel.</p>
 
                 <div className="mt-20 pt-12 border-t border-primary/5">
-                    <p className="text-[10px] font-black text-accent uppercase tracking-[0.5em]">EXRICX BEAUTY • EST. 2026</p>
+                    <p className="text-[10px] font-black text-accent uppercase tracking-[0.5em]">SHARERS GYM • EST. 2026</p>
                 </div>
             </div>
         </div>

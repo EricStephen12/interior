@@ -9,7 +9,10 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-white relative">
+      {/* Global Grain Texture Overlay */}
+      <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03] grain-overlay"></div>
+
       <Header />
       <main className="flex-1">
         {children}

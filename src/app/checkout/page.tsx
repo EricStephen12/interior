@@ -31,7 +31,7 @@ export default function CheckoutPage() {
     e.preventDefault();
 
     const itemsList = state.items.map(i => `${i.product?.name} (${i.variant?.size?.name}) x${i.quantity}`).join(', ');
-    const text = `EXRICX BEAUTY - Secure Vaulting Details:
+    const text = `SHARERS GYM - Secure Vaulting Details:
 Name: ${formData.name}
 Phone: ${formData.phone}
 Address: ${formData.address}
@@ -218,7 +218,7 @@ Protocol: ${paymentMethod === 'whatsapp' ? 'Concierge Confirmation' : 'Direct En
 
               <div className="text-center mt-8 relative z-10">
                 <p className="text-[10px] text-accent font-black uppercase tracking-[0.5em] opacity-40">
-                  EXRICX BEAUTY • AUTHENTICATED
+                  SHARERS GYM • AUTHENTICATED
                 </p>
               </div>
             </div>
