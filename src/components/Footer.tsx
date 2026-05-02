@@ -8,28 +8,28 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-primary text-white pt-32 pb-12 overflow-hidden relative border-t border-accent/10">
+    <footer className="bg-primary text-white pt-16 sm:pt-32 pb-12 overflow-hidden relative border-t border-accent/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Top Section: Theatrical Brand Call */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 mb-32">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-20 mb-16 sm:mb-32">
           <div className="space-y-10">
             <Link href="/" className="flex flex-col group">
-              <span className="text-5xl md:text-7xl font-black tracking-[0.3em] leading-none text-white group-hover:text-accent transition-colors duration-500">
+              <span className="text-3xl sm:text-5xl md:text-7xl font-black tracking-[0.3em] leading-none text-white group-hover:text-accent transition-colors duration-500">
                 SHARERS
               </span>
               <span className="text-[10px] tracking-[0.6em] font-black text-accent uppercase mt-2">
                 GYM • PRECISION
               </span>
             </Link>
-            <p className="text-xl text-slate-400 font-medium leading-relaxed max-w-md">
-              Where technology meets the art of GYM. Born from the SHARERS tech lab, curated for the modern woman.
+            <p className="text-base sm:text-xl text-slate-400 font-medium leading-relaxed max-w-md">
+              Where the body catches up to the will. Trained here. Built for life.
             </p>
           </div>
 
           <div className="glass-dark p-12 rounded-none border border-white/5 space-y-8 self-center">
             <h4 className="text-[10px] font-black tracking-[0.4em] text-accent uppercase">Newsletter</h4>
-            <h3 className="text-3xl font-bold tracking-tight">The Lab Report.</h3>
+            <h3 className="text-xl sm:text-3xl font-bold tracking-tight">Stay updated.</h3>
             <div className="relative">
               <input
                 type="email"
@@ -44,18 +44,18 @@ export default function Footer() {
         </div>
 
         {/* Middle Section: Links */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-32">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16 sm:mb-32">
           <FooterSection
-            title="The Boutique"
+            title="Shop"
             links={[
-              { label: 'Memberships', href: '/products?category=Memberships' },
+              { label: 'The Pass', href: '/dashboard' },
               { label: 'Performance Training', href: '/products?category=Training' },
-              { label: 'Bio-Recovery', href: '/products?category=Recovery' },
-              { label: 'Arena Gear', href: '/products?category=Apparel' }
+              { label: 'Recovery', href: '/products?category=Recovery' },
+              { label: 'Apparel', href: '/products?category=Apparel' }
             ]}
           />
           <FooterSection
-            title="The Foundation"
+            title="Our Company"
             links={[
               { label: 'The Facility', href: '/about' },
               { label: 'Elite Coaches', href: '#' },
@@ -97,6 +97,7 @@ export default function Footer() {
             © {currentYear} SHARERS GYM. All Rights Reserved.
           </p>
           <div className="flex gap-8 text-[10px] font-black tracking-widest text-slate-500 uppercase">
+            <Link href="/dashboard" className="px-5 py-2.5 bg-primary text-white hover:bg-accent transition-all duration-500 shadow-sm hidden sm:block">JOIN NOW</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Legal</Link>
           </div>

@@ -5,24 +5,24 @@ import { Plus, Minus, Search } from 'lucide-react';
 
 const faqs = [
     {
-        question: "Are SHARERS pieces authenticated?",
-        answer: "Every piece from the SHARERS vault undergoes rigorous laboratory authentication. Jewelry is accompanied by a molecular certification and fragrances are verified for profile purity and age-stability."
+        question: "What is 'The Pass'?",
+        answer: "The Pass is your all-access membership to SHARERS GYM. It gives you 24/7 access to our training and recovery areas. No complex tiers—just one simple plan for progress."
     },
     {
-        question: "What is the dispatch trajectory?",
-        answer: "Global express vaulting typically takes 3-7 business days. Priority members receive dispatch verification within 2 laboratory hours of order finalization."
+        question: "How do I use my sessions?",
+        answer: "Just scan your digital pass (QR code) at the entrance. Your dashboard will automatically track your entry and update your session history in real-time."
     },
     {
-        question: "Protocol for bespoke curation?",
-        answer: "Secure payments are processed via our encrypted gateway. For bespoke diamond curation or private fragrance batching, please initiate a Concierge Protocol via WhatsApp for personalized invoicing."
+        question: "How much does it cost?",
+        answer: "The Pass is ₦25,000 per month. If you're serious about the long run, our yearly plan is ₦250,000, giving you two months of training for free."
     },
     {
-        question: "Return and Exchange Registry?",
-        answer: "Due to the intimate nature of signature fragrances and molecular jewelry certifications, returns are only accepted for structural lab defects. Exchanges are available within 14 days for pristine, unsealed pieces."
+        question: "Can I pause my membership?",
+        answer: "Yes. We believe in results, not contracts. If you need to step away, you can pause your membership directly from your dashboard or send us a message."
     },
     {
-        question: "Bespoke Corporate Procurement?",
-        answer: "We offer tailored curation for private events and corporate registries. Please contact our Global Concierge for volume-based investment protocols."
+        question: "Where are the facilities?",
+        answer: "We currently have flagship locations in Lagos and London. Both facilities are equipped with top-tier training gear and advanced recovery labs."
     }
 ];
 

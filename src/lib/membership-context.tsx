@@ -36,19 +36,36 @@ const INITIAL_STATE: MembershipState = {
 export function MembershipProvider({ children }: { children: React.ReactNode }) {
     const [state, setState] = useState<MembershipState>(INITIAL_STATE)
 
-    // Load from local storage for demo persistence
+    // Load from DB instead of local storage
     useEffect(() => {
-        const saved = localStorage.getItem('sharers_membership')
-        if (saved) {
-            setState(JSON.parse(saved))
+        const fetchMembership = async () => {
+            try {
+                const res = await fetch('/api/membership')
+                if (res.ok) {
+                    const data = await res.json()
+                    if (data.user) {
+                        setState({
+                            hasActiveMembership: data.user.tier !== 'NONE',
+                            totalCredits: data.user.credits + data.user.checkIns.length,
+                            remainingCredits: data.user.credits,
+                            memberId: data.user.memberId,
+                            checkInHistory: data.user.checkIns.map((c: any) => ({
+                                id: c.id,
+                                date: c.date,
+                                protocol: c.protocol
+                            }))
+                        })
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to fetch membership', err)
+            }
         }
+        fetchMembership()
     }, [])
 
-    useEffect(() => {
-        localStorage.setItem('sharers_membership', JSON.stringify(state))
-    }, [state])
-
     const subscribe = (credits: number) => {
+        // Optimistic UI update - actual DB update happens in /api/checkout
         setState(prev => ({
             ...prev,
             hasActiveMembership: true,
@@ -57,32 +74,38 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
         }))
     }
 
-    const checkIn = (protocol: string) => {
-        setState(prev => {
-            if (prev.remainingCredits <= 0) {
-                console.log("SHARERS LOG: No credits remaining");
-                return prev;
+    const checkIn = async (protocol: string) => {
+        try {
+            const res = await fetch('/api/membership', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'CHECK_IN', protocol })
+            })
+
+            if (res.ok) {
+                const data = await res.json()
+                if (data.user) {
+                    setState({
+                        hasActiveMembership: data.user.tier !== 'NONE',
+                        totalCredits: data.user.credits + data.user.checkIns.length,
+                        remainingCredits: data.user.credits,
+                        memberId: data.user.memberId,
+                        checkInHistory: data.user.checkIns.map((c: any) => ({
+                            id: c.id,
+                            date: c.date,
+                            protocol: c.protocol
+                        }))
+                    })
+                }
             }
-
-            const newCheckIn: CheckIn = {
-                id: Math.random().toString(36).substr(2, 9),
-                date: new Date().toISOString(),
-                protocol
-            };
-
-            console.log("SHARERS LOG: Checked in to", protocol);
-
-            return {
-                ...prev,
-                remainingCredits: prev.remainingCredits - 1,
-                checkInHistory: [newCheckIn, ...prev.checkInHistory]
-            };
-        });
+        } catch (err) {
+            console.error('Failed to check in', err)
+        }
     }
 
     const resetMembership = () => {
         setState(INITIAL_STATE);
-        localStorage.removeItem('sharers_membership');
+        // We omit DB reset for safety, just reset local UI
     }
 
     return (

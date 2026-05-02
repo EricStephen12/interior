@@ -33,14 +33,9 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Left Navigation */}
           <nav className="hidden md:flex space-x-10">
-            <Link href="/products" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-all duration-500 text-[10px] uppercase tracking-[0.4em] relative group`}>
-              THE VAULT
-              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-accent transition-all duration-500 group-hover:w-full"></span>
-            </Link>
-            <Link href="/products?category=Training" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-all duration-500 text-[10px] uppercase tracking-[0.4em] relative group`}>
-              ARENA
+            <Link href="/blog" className={`${isScrolled ? 'text-primary font-bold' : 'text-primary font-medium'} hover:text-accent transition-all duration-500 text-[10px] uppercase tracking-[0.4em] relative group`}>
+              JOURNAL
               <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-accent transition-all duration-500 group-hover:w-full"></span>
             </Link>
           </nav>
@@ -77,7 +72,7 @@ export default function Header() {
             </nav>
 
             <Link href="/dashboard" className="px-5 py-2.5 bg-primary text-white hover:bg-accent transition-all duration-500 shadow-sm hidden sm:block">
-              <span className="text-[9px] font-black uppercase tracking-[0.2em]">The Pass</span>
+              <span className="text-[9px] font-black uppercase tracking-[0.2em]">JOIN NOW</span>
             </Link>
 
             {/* Cart Button - ALWAYS VISIBLE */}
@@ -130,29 +125,36 @@ export default function Header() {
               className={`block transition-colors uppercase text-sm font-black tracking-[0.3em] ${isScrolled ? 'text-primary hover:text-accent' : 'text-primary hover:text-accent'}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              The Vault
+              SHOP
+            </Link>
+            <Link
+              href="/blog"
+              className={`block transition-colors uppercase text-sm font-black tracking-[0.3em] ${isScrolled ? 'text-primary hover:text-accent' : 'text-primary hover:text-accent'}`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              JOURNAL
             </Link>
             <Link
               href="/about"
               className={`block transition-colors uppercase text-sm font-black tracking-[0.3em] ${isScrolled ? 'text-primary hover:text-accent' : 'text-primary hover:text-accent'}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              The Lab
+              ABOUT
             </Link>
             <Link
               href="/contact"
               className={`block transition-colors uppercase text-sm font-black tracking-[0.3em] ${isScrolled ? 'text-primary hover:text-accent' : 'text-primary hover:text-accent'}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              Concierge
+              CONTACT
             </Link>
             <div className={`h-[1px] w-full ${isScrolled ? 'bg-primary/5' : 'bg-primary/10'}`} />
             <Link
-              href="/account"
+              href="/dashboard"
               className={`block transition-colors uppercase text-xs font-black tracking-[0.4em] ${isScrolled ? 'text-accent hover:text-primary' : 'text-accent hover:text-primary'}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              Member Access
+              THE PASS
             </Link>
           </div>
         </motion.div>

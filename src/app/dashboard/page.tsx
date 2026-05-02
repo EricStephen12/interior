@@ -36,8 +36,8 @@ export default function DashboardPage() {
                     className="mb-16 md:mb-24"
                 >
                     <p className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-4">THE MEMBER PROTOCOL</p>
-                    <h1 className="text-6xl md:text-8xl lg:text-[10rem] text-luxury text-primary leading-none tracking-tighter">
-                        ELITE <br />
+                    <h1 className="text-5xl sm:text-7xl md:text-[8rem] lg:text-[10rem] text-luxury text-primary leading-none tracking-tighter">
+                        THE <br />
                         <span className="text-accent italic font-light">DASHBOARD.</span>
                     </h1>
                 </motion.div>
@@ -91,7 +91,7 @@ export default function DashboardPage() {
                                     icon={Clock}
                                 />
                                 <StatCard
-                                    label="ELITE TIER"
+                                    label="ACCESS TIER"
                                     value="BLACK"
                                     desc="Obsidian Member level"
                                     icon={Award}
@@ -107,15 +107,15 @@ export default function DashboardPage() {
                             {/* Activity Log - Editorial List */}
                             <motion.div variants={item} className="space-y-12">
                                 <div className="flex items-end justify-between border-b border-primary/10 pb-8">
-                                    <h3 className="text-4xl text-luxury text-primary">Protocol <span className="text-accent italic">History.</span></h3>
-                                    <span className="text-[10px] font-black tracking-widest text-text-muted">LATEST UPDATES</span>
+                                    <h3 className="text-3xl sm:text-4xl text-luxury text-primary">Protocol <span className="text-accent italic">History.</span></h3>
+                                    <span className="text-[10px] font-black tracking-widest text-text-muted hidden sm:block">LATEST UPDATES</span>
                                 </div>
 
                                 {state.checkInHistory.length === 0 ? (
                                     <div className="py-20 text-center border border-dashed border-primary/10">
-                                        <p className="text-text-muted font-medium mb-8">No protocol sessions detected in our logs.</p>
+                                        <p className="text-text-muted font-medium mb-8">You haven't stepped in yet. Time to get to work.</p>
                                         <Link href="/products">
-                                            <button className="text-[10px] font-black text-accent tracking-[0.4em] uppercase border-b border-accent pb-2">SUBSCRIBE NOW &rarr;</button>
+                                            <button className="text-[10px] font-black text-accent tracking-[0.4em] uppercase border-b border-accent pb-2">START THE PROTOCOL &rarr;</button>
                                         </Link>
                                     </div>
                                 ) : (
@@ -153,10 +153,10 @@ export default function DashboardPage() {
                                 className="relative overflow-hidden bg-primary p-12 md:p-20 text-white"
                             >
                                 <div className="relative z-10 space-y-8 max-w-xl">
-                                    <p className="text-[10px] font-black tracking-[0.5em] text-accent-light uppercase">BIO-LAB ACCESS</p>
-                                    <h3 className="text-5xl md:text-7xl text-luxury leading-none">Optimize your <br /> Recovery.</h3>
+                                    <p className="text-[10px] font-black tracking-[0.5em] text-accent-light uppercase">RECOVERY LOUNGE</p>
+                                    <h3 className="text-4xl sm:text-5xl md:text-7xl text-luxury leading-none">Accelerate <br /> Recovery.</h3>
                                     <p className="text-white/60 font-medium leading-relaxed">
-                                        Your SHARERS membership grants you priority booking for hyper-oxygen and neural-reset sessions. Never skip growth.
+                                        The work doesn't end when the set does. Recovery is where the body actually changes — and this protocol makes sure you don't leave that part to chance.
                                     </p>
                                     <button className="text-[10px] font-black tracking-[0.5em] uppercase border-b-2 border-accent pb-4 hover:tracking-[0.8em] transition-all duration-700">
                                         BOOK RECOVERY &rarr;

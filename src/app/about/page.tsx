@@ -1,12 +1,18 @@
 import React from 'react';
 import StorySection from '@/components/StorySection';
 import { Truck, ShieldCheck, Heart, Award } from 'lucide-react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Our Story",
+  description: "Learn about the origin of SHARERS GYM. Where elite architecture meets athletic power, creating a collision of performance and design.",
+};
 
 export default function AboutPage() {
     return (
         <div className="pt-20">
             {/* Hero Header */}
-            <div className="bg-primary py-32 sm:py-48 text-center relative overflow-hidden">
+            <div className="bg-primary py-20 sm:py-48 text-center relative overflow-hidden">
                 {/* Subtle Background Accent */}
                 <div className="absolute inset-0 opacity-10 pointer-events-none">
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/20 blur-[150px] rounded-full"></div>
@@ -14,10 +20,10 @@ export default function AboutPage() {
 
                 <div className="max-w-5xl mx-auto px-4 relative z-10">
                     <span className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-12 block">OUR ORIGIN</span>
-                    <h1 className="text-7xl md:text-9xl text-luxury text-white mb-12">
+                    <h1 className="text-5xl sm:text-7xl md:text-9xl text-luxury text-white mb-8 sm:mb-12">
                         Excellence as a <span className="text-accent italic font-light">Lifestyle.</span>
                     </h1>
-                    <p className="text-slate-400 text-xl md:text-2xl font-light leading-relaxed max-w-3xl mx-auto uppercase tracking-[0.2em]">
+                    <p className="text-slate-400 text-base sm:text-xl md:text-2xl font-light leading-relaxed max-w-3xl mx-auto uppercase tracking-[0.1em] sm:tracking-[0.2em]">
                         From the master's chair to the performance floor. <br />
                         SHARERS is the collision of elite architecture and athletic power.
                     </p>
@@ -29,18 +35,18 @@ export default function AboutPage() {
             </section>
 
             {/* Values Section */}
-            <section className="py-32 sm:py-48 bg-white">
+            <section className="py-20 sm:py-48 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-24">
                         <ValueCard
                             icon={ShieldCheck}
-                            title="Master Tier"
-                            description="Our coaches and physiotherapists are top-tier professionals dedicated to the science of human potential."
+                            title="Expert Coaching"
+                            description="Our coaches and physiotherapists are experienced professionals dedicated to helping you reach your full potential."
                         />
                         <ValueCard
                             icon={Award}
-                            title="Elite Gear"
-                            description="From custom-machined rack systems to medical-grade recovery labs, we settle for nothing less than the best."
+                            title="Top-Tier Equipment"
+                            description="From custom racks to advanced recovery tools, we provide the best environment for your training."
                         />
                         <ValueCard
                             icon={Truck}
@@ -57,7 +63,7 @@ export default function AboutPage() {
             </section>
 
             {/* Brands Grid - Refined into Collections */}
-            <section className="py-32 bg-secondary/30">
+            <section className="py-16 sm:py-32 bg-secondary/30">
                 <div className="max-w-7xl mx-auto px-4 text-center">
                     <h2 className="text-accent font-black tracking-[0.5em] text-[10px] uppercase mb-16 underline decoration-accent/20 underline-offset-8">Signature Protocols</h2>
                     <div className="flex flex-wrap justify-center items-center gap-12 md:gap-32 opacity-40 grayscale hover:grayscale-0 transition-all duration-1000">

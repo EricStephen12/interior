@@ -29,11 +29,53 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "SHARERS GYM - Elite Performance & High-Tech Recovery",
-  description: "Experience the pinnacle of human potential. From master-tier coaching to hyper-oxygen recovery protocols by the house of SHARERS.",
+  title: {
+    default: "SHARERS GYM | Elite Performance & High-Tech Recovery",
+    template: "%s | SHARERS GYM"
+  },
+  description: "Experience the pinnacle of human potential. SHARERS GYM offers master-tier coaching, hyper-oxygen recovery protocols, and premium athletic apparel in an elite editorial environment.",
+  keywords: ["Elite Gym", "High-Performance Training", "Hyper-Oxygen Recovery", "SHARERS GYM", "Luxury Fitness", "Athletic Power", "Professional Coaching"],
+  authors: [{ name: "SHARERS GYM Team" }],
+  creator: "SHARERS GYM",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://sharers.gym",
+    title: "SHARERS GYM | Elite Performance & High-Tech Recovery",
+    description: "Experience the pinnacle of human potential. Master-tier coaching and hyper-oxygen recovery protocols.",
+    siteName: "SHARERS GYM",
+    images: [
+      {
+        url: "https://sharers.gym/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "SHARERS GYM - The Forge of Performance",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SHARERS GYM | Elite Performance & High-Tech Recovery",
+    description: "Experience the pinnacle of human potential. Master-tier coaching and hyper-oxygen recovery protocols.",
+    images: ["https://sharers.gym/og-image.jpg"],
+    creator: "@sharersgym",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 import { MembershipProvider } from "@/lib/membership-context";
+import { ClerkProvider } from "@clerk/nextjs";
+import CustomCursor from "@/components/CustomCursor";
 
 export default function RootLayout({
   children,
@@ -41,18 +83,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${playfair.variable} ${inter.variable} ${crimson.variable} ${montserrat.variable} font-sans antialiased`}
-      >
-        <MembershipProvider>
-          <CartProvider>
-            <Layout>
-              {children}
-            </Layout>
-          </CartProvider>
-        </MembershipProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={`${playfair.variable} ${inter.variable} ${crimson.variable} ${montserrat.variable} font-sans antialiased`}
+        >
+          <CustomCursor />
+          <MembershipProvider>
+            <CartProvider>
+              <Layout>
+                {children}
+              </Layout>
+            </CartProvider>
+          </MembershipProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

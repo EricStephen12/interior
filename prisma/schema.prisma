@@ -15,11 +15,38 @@ enum Role {
 
 model User {
   id        String   @id @default(uuid())
+  clerkId   String   @unique
   name      String?
   email     String   @unique
-  password  String
   role      Role     @default(CUSTOMER)
+  credits   Int      @default(0)
+  tier      String   @default("NONE")
+  memberId  String   @unique @default(cuid())
   createdAt DateTime @default(now())
+  posts     BlogPost[]
+  checkIns  CheckIn[]
+}
+
+model CheckIn {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  protocol  String
+  date      DateTime @default(now())
+}
+
+model BlogPost {
+  id        String   @id @default(uuid())
+  title     String
+  slug      String   @unique
+  content   String   @db.Text
+  excerpt   String?  @db.Text
+  coverImg  String?
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [clerkId])
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Brand {
@@ -88,4 +115,13 @@ model Promotion {
   discountType  String  // Percentage, Fixed
   discountValue Float
   isActive      Boolean @default(true)
+}
+
+model Order {
+  id            String   @id @default(uuid())
+  userEmail     String
+  totalAmount   Float
+  items         Json
+  status        String   @default("COMPLETED")
+  createdAt     DateTime @default(now())
 }

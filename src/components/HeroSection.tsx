@@ -13,7 +13,7 @@ export default function HeroSection() {
   const scale = useTransform(scrollY, [0, 1000], [1.1, 1.3])
 
   return (
-    <section ref={containerRef} className="relative h-screen min-h-[800px] overflow-hidden bg-secondary">
+    <section ref={containerRef} className="relative h-screen min-h-[100svh] lg:min-h-[800px] overflow-hidden bg-secondary">
       {/* Background Text - Deep Layer */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full select-none pointer-events-none z-0">
         <motion.h2
@@ -29,7 +29,7 @@ export default function HeroSection() {
         {/* Left Content - Floating Editorial Box */}
         <motion.div
           style={{ y: textY }}
-          className="w-full lg:w-1/2 px-6 sm:px-12 lg:pl-24 lg:pr-12 py-20 z-20 order-2 lg:order-1 flex flex-col justify-center"
+          className="w-full lg:w-1/2 px-4 sm:px-12 lg:pl-24 lg:pr-12 py-8 sm:py-20 z-20 order-2 lg:order-1 flex flex-col justify-center mt-4 lg:mt-0"
         >
           <motion.p
             initial={{ opacity: 0, x: -20 }}
@@ -37,7 +37,7 @@ export default function HeroSection() {
             transition={{ duration: 1, delay: 0.2 }}
             className="text-xs font-black tracking-[0.8em] text-accent uppercase mb-8"
           >
-            THE PERFORMANCE LAB
+            SHARERS GYM
           </motion.p>
 
           <h1 className="flex flex-col mb-12">
@@ -46,7 +46,7 @@ export default function HeroSection() {
                 initial={{ y: "100%" }}
                 animate={{ y: 0 }}
                 transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                className="block text-7xl sm:text-8xl md:text-9xl xl:text-[11rem] leading-[0.85] text-luxury text-primary"
+                className="block text-4xl sm:text-7xl md:text-9xl xl:text-[11rem] leading-[0.85] text-luxury text-primary"
               >
                 UNLEASH
               </motion.span>
@@ -56,7 +56,7 @@ export default function HeroSection() {
                 initial={{ y: "100%" }}
                 animate={{ y: 0 }}
                 transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                className="block text-7xl sm:text-8xl md:text-9xl xl:text-[11rem] leading-[0.85] text-luxury text-accent lg:-ml-12 italic"
+                className="block text-4xl sm:text-7xl md:text-9xl xl:text-[11rem] leading-[0.85] text-luxury text-accent lg:-ml-12 italic"
               >
                 POWER.
               </motion.span>
@@ -69,7 +69,7 @@ export default function HeroSection() {
             transition={{ duration: 1, delay: 0.8 }}
             className="flex flex-col sm:flex-row items-start gap-12"
           >
-            <Link href="/products">
+            <Link href="/dashboard">
               <button className="btn-elite group text-white">
                 START THE PROTOCOL
                 <motion.span
@@ -83,17 +83,16 @@ export default function HeroSection() {
             </Link>
 
             <div className="max-w-[280px]">
-              <p className="text-sm text-text-muted leading-relaxed font-medium">
-                Transforming aesthetic potential through elite engineering.
-                Experience the house of SHARERS GYM.
+              <p className="text-sm text-text-muted font-bold">
+                You already know why you're here. Step in.
               </p>
             </div>
           </motion.div>
         </motion.div>
 
         {/* Right - Asymmetric Image Crop */}
-        <div className="w-full lg:w-1/2 h-full relative z-10 order-1 lg:order-2 px-6 lg:px-0 pt-20 lg:pt-0">
-          <div className="relative w-full h-[60vh] lg:h-full overflow-hidden clip-editorial shadow-2xl">
+        <div className="w-full lg:w-1/2 h-full relative z-10 order-1 lg:order-2 px-4 sm:px-6 lg:px-0 pt-16 lg:pt-0">
+          <div className="relative w-full h-[30vh] sm:h-[50vh] lg:h-full overflow-hidden clip-editorial shadow-2xl">
             <motion.div
               style={{ y: y1, scale }}
               className="absolute inset-0"
@@ -131,7 +130,7 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
-        className="absolute bottom-12 right-12 flex flex-col items-end gap-6 z-30"
+        className="absolute bottom-6 sm:bottom-12 right-6 sm:right-12 hidden md:flex flex-col items-end gap-6 z-30"
       >
         <span className="text-[10px] font-black tracking-[0.5em] text-primary/30 rotate-90 origin-right translate-y-full mb-12">SCROLL</span>
         <div className="w-[1px] h-24 bg-gradient-to-b from-primary/10 to-accent">

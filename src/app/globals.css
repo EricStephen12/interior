@@ -56,15 +56,15 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-primary hover:bg-accent hover:border-accent text-white font-bold py-5 px-10 rounded-none border border-primary transition-all duration-700 tracking-[0.3em] uppercase text-[10px] active:scale-95 shadow-2xl;
+    @apply bg-primary hover:bg-accent hover:border-accent text-white font-bold py-3 px-6 sm:py-5 sm:px-10 rounded-none border border-primary transition-all duration-700 tracking-[0.3em] uppercase text-[9px] sm:text-[10px] active:scale-95 shadow-2xl;
   }
 
   .btn-secondary {
-    @apply bg-transparent hover:bg-primary hover:text-white text-primary font-bold py-5 px-10 rounded-none border border-primary transition-all duration-700 tracking-[0.3em] uppercase text-[10px] shadow-sm;
+    @apply bg-transparent hover:bg-primary hover:text-white text-primary font-bold py-3 px-6 sm:py-5 sm:px-10 rounded-none border border-primary transition-all duration-700 tracking-[0.3em] uppercase text-[9px] sm:text-[10px] shadow-sm;
   }
 
   .btn-elite {
-    @apply bg-primary text-white py-6 px-12 rounded-none tracking-[0.5em] uppercase text-[10px] font-black hover:bg-accent transition-all duration-700 relative overflow-hidden active:scale-95 border border-primary;
+    @apply bg-primary text-white py-4 px-8 sm:py-6 sm:px-12 rounded-none tracking-[0.3em] sm:tracking-[0.5em] uppercase text-[9px] sm:text-[10px] font-black hover:bg-accent transition-all duration-700 relative overflow-hidden active:scale-95 border border-primary;
   }
 
   .glass-light {
@@ -90,6 +90,136 @@
   .grain-overlay {
     background-image: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
     opacity: 0.05;
+  }
+
+  /* Admin Panel Utilities */
+  .admin-layout-container {
+    @apply flex min-h-screen bg-white;
+  }
+  .admin-sidebar {
+    @apply w-72 bg-primary text-white hidden md:flex flex-col border-r border-white/10 relative;
+  }
+  .admin-sidebar-bg {
+    @apply absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')] opacity-10 pointer-events-none mix-blend-overlay;
+  }
+  .admin-sidebar-header {
+    @apply p-10 border-b border-white/10 flex flex-col items-center gap-4 relative z-10;
+  }
+  .admin-logo {
+    @apply text-2xl font-black tracking-[0.3em] font-playfair text-center leading-[1.2];
+  }
+  .admin-logo-sub {
+    @apply text-[10px] text-accent font-sans uppercase tracking-[0.5em] block mt-2;
+  }
+  .admin-nav {
+    @apply flex-1 py-8 space-y-2 relative z-10;
+  }
+  .admin-nav-item {
+    @apply flex items-center gap-6 px-10 py-4 text-[10px] font-black uppercase tracking-[0.3em] text-white/50 hover:text-white hover:bg-white/5 transition-all border-l-2 border-transparent hover:border-accent;
+  }
+  .admin-nav-icon {
+    @apply w-4 h-4 transition-colors duration-500;
+  }
+  .admin-nav-item:hover .admin-nav-icon {
+    @apply text-accent;
+  }
+  .admin-sidebar-footer {
+    @apply p-8 border-t border-white/10 space-y-6 relative z-10;
+  }
+  .admin-account-container {
+    @apply flex items-center gap-4 px-2;
+  }
+  .admin-account-text {
+    @apply text-[10px] font-black tracking-[0.2em] text-white/40 uppercase;
+  }
+  .admin-back-btn {
+    @apply flex items-center justify-center gap-4 w-full py-5 text-[10px] font-black uppercase tracking-[0.3em] text-accent hover:bg-accent hover:text-white transition-all duration-700 border border-accent/20 hover:border-accent;
+  }
+  .admin-main {
+    @apply flex-1 overflow-auto bg-secondary/30 relative;
+  }
+  .admin-main-bg {
+    @apply absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')] opacity-[0.02] pointer-events-none mix-blend-overlay;
+  }
+
+  /* Admin Page Utilities */
+  .admin-page-container {
+    @apply space-y-8 sm:space-y-16 p-4 sm:p-8 md:p-16 relative z-10;
+  }
+  .admin-header {
+    @apply border-b border-primary/10 pb-8;
+  }
+  .admin-title {
+    @apply text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-primary uppercase font-playfair mb-2;
+  }
+  .admin-subtitle {
+    @apply text-text-muted font-black text-[10px] tracking-[0.3em] uppercase;
+  }
+  .admin-stats-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6;
+  }
+  .admin-stat-card {
+    @apply bg-white/60 backdrop-blur-2xl border border-white/20 shadow-2xl p-6 sm:p-8 rounded-none border-l-4 border-accent shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-transform duration-500;
+  }
+  .admin-stat-header {
+    @apply flex items-center justify-between mb-8;
+  }
+  .admin-stat-title {
+    @apply text-[10px] font-black uppercase tracking-[0.2em] text-text-muted;
+  }
+  .admin-stat-value {
+    @apply text-4xl sm:text-5xl font-playfair font-black text-primary tabular-nums;
+  }
+  .admin-stat-change {
+    @apply text-[10px] font-black tracking-[0.2em] uppercase;
+  }
+  .admin-section-title {
+    @apply text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-8 border-l-2 border-accent pl-4;
+  }
+  .admin-actions-grid {
+    @apply grid grid-cols-2 lg:grid-cols-4 gap-6;
+  }
+  .admin-action-card {
+    @apply flex flex-col items-center justify-center p-6 sm:p-10 bg-white border border-primary/10 hover:border-accent transition-all duration-500 shadow-sm hover:shadow-2xl;
+  }
+  .admin-action-icon-wrapper {
+    @apply p-5 rounded-none mb-6 transition-transform duration-700 bg-secondary border border-primary/5 text-primary;
+  }
+  .admin-action-card:hover .admin-action-icon-wrapper {
+    @apply scale-110 bg-accent text-white;
+  }
+  .admin-action-text {
+    @apply text-[10px] font-black uppercase tracking-[0.2em] text-primary transition-colors;
+  }
+  .admin-action-card:hover .admin-action-text {
+    @apply text-accent;
+  }
+  .admin-status-grid {
+    @apply grid grid-cols-1 lg:grid-cols-3 gap-8;
+  }
+  .admin-pulse-card {
+    @apply lg:col-span-2 bg-white/60 backdrop-blur-2xl border border-white/20 shadow-2xl p-6 sm:p-10 border border-primary/10 rounded-none shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)];
+  }
+  .admin-pulse-header {
+    @apply text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-8 border-l-2 border-accent pl-4 flex items-center gap-3;
+  }
+  .admin-pulse-chart {
+    @apply flex items-center justify-center h-[250px] bg-secondary/30 border border-dashed border-primary/10 text-text-muted text-[10px] font-black uppercase tracking-widest;
+  }
+  .admin-status-card {
+    @apply bg-white/60 backdrop-blur-2xl border border-white/20 shadow-2xl p-6 sm:p-10 border border-primary/10 rounded-none shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] flex flex-col;
+  }
+  .admin-status-list {
+    @apply space-y-6 flex-1 flex flex-col justify-center;
+  }
+  .admin-status-item {
+    @apply flex justify-between items-center pb-4 border-b border-primary/5;
+  }
+  .admin-status-label {
+    @apply text-[10px] font-black uppercase tracking-[0.2em] text-text-muted;
+  }
+  .admin-status-indicator {
+    @apply w-2 h-2 rounded-none bg-accent animate-pulse;
   }
 }
 

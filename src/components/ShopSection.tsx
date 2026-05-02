@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import {
   ShoppingCartIcon,
@@ -17,103 +17,36 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 const THE_COLLECTION = ['All', 'Sharers Elite', 'Performance Lab', 'Apparel Core', 'Boutique']
-const CATEGORIES = ['All', 'Memberships', 'Training', 'Recovery', 'Apparel', 'Nutrition']
-const SIZES = ['All', 'Annual', 'Monthly', 'Drop-in', 'Custom']
-const PRICE_RANGES = ['All', 'Under $100', '$100 - $500', '$500 - $2,000', 'Above $2,000']
+const CATEGORIES = ['All', 'Training', 'Recovery', 'Apparel', 'Nutrition']
+const SIZES = ['All', 'Standard', 'Custom']
+const PRICE_RANGES = ['All', 'Under ₦50,000', '₦50,000 - ₦200,000', '₦200,000 - ₦500,000', 'Above ₦500,000']
 
-const mockProducts = [
-  {
-    id: '1',
-    name: 'Sharers Obsidian Black Membership',
-    brand: 'Sharers Elite',
-    category: 'Memberships',
-    size: 'Annual',
-    price: 3200,
-    promo_price: 2850,
-    is_negotiable: false,
-    images: [
-      'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1593079831268-3381b0db4a77?auto=format&fit=crop&w=800&q=80'
-    ],
-    description: 'The pinnacle of access. Full diagnostic analysis, 24/7 hyper-recovery access, and global concierge for the elite athlete.',
-    in_stock: true,
-  },
-  {
-    id: '2',
-    name: 'Neural Peak Training Session',
-    brand: 'Performance Lab',
-    category: 'Training',
-    size: 'Custom',
-    price: 450,
-    is_negotiable: false,
-    images: [
-      'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&w=800&q=80'
-    ],
-    description: 'Master-tier performance coaching. Focused on biometric feedback, strength optimization, and mental threshold expansion.',
-    in_stock: true,
-  },
-  {
-    id: '3',
-    name: 'Hyper-Oxygen Recovery Protocol',
-    brand: 'Performance Lab',
-    category: 'Recovery',
-    size: 'Drop-in',
-    price: 350,
-    is_negotiable: false,
-    images: [
-      'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&w=800&q=80'
-    ],
-    description: 'A transformative recovery experience. Cryotherapy, hyperbaric oxygen, and compression therapy for zero-point reset.',
-    in_stock: true,
-  },
-  {
-    id: '4',
-    name: 'Sharers Performance Tech-Knit',
-    brand: 'Apparel Core',
-    category: 'Apparel',
-    size: 'Standard',
-    price: 85,
-    is_negotiable: false,
-    images: [
-      'https://images.unsplash.com/photo-1581009146145-b5ef03a74e7f?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80'
-    ],
-    description: 'High-compression, moisture-wicking technology. Designed for max tactical movement and sleek aesthetic.',
-    in_stock: true,
-  },
-  {
-    id: '5',
-    name: 'Sharers NOIR Isolate Alpha',
-    brand: 'Boutique',
-    category: 'Nutrition',
-    size: 'Standard',
-    price: 320,
-    is_negotiable: false,
-    images: [
-      'https://images.unsplash.com/photo-1593079831268-3381b0db4a77?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=800&q=80'
-    ],
-    description: 'The ultimate performance blend. High-purity, bio-available isolate with trace minerals designed for lean recovery.',
-    in_stock: true,
-  },
-]
-
-export default function ShopSection() {
+export default function ShopSection({ initialProducts = [] }: { initialProducts?: any[] }) {
+  const normalizedProducts = useMemo(() => initialProducts.map(p => ({
+    id: p.id,
+    name: p.name,
+    brand: p.brand?.name || 'Sharers Elite',
+    category: p.categories?.[0]?.category?.name || 'Training',
+    size: p.size?.name || 'Standard',
+    price: Number(p.price) || 0,
+    promo_price: p.promoPrice ? Number(p.promoPrice) : undefined,
+    images: p.imageUrl ? [p.imageUrl] : ['https://images.unsplash.com/photo-1581009146145-b5ef03a74e7f?auto=format&fit=crop&w=800&q=80'],
+    description: p.description || '',
+    in_stock: p.inStock ?? true,
+  })), [initialProducts])
   const [selectedBrand, setSelectedBrand] = useState('All')
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [selectedSize, setSelectedSize] = useState('All')
   const [selectedPrice, setSelectedPrice] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
-  const [filteredProducts, setFilteredProducts] = useState(mockProducts)
+  const [filteredProducts, setFilteredProducts] = useState(normalizedProducts)
   const [showFilters, setShowFilters] = useState(false)
 
   const containerRef = useRef(null)
   const isInView = useInView(containerRef, { once: true, margin: "-100px" })
 
   useEffect(() => {
-    let result = mockProducts
+    let result = normalizedProducts
 
     // Collection Filter
     if (selectedBrand !== 'All') result = result.filter(p => p.brand === selectedBrand)
@@ -170,17 +103,27 @@ export default function ShopSection() {
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               className="inline-block text-[10px] font-black tracking-[0.4em] text-accent uppercase mb-4 sm:mb-6"
             >
-              The SHARERS Collection
+              The Arsenal
             </motion.span>
             <motion.h3
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.2 }}
-              className="text-4xl sm:text-5xl md:text-7xl font-black text-primary tracking-[-0.04em] leading-[0.9] font-display"
+              className="text-4xl sm:text-6xl md:text-7xl font-black text-primary tracking-[-0.04em] leading-[0.9] font-display"
             >
-              Precision <br />
-              <span className="text-accent font-display">In every Detail.</span>
+              Precision in <br />
+              <span className="text-accent font-display">Every Detail.</span>
             </motion.h3>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.3 }}
+              className="max-w-md mt-6"
+            >
+              <p className="text-sm text-text-muted font-bold leading-relaxed">
+                Nothing here ended up on the shelf by accident. Every product, every session, every membership is chosen because it works. Because the people here deserve that.
+              </p>
+            </motion.div>
           </div>
 
           {/* Elite Search */}
@@ -193,7 +136,7 @@ export default function ShopSection() {
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-accent transition-colors" />
             <input
               type="text"
-              placeholder="Search the vault..."
+              placeholder="Search products..."
               className="w-full pl-14 pr-6 py-4 sm:py-5 bg-secondary/30 border border-transparent rounded-none focus:ring-0 focus:bg-white focus:border-accent/20 transition-all text-sm font-bold text-primary placeholder:text-slate-300"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -216,7 +159,7 @@ export default function ShopSection() {
                   ${showFilters ? 'bg-primary text-white' : 'bg-white text-primary hover:bg-secondary/50 border border-primary/10'}`}
               >
                 <SlidersHorizontal className="w-4 h-4" />
-                {showFilters ? 'Close Vault' : 'Refine View'}
+                {showFilters ? 'Close' : 'Filters'}
               </button>
 
               {isFiltered && (
@@ -339,7 +282,7 @@ export default function ShopSection() {
 
         {/* Product Grid */}
         {/* Product Grid - Dynamic Editorial Spacing */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-8 gap-y-24 sm:gap-y-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-8 gap-y-16 sm:gap-y-32">
           <AnimatePresence mode='popLayout'>
             {filteredProducts.map((product, idx) => {
               // Create an editorial rhythm: 1 large, 2 small, 1 medium
@@ -438,7 +381,7 @@ function ProductCard({ product, index, isLarge }: { product: any, index: number,
               onClick={handleAction}
               className="bg-white text-primary px-8 py-4 rounded-none tracking-[0.4em] uppercase text-[9px] font-black hover:bg-accent hover:text-white transition-all duration-500 transform scale-95 group-hover:scale-100 shadow-2xl z-10"
             >
-              {product.category === 'Memberships' ? 'START THE PROTOCOL' : 'REVEAL DETAILS'}
+              {product.category === 'Memberships' ? 'JOIN NOW' : 'VIEW MORE'}
             </button>
           </div>
 
@@ -459,9 +402,9 @@ function ProductCard({ product, index, isLarge }: { product: any, index: number,
           </h4>
 
           <div className="flex items-baseline gap-6">
-            <span className="text-3xl font-light text-primary tabular-nums">${product.price.toLocaleString()}</span>
+            <span className="text-3xl font-light text-primary tabular-nums">₦{product.price.toLocaleString()}</span>
             {product.promo_price && (
-              <span className="text-sm text-text-muted line-through font-light tabular-nums">${product.promo_price.toLocaleString()}</span>
+              <span className="text-sm text-text-muted line-through font-light tabular-nums">₦{product.promo_price.toLocaleString()}</span>
             )}
           </div>
         </div>

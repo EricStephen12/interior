@@ -3,12 +3,25 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
+
+/**
+ * StorySection Component
+ * 
+ * An editorial-style showcase section that combines high-performance video backgrounds
+ * with asymmetric layouts and staggered reveal animations.
+ * 
+ * Features:
+ * - Autoplay high-definition videos
+ * - Parallax-style text content
+ * - Framer-motion interaction triggers
+ */
 
 export default function StorySection() {
   const containerRef = useRef(null)
 
   return (
-    <section ref={containerRef} className="py-24 sm:py-32 md:py-48 bg-white overflow-hidden relative">
+    <section ref={containerRef} className="py-16 sm:py-32 md:py-48 bg-white overflow-hidden relative">
       {/* Decorative Brand Text Background */}
       <div className="absolute top-0 right-0 py-32 opacity-[0.02] pointer-events-none -mr-32 hidden xl:block">
         <span className="text-[25rem] font-black leading-none">SHARERS</span>
@@ -17,15 +30,21 @@ export default function StorySection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Editorial Layout 1: Asymmetric Overlap */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 lg:gap-0 items-center mb-40 md:mb-64">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-20 lg:gap-0 items-center mb-24 md:mb-64">
 
-          {/* Main Large Image - Slight Rotation */}
+          {/* Main Large Video - Premium Editorial Feel */}
           <div className="lg:col-span-8 relative">
-            <RevealImage
-              src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1200&q=80"
-              alt="SHARERS GYM Performance"
-              className="aspect-[16/10] md:aspect-[16/8] rounded-none shadow-2xl scale-105"
-            />
+            <div className="relative aspect-[16/10] md:aspect-[16/8] overflow-hidden group shadow-2xl">
+              <video
+                src="/video/story-main.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-[2s] ease-out"
+              />
+              <div className="absolute inset-0 bg-primary/10 pointer-events-none" />
+            </div>
             {/* Absolute Detail Element */}
             <div className="absolute -top-12 -right-12 w-32 h-32 bg-accent opacity-10 hidden lg:block"></div>
           </div>
@@ -37,19 +56,21 @@ export default function StorySection() {
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
               viewport={{ once: true }}
-              className="glass-light p-12 sm:p-20 md:p-32 rounded-none space-y-12 shadow-[0_80px_100px_-20px_rgba(0,0,0,0.1)] border-l-4 border-accent"
+              className="glass-light p-8 sm:p-20 md:p-32 rounded-none space-y-12 shadow-[0_80px_100px_-20px_rgba(0,0,0,0.1)] border-l-4 border-accent"
             >
               <div className="space-y-4">
                 <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase block">Chapter I</span>
-                <h3 className="text-6xl md:text-8xl text-luxury text-primary">
+                <h3 className="text-4xl sm:text-6xl md:text-8xl text-luxury text-primary">
                   The Forge of <br />
                   <span className="text-accent italic font-light">Performance.</span>
                 </h3>
               </div>
 
-              <p className="text-lg text-text-muted font-medium leading-[2] max-w-lg">
-                SHARERS GYM was established to redefine physical potential. By merging master-tier coaching, bio-rhythmic recovery, and elite facility design into a single, cohesive protocol, we create moments of peak human achievement.
-              </p>
+              <div className="text-lg text-text-muted font-medium leading-[2] max-w-lg space-y-4">
+                <p>Sharers wasn't built around a machine or a programme.</p>
+                <p>It was built around the person walking through the door.</p>
+                <p>Every piece of equipment, every session, every corner of this space exists because someone decided they were ready to change — and we decided to be ready for them.</p>
+              </div>
 
               <div className="pt-4 flex items-center gap-6">
                 <div className="w-16 h-[2px] bg-accent"></div>
@@ -73,31 +94,32 @@ export default function StorySection() {
             >
               <div className="space-y-6">
                 <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase block">Chapter II</span>
-                <h3 className="text-6xl md:text-8xl text-luxury text-primary flex flex-col">
+                <h3 className="text-4xl sm:text-6xl md:text-7xl text-luxury text-primary flex flex-col">
                   <span>Mastering the</span>
-                  <span className="text-primary/10 -mt-4">Human Machine.</span>
+                  <span className="text-primary/10 -mt-1 sm:-mt-2">Human Machine.</span>
                 </h3>
               </div>
 
-              <p className="text-lg text-text-muted font-medium leading-[2]">
-                Our vision extends beyond the workout. We integrate sports science with modern physical therapy, ensuring that every session, from high-intensity conditioning to neural recovery, is a testament to the house of SHARERS.
-              </p>
+              <div className="text-lg text-text-muted font-medium leading-[2] max-w-lg italic space-y-4">
+                <p>Your body is the most complex thing you'll ever work on. We don't take that lightly.</p>
+                <p>From the way we train to the way we recover, everything here is designed with one person in mind — you. Not a generic version of you. The actual you that shows up, puts in the reps, and goes home better than you came.</p>
+              </div>
 
               <div className="grid grid-cols-2 gap-12 border-t border-primary/5 pt-12">
                 <div>
-                  <h4 className="text-5xl text-luxury text-primary leading-none mb-3">100%</h4>
-                  <p className="text-[10px] font-black tracking-widest text-text-muted uppercase">Precision Tracked</p>
+                  <h4 className="text-3xl sm:text-5xl text-luxury text-primary leading-none mb-3">100%</h4>
+                  <p className="text-[10px] font-black tracking-widest text-text-muted uppercase">Real Results</p>
                 </div>
                 <div>
-                  <h4 className="text-5xl text-luxury text-primary leading-none mb-3">#01</h4>
-                  <p className="text-[10px] font-black tracking-widest text-text-muted uppercase">Elite Level</p>
+                  <h4 className="text-3xl sm:text-5xl text-luxury text-primary leading-none mb-3">#01</h4>
+                  <p className="text-[10px] font-black tracking-widest text-text-muted uppercase">Expert Team</p>
                 </div>
               </div>
 
               <div className="pt-4">
-                <button className="group text-[10px] font-black tracking-[0.5em] text-primary uppercase flex items-center gap-4 hover:text-accent transition-colors">
-                  EXPLORE PROTOCOLS <span className="w-12 h-[1px] bg-primary group-hover:w-20 group-hover:bg-accent transition-all duration-500"></span>
-                </button>
+                <Link href="/dashboard" className="group text-[10px] font-black tracking-[0.5em] text-primary uppercase flex items-center gap-4 hover:text-accent transition-colors">
+                  SEE THE PLANS <span className="w-12 h-[1px] bg-primary group-hover:w-20 group-hover:bg-accent transition-all duration-500"></span>
+                </Link>
               </div>
             </motion.div>
           </div>
@@ -119,11 +141,17 @@ export default function StorySection() {
                 viewport={{ once: true }}
                 className="absolute -bottom-20 -left-20 w-2/3 aspect-square shadow-2xl z-30 hidden sm:block"
               >
-                <RevealImage
-                  src="https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&w=600&q=80"
-                  alt="SHARERS Recovery Detail"
-                  className="w-full h-full border-[20px] border-white"
-                />
+                <div className="w-full h-full border-[20px] border-white relative overflow-hidden group shadow-2xl">
+                  <video
+                    src="/video/shop-detail.mp4"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-[2s] ease-out"
+                  />
+                  <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
+                </div>
               </motion.div>
             </div>
           </div>
