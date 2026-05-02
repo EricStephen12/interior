@@ -77,20 +77,13 @@ import { MembershipProvider } from "@/lib/membership-context";
 import { ClerkProvider } from "@clerk/nextjs";
 import CustomCursor from "@/components/CustomCursor";
 
-function AuthWrapper({ children }: { children: React.ReactNode }) {
-  if (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) {
-    return <ClerkProvider>{children}</ClerkProvider>;
-  }
-  return <>{children}</>;
-}
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <AuthWrapper>
+    <ClerkProvider>
       <html lang="en">
         <body
           className={`${playfair.variable} ${inter.variable} ${crimson.variable} ${montserrat.variable} font-sans antialiased`}
@@ -105,6 +98,6 @@ export default function RootLayout({
           </MembershipProvider>
         </body>
       </html>
-    </AuthWrapper>
+    </ClerkProvider>
   );
 }
