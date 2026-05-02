@@ -1,75 +1,144 @@
 import React from 'react';
 import StorySection from '@/components/StorySection';
-import { Truck, ShieldCheck, Heart, Award } from 'lucide-react';
 import { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: "Our Story",
-  description: "Learn about the origin of SHARERS GYM. Where elite architecture meets athletic power, creating a collision of performance and design.",
+  description: "Learn about the origin of SHARERS GYM. We didn't build a gym. We built the place we wished existed.",
 };
 
 export default function AboutPage() {
     return (
-        <div className="pt-20">
-            {/* Hero Header */}
-            <div className="bg-primary py-20 sm:py-48 text-center relative overflow-hidden">
-                {/* Subtle Background Accent */}
-                <div className="absolute inset-0 opacity-10 pointer-events-none">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/20 blur-[150px] rounded-full"></div>
+        <div className="bg-white">
+            {/* Hero - Cinematic but controlled */}
+            <section className="relative min-h-[60vh] sm:min-h-[70vh] flex items-end overflow-hidden">
+                <div className="absolute inset-0 z-0">
+                    <Image
+                        src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=90"
+                        alt="SHARERS GYM Interior"
+                        fill
+                        priority
+                        className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-primary/75" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/20 to-transparent" />
                 </div>
 
-                <div className="max-w-5xl mx-auto px-4 relative z-10">
-                    <span className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-12 block">OUR ORIGIN</span>
-                    <h1 className="text-5xl sm:text-7xl md:text-9xl text-luxury text-white mb-8 sm:mb-12">
-                        Excellence as a <span className="text-accent italic font-light">Lifestyle.</span>
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-20 w-full">
+                    <span className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-4 block">OUR ORIGIN</span>
+                    <h1 className="text-3xl sm:text-5xl md:text-7xl font-black text-white tracking-tighter leading-[0.85] font-display mb-4 sm:mb-6">
+                        We didn&apos;t build a gym. <br />
+                        <span className="text-accent italic font-light">We built the place we wished existed.</span>
                     </h1>
-                    <p className="text-slate-400 text-base sm:text-xl md:text-2xl font-light leading-relaxed max-w-3xl mx-auto uppercase tracking-[0.1em] sm:tracking-[0.2em]">
-                        From the master's chair to the performance floor. <br />
-                        SHARERS is the collision of elite architecture and athletic power.
-                    </p>
                 </div>
-            </div>
+            </section>
 
+            {/* The Real Story - Split Layout */}
+            <section className="py-16 sm:py-32 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+                        {/* Image */}
+                        <div className="relative">
+                            <div className="aspect-[4/5] relative overflow-hidden shadow-2xl">
+                                <Image
+                                    src="https://images.unsplash.com/photo-1593079831268-3381b0db4a77?auto=format&fit=crop&w=800&q=80"
+                                    alt="SHARERS Training"
+                                    fill
+                                    className="object-cover grayscale hover:grayscale-0 transition-all duration-1000"
+                                />
+                                <div className="absolute inset-0 bg-primary/10" />
+                            </div>
+                            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-accent/10 hidden lg:block" />
+                        </div>
+
+                        {/* Copy - Written like a human */}
+                        <div className="space-y-6 sm:space-y-10">
+                            <div>
+                                <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-4 block">HOW IT STARTED</span>
+                                <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-primary tracking-tighter leading-[0.9] font-display">
+                                    Started with <br />
+                                    <span className="text-accent italic font-light">a question.</span>
+                                </h2>
+                            </div>
+
+                            <div className="space-y-5 text-sm sm:text-base text-slate-500 font-medium leading-relaxed">
+                                <p>&ldquo;Why does every gym feel the same?&rdquo;</p>
+                                <p>Same machines lined up in rows. Same music nobody asked for. Same energy that makes you want to leave the second you walk in. We got tired of it.</p>
+                                <p>So we built something different. Not different for the sake of it — different because it had to be. A space where you actually want to train. Where the coaches know your name and your goals. Where recovery isn&apos;t an afterthought, it&apos;s built into the process.</p>
+                                <p>SHARERS isn&apos;t for everyone. And that&apos;s the point.</p>
+                            </div>
+
+                            <div className="flex items-center gap-6 pt-4">
+                                <div className="w-16 h-[2px] bg-accent" />
+                                <span className="text-[9px] font-black tracking-[0.4em] text-primary/40 uppercase">Lagos, Nigeria</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Story Section Component */}
             <section className="py-2">
                 <StorySection />
             </section>
 
-            {/* Values Section */}
-            <section className="py-20 sm:py-48 bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-24">
-                        <ValueCard
-                            icon={ShieldCheck}
-                            title="Expert Coaching"
-                            description="Our coaches and physiotherapists are experienced professionals dedicated to helping you reach your full potential."
+            {/* What makes us different — editorial strips, not a grid */}
+            <section className="py-16 sm:py-32 bg-primary relative overflow-hidden">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.02] pointer-events-none">
+                    <span className="text-[30vw] font-black leading-none whitespace-nowrap">SHARERS</span>
+                </div>
+
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="mb-12 sm:mb-20">
+                        <span className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-4 block">WHAT&apos;S DIFFERENT</span>
+                        <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-tighter leading-[0.9] font-display">
+                            The stuff that <span className="text-accent italic font-light">actually matters.</span>
+                        </h2>
+                    </div>
+
+                    <div className="space-y-0">
+                        <DifferenceRow
+                            title="Real Coaching"
+                            description="Not someone watching you from across the room. Coaches who build your program around your body, track your progress, and adjust on the fly."
                         />
-                        <ValueCard
-                            icon={Award}
-                            title="Top-Tier Equipment"
-                            description="From custom racks to advanced recovery tools, we provide the best environment for your training."
+                        <DifferenceRow
+                            title="Recovery Built In"
+                            description="The work doesn't end when the set does. Hyper-oxygen protocols, cold therapy, guided recovery — because that's where the body actually changes."
                         />
-                        <ValueCard
-                            icon={Truck}
-                            title="White Glove"
-                            description="Global delivery for apparel and seamless digital pass check-ins, ensuring your journey is elite."
+                        <DifferenceRow
+                            title="Equipment That Makes Sense"
+                            description="Every rack, every machine, every piece of gear was chosen for a reason. If it doesn't make you better, it's not in here."
                         />
-                        <ValueCard
-                            icon={Heart}
+                        <DifferenceRow
                             title="The Pass"
-                            description="Flexible session tracking tailored to your lifestyle. Your performance, our priority."
+                            description="Your membership isn't a contract. It's a flexible credit system that tracks sessions and works around your life — not the other way around."
+                        />
+                        <DifferenceRow
+                            title="People Who Get It"
+                            description="The vibe matters. This is a space full of people who show up, put in the work, and don't need to be convinced why it matters."
                         />
                     </div>
                 </div>
             </section>
 
-            {/* Brands Grid - Refined into Collections */}
-            <section className="py-16 sm:py-32 bg-secondary/30">
-                <div className="max-w-7xl mx-auto px-4 text-center">
-                    <h2 className="text-accent font-black tracking-[0.5em] text-[10px] uppercase mb-16 underline decoration-accent/20 underline-offset-8">Signature Protocols</h2>
-                    <div className="flex flex-wrap justify-center items-center gap-12 md:gap-32 opacity-40 grayscale hover:grayscale-0 transition-all duration-1000">
-                        {['SHARERS ELITE', 'PERFORMANCE LAB', 'APPAREL CORE', 'BOUTIQUE'].map(collection => (
-                            <span key={collection} className="text-xl md:text-2xl font-black text-primary tracking-[0.3em] font-sans">{collection}</span>
-                        ))}
+            {/* CTA */}
+            <section className="py-16 sm:py-24 bg-white">
+                <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+                    <h3 className="text-2xl sm:text-4xl md:text-5xl font-black text-primary tracking-tighter font-display mb-4 sm:mb-6">
+                        You already know if this <span className="text-accent italic font-light">is for you.</span>
+                    </h3>
+                    <p className="text-sm sm:text-base text-slate-400 font-medium mb-8 sm:mb-12 max-w-lg mx-auto">
+                        Stop thinking about it. Come see the space, talk to the coaches, and decide for yourself.
+                    </p>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+                        <Link href="/dashboard" className="w-full sm:w-auto bg-primary text-white px-8 sm:px-12 py-4 sm:py-5 text-center hover:bg-accent transition-all duration-500">
+                            <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em]">Start The Protocol</span>
+                        </Link>
+                        <Link href="/contact" className="w-full sm:w-auto border-2 border-primary text-primary px-8 sm:px-12 py-4 sm:py-5 text-center hover:bg-primary hover:text-white transition-all duration-500">
+                            <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em]">Talk To Us</span>
+                        </Link>
                     </div>
                 </div>
             </section>
@@ -77,14 +146,11 @@ export default function AboutPage() {
     );
 }
 
-function ValueCard({ icon: Icon, title, description }: { icon: React.ElementType, title: string, description: string }) {
+function DifferenceRow({ title, description }: { title: string, description: string }) {
     return (
-        <div className="flex flex-col items-center text-center group">
-            <div className="w-20 h-20 bg-secondary text-primary rounded-none flex items-center justify-center mb-8 group-hover:bg-accent group-hover:text-white transition-all duration-700 editorial-shadow">
-                <Icon className="w-10 h-10" />
-            </div>
-            <h4 className="text-xl font-bold text-primary mb-4 tracking-tight uppercase">{title}</h4>
-            <p className="text-text-muted font-medium leading-relaxed">{description}</p>
+        <div className="group flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-12 py-8 sm:py-10 border-b border-white/5 hover:border-accent/20 transition-all duration-500">
+            <h4 className="text-base sm:text-lg font-black text-white uppercase tracking-tight sm:w-48 flex-shrink-0 group-hover:text-accent transition-colors duration-500">{title}</h4>
+            <p className="text-xs sm:text-sm text-white/40 font-medium leading-relaxed group-hover:text-white/60 transition-colors duration-500">{description}</p>
         </div>
     );
 }

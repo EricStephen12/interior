@@ -47,29 +47,10 @@ export default function DashboardPage() {
                     {/* Member Pass - Left/Sticky on Desktop */}
                     <div className="lg:col-span-4 lg:sticky lg:top-32 order-2 lg:order-1">
                         <MemberPass />
-
-                        <motion.button
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => checkIn('Daily Protocol')}
-                            disabled={state.remainingCredits <= 0}
-                            className="w-full mt-12 btn-elite group py-8 text-white shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            <span className="flex items-center justify-center gap-4">
-                                <Play className="w-5 h-5 fill-current" />
-                                SIMULATE ENTRANCE SCAN
-                            </span>
-                        </motion.button>
-
-                        <div className="flex flex-col items-center gap-4 mt-6">
-                            <p className="text-[10px] font-black text-text-muted tracking-widest uppercase text-center">
-                                * Subtracts 1 session upon entry
+                        <div className="flex flex-col items-center gap-4 mt-8">
+                            <p className="text-[10px] font-black text-text-muted tracking-[0.4em] uppercase text-center border-t border-primary/5 pt-8 w-full">
+                                ACCESS SECURED • DIGITAL PROTOCOL
                             </p>
-                            <button
-                                onClick={resetMembership}
-                                className="text-[9px] font-black text-red-500/50 hover:text-red-500 uppercase tracking-widest transition-colors pt-4 underline"
-                            >
-                                Reset Pass & Refill Credits
-                            </button>
                         </div>
                     </div>
 
@@ -92,8 +73,8 @@ export default function DashboardPage() {
                                 />
                                 <StatCard
                                     label="ACCESS TIER"
-                                    value="BLACK"
-                                    desc="Obsidian Member level"
+                                    value={state.tier === 'NONE' ? 'BASIC' : state.tier}
+                                    desc={`${state.tier} Member level`}
                                     icon={Award}
                                 />
                                 <StatCard

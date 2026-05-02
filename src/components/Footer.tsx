@@ -81,7 +81,7 @@ export default function Footer() {
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">
                 <MapPin className="w-4 h-4 text-accent" />
-                <span>Global Concierge • Lagos • London</span>
+                <span>Lagos, Nigeria</span>
               </div>
               <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">
                 <Mail className="w-4 h-4 text-accent" />

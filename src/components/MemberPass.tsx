@@ -85,7 +85,7 @@ export default function MemberPass() {
                             </div>
                             <div className="text-right">
                                 <p className="text-[9px] font-black tracking-widest text-white/40 mb-1 uppercase">MEMBER LEVEL</p>
-                                <p className="text-sm font-black text-white">OBSIDIAN ELITE</p>
+                                <p className="text-sm font-black text-white uppercase">{state.tier === 'NONE' ? 'BASIC' : `${state.tier} ELITE`}</p>
                             </div>
                         </div>
 

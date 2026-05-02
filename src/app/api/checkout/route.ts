@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { currentUser } from '@clerk/nextjs/server'
 
 export async function POST(req: Request) {
   try {
@@ -10,17 +11,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Upsert a demo user if they don't exist (to ensure it works smoothly without auth)
+    const clerkUser = await currentUser()
+    const email = clerkUser?.emailAddresses[0]?.emailAddress || userEmail
+
+    if (!email) {
+      return NextResponse.json({ error: 'Missing email' }, { status: 400 })
+    }
+
     const user = await prisma.user.upsert({
-      where: { email: userEmail },
+      where: { email },
       update: {
         credits: hasMembership ? { increment: 30 } : undefined,
-        tier: hasMembership ? 'BLACK' : undefined
+        tier: hasMembership ? 'BLACK' : undefined,
+        clerkId: clerkUser?.id || undefined
       },
       create: {
-        email: userEmail,
-        clerkId: 'demo_clerk_' + Date.now(),
-        name: 'Demo Member',
+        email,
+        clerkId: clerkUser?.id || 'guest_' + Date.now(),
+        name: clerkUser?.fullName || 'Guest Member',
         credits: hasMembership ? 30 : 0,
         tier: hasMembership ? 'BLACK' : 'NONE'
       }

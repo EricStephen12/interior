@@ -5,10 +5,12 @@ import { ShoppingBag, CreditCard, MessageCircle, MapPin, CheckCircle2 } from 'lu
 import { useCart } from '@/lib/cart-context';
 import { useMembership } from '@/lib/membership-context';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@clerk/nextjs';
 
 export default function CheckoutPage() {
   const { state, clearCart } = useCart();
   const { subscribe } = useMembership();
+  const { user } = useUser();
   const router = useRouter();
   const [deliveryZones, setDeliveryZones] = useState<any[]>([]);
   const [selectedZone, setSelectedZone] = useState<any>(null);
@@ -61,7 +63,7 @@ export default function CheckoutPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userEmail: formData.email || 'customer@sharers.gym',
+          userEmail: user?.primaryEmailAddress?.emailAddress || formData.email || 'customer@sharers.gym',
           totalAmount: total,
           items: state.items.map(i => ({ name: i.product?.name, quantity: i.quantity, price: i.variant?.price })),
           hasMembership

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Mail, Phone, MapPin, MessageCircle, Clock, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, MessageCircle, Clock, Send, ArrowUpRight, Zap } from 'lucide-react';
 import { Metadata } from 'next';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -9,110 +10,211 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="pt-20 sm:pt-32 pb-16 sm:pb-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+    <div className="bg-white">
+      {/* Cinematic Hero */}
+      <section className="relative h-[50vh] sm:h-[60vh] min-h-[400px] flex items-end overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=2000&q=90"
+            alt="SHARERS GYM Contact"
+            fill
+            priority
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-primary/75" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/30 to-transparent" />
+        </div>
 
-          <div className="space-y-12 sm:space-y-16">
-            <div>
-              <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-8 block">Member Support</span>
-              <h1 className="text-4xl sm:text-6xl md:text-8xl text-luxury text-primary mb-8">
-                Get in <span className="text-accent italic">Touch.</span>
-              </h1>
-              <p className="text-base sm:text-xl text-text-muted font-light leading-relaxed">
-                Whether you’re ready to start training, have a question about your membership, or just want to see the facility, we’re here to help.
-              </p>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-20 w-full">
+          <span className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-4 block">MEMBER SUPPORT</span>
+          <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-white tracking-tighter leading-[0.85] font-display">
+            Get in <span className="text-accent italic font-light">Touch.</span>
+          </h1>
+          <p className="text-sm sm:text-base text-white/40 font-medium mt-4 max-w-lg">
+            Whether you're ready to start training or have a question about your membership, we're here.
+          </p>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <section className="py-12 sm:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+
+            {/* Left Column - Contact Form */}
+            <div className="lg:col-span-7 order-2 lg:order-1">
+              <div className="bg-secondary/20 p-6 sm:p-10 md:p-16 border border-primary/5">
+                <div className="mb-8 sm:mb-14">
+                  <span className="text-[10px] font-black tracking-[0.4em] text-accent uppercase mb-3 block">DIRECT LINE</span>
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-primary tracking-tighter leading-[0.9] font-display">
+                    Send us a <span className="text-accent italic font-light">Message.</span>
+                  </h2>
+                </div>
+
+                <form className="space-y-6 sm:space-y-10">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Full Name</label>
+                      <input
+                        type="text"
+                        className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors text-sm sm:text-base text-primary font-medium placeholder:text-slate-300"
+                        placeholder="Your full name"
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Email Address</label>
+                      <input
+                        type="email"
+                        className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors text-sm sm:text-base text-primary font-medium placeholder:text-slate-300"
+                        placeholder="you@example.com"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Phone / WhatsApp</label>
+                      <input
+                        type="text"
+                        className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors text-sm sm:text-base text-primary font-medium placeholder:text-slate-300"
+                        placeholder="+234..."
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Subject</label>
+                      <select className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors text-sm sm:text-base text-primary font-medium appearance-none cursor-pointer">
+                        <option>Membership & The Pass</option>
+                        <option>Personal Training</option>
+                        <option>Recovery Lab Booking</option>
+                        <option>Apparel & Shop</option>
+                        <option>General Question</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Your Message</label>
+                    <textarea
+                      rows={5}
+                      className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors resize-none text-sm sm:text-base text-primary font-medium placeholder:text-slate-300"
+                      placeholder="Tell us what you need..."
+                    />
+                  </div>
+
+                  <div className="pt-4 sm:pt-6">
+                    <button type="button" className="w-full bg-primary text-white py-4 sm:py-5 flex items-center justify-center gap-3 hover:bg-accent transition-all duration-500 group">
+                      <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em]">Send Message</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-              <ContactInfo
+            {/* Right Column - Contact Details */}
+            <div className="lg:col-span-5 order-1 lg:order-2 space-y-6 sm:space-y-8">
+
+              {/* Contact Cards */}
+              <ContactCard
                 icon={MessageCircle}
                 title="WhatsApp Direct"
-                value="Secure Channel"
+                value="Instant Chat"
+                subtitle="Fastest response • Usually within minutes"
                 link="https://wa.me/234XXXXXXXXXX"
+                accent
               />
-              <ContactInfo
+              <ContactCard
                 icon={Mail}
-                title="Performance Lab"
-                value="ops@SHARERS.GYM"
+                title="Email Us"
+                value="ops@sharers.gym"
+                subtitle="Business inquiries & partnerships"
               />
-              <ContactInfo
+              <ContactCard
                 icon={Phone}
-                title="Direct Line"
+                title="Call Direct"
                 value="+234 (0) 900 SHARERS"
+                subtitle="Available Mon–Sat • 6AM – 10PM"
               />
-              <ContactInfo
+              <ContactCard
                 icon={MapPin}
                 title="The Arena"
-                value="Lagos • London • Dubai"
+                value="Lagos, Nigeria"
+                subtitle="Come see the space for yourself"
               />
-            </div>
 
-            <div className="p-6 sm:p-10 bg-secondary/30 rounded-none border border-primary/5 flex items-start gap-8 editorial-shadow">
-              <div className="bg-white p-4 rounded-none shadow-sm flex-shrink-0">
-                <Clock className="w-8 h-8 text-accent" />
-              </div>
-              <div>
-                <h4 className="font-black text-primary uppercase tracking-widest mb-3">Fast Response</h4>
-                <p className="text-sm text-text-muted leading-relaxed font-light">We value your time. Current members get a response within 15 minutes. General questions are usually answered within a few hours.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-none p-8 sm:p-16 border border-primary/5 editorial-shadow">
-            <h2 className="text-2xl sm:text-4xl text-luxury text-primary mb-12">Send us a <br /><span className="text-accent italic">Message</span></h2>
-            <form className="space-y-10">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Full Name</label>
-                  <input type="text" className="w-full px-0 py-4 bg-transparent border-b border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors tabular-nums" placeholder="Full Name" />
+              {/* Response Time Card */}
+              <div className="bg-primary p-6 sm:p-8 text-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 opacity-5 pointer-events-none">
+                  <span className="text-[8rem] font-black leading-none">S</span>
                 </div>
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">WhatsApp / Phone</label>
-                  <input type="text" className="w-full px-0 py-4 bg-transparent border-b border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors tabular-nums" placeholder="+234..." />
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Zap className="w-4 h-4 text-accent" />
+                    <span className="text-[10px] font-black tracking-[0.4em] text-accent uppercase">Fast Response</span>
+                  </div>
+                  <h4 className="text-lg sm:text-xl font-black mb-2 tracking-tight">Under 15 minutes.</h4>
+                  <p className="text-xs sm:text-sm text-white/40 font-medium leading-relaxed">
+                    Current members get priority response. General questions are answered within a few hours.
+                  </p>
                 </div>
               </div>
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">What can we help you with?</label>
-                <select className="w-full px-0 py-4 bg-transparent border-b border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors appearance-none">
-                  <option>Membership & The Pass</option>
-                  <option>Personal Training</option>
-                  <option>Recovery Lab Booking</option>
-                  <option>General Question</option>
-                </select>
+
+              {/* Hours Card */}
+              <div className="border border-primary/10 p-6 sm:p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <Clock className="w-4 h-4 text-accent" />
+                  <span className="text-[10px] font-black tracking-[0.4em] text-primary uppercase">Operating Hours</span>
+                </div>
+                <div className="space-y-3">
+                  <HourRow day="Monday – Friday" hours="5:00 AM – 11:00 PM" />
+                  <HourRow day="Saturday" hours="6:00 AM – 10:00 PM" />
+                  <HourRow day="Sunday" hours="7:00 AM – 8:00 PM" />
+                </div>
               </div>
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">The Message</label>
-                <textarea rows={5} className="w-full px-0 py-4 bg-transparent border-b border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors resize-none" placeholder="Describe your precision requirement..." />
-              </div>
-              <div className="pt-8">
-                <button type="button" className="btn-primary w-full flex items-center justify-center gap-4">
-                  <Send className="w-5 h-5" />
-                  Send Message
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
     </div>
   );
 }
 
-function ContactInfo({ icon: Icon, title, value, link, color }: { icon: React.ElementType, title: string, value: string, link?: string, color?: string }) {
+function ContactCard({ icon: Icon, title, value, subtitle, link, accent }: {
+  icon: React.ElementType, title: string, value: string, subtitle: string, link?: string, accent?: boolean
+}) {
+  const Wrapper = link ? 'a' : 'div';
+  const wrapperProps = link ? { href: link, target: "_blank", rel: "noopener noreferrer" } : {};
+
   return (
-    <div className="group border-l border-primary/10 pl-8">
-      <div className="flex items-center gap-4 mb-3">
-        <Icon className={`w-5 h-5 text-accent`} />
-        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">{title}</h4>
+    <Wrapper {...wrapperProps} className={`group block p-5 sm:p-6 border transition-all duration-500 ${accent
+      ? 'bg-accent/5 border-accent/20 hover:bg-accent/10 hover:border-accent/40'
+      : 'border-primary/5 hover:border-accent/20 bg-white'
+    } ${link ? 'cursor-pointer' : ''}`}>
+      <div className="flex items-start gap-4 sm:gap-6">
+        <div className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center flex-shrink-0 transition-all duration-500 ${
+          accent ? 'bg-accent text-white' : 'bg-secondary text-primary group-hover:bg-accent group-hover:text-white'
+        }`}>
+          <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">{title}</span>
+            {link && <ArrowUpRight className="w-3 h-3 text-accent opacity-0 group-hover:opacity-100 transition-opacity" />}
+          </div>
+          <p className="text-base sm:text-lg font-bold text-primary tracking-tight truncate">{value}</p>
+          <p className="text-[10px] sm:text-xs text-slate-400 font-medium mt-1">{subtitle}</p>
+        </div>
       </div>
-      {link ? (
-        <a href={link} className="text-base sm:text-xl md:text-2xl font-light text-primary hover:text-accent transition-colors underline decoration-accent/20 underline-offset-8">
-          {value}
-        </a>
-      ) : (
-        <p className="text-base sm:text-xl md:text-2xl font-light text-primary tracking-tight">{value}</p>
-      )}
+    </Wrapper>
+  );
+}
+
+function HourRow({ day, hours }: { day: string, hours: string }) {
+  return (
+    <div className="flex justify-between items-center py-2 border-b border-primary/5 last:border-0">
+      <span className="text-xs sm:text-sm font-bold text-primary">{day}</span>
+      <span className="text-[10px] sm:text-xs font-black text-accent tracking-wider">{hours}</span>
     </div>
   );
 }

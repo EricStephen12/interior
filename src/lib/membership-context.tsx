@@ -14,6 +14,7 @@ interface MembershipState {
     remainingCredits: number
     checkInHistory: CheckIn[]
     memberId: string
+    tier: string
 }
 
 interface MembershipContextType {
@@ -26,11 +27,12 @@ interface MembershipContextType {
 const MembershipContext = createContext<MembershipContextType | undefined>(undefined)
 
 const INITIAL_STATE: MembershipState = {
-    hasActiveMembership: true,
-    totalCredits: 30,
-    remainingCredits: 30,
+    hasActiveMembership: false,
+    totalCredits: 0,
+    remainingCredits: 0,
     checkInHistory: [],
-    memberId: 'SR-772910'
+    memberId: 'PENDING',
+    tier: 'NONE'
 }
 
 export function MembershipProvider({ children }: { children: React.ReactNode }) {
@@ -49,6 +51,7 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
                             totalCredits: data.user.credits + data.user.checkIns.length,
                             remainingCredits: data.user.credits,
                             memberId: data.user.memberId,
+                            tier: data.user.tier,
                             checkInHistory: data.user.checkIns.map((c: any) => ({
                                 id: c.id,
                                 date: c.date,
@@ -90,6 +93,7 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
                         totalCredits: data.user.credits + data.user.checkIns.length,
                         remainingCredits: data.user.credits,
                         memberId: data.user.memberId,
+                        tier: data.user.tier,
                         checkInHistory: data.user.checkIns.map((c: any) => ({
                             id: c.id,
                             date: c.date,

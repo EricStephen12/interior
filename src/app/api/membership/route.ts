@@ -1,10 +1,18 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { currentUser } from '@clerk/nextjs/server'
 
 export async function GET(req: Request) {
   try {
+    const clerkUser = await currentUser()
+    const email = clerkUser?.emailAddresses[0]?.emailAddress
+
+    if (!email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const user = await prisma.user.findUnique({
-      where: { email: 'customer@sharers.gym' },
+      where: { email },
       include: {
         checkIns: {
           orderBy: { date: 'desc' }
@@ -28,10 +36,14 @@ export async function POST(req: Request) {
     const { action, protocol, memberId } = await req.json()
 
     if (action === 'CHECK_IN') {
-      // Admin scanning or user self-simulating check-in
-      const emailToFind = 'customer@sharers.gym' 
+      const clerkUser = await currentUser()
+      const email = clerkUser?.emailAddresses[0]?.emailAddress
 
-      const user = await prisma.user.findUnique({ where: { email: emailToFind } })
+      if (!email) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      }
+
+      const user = await prisma.user.findUnique({ where: { email } })
 
       if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
       if (user.credits <= 0) return NextResponse.json({ error: 'Insufficient credits' }, { status: 400 })
