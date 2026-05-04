@@ -4,11 +4,11 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { useMembership } from '@/lib/membership-context'
 import MemberPass from '@/components/MemberPass'
-import { Activity, Clock, Award, ChevronRight, Play } from 'lucide-react'
+import { Activity, Clock, Award, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 
 export default function DashboardPage() {
-    const { state, checkIn, resetMembership } = useMembership()
+    const { state } = useMembership()
 
     const container: any = {
         hidden: { opacity: 0 },
@@ -36,7 +36,7 @@ export default function DashboardPage() {
                     className="mb-16 md:mb-24"
                 >
                     <p className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-4">THE MEMBER PROTOCOL</p>
-                    <h1 className="text-5xl sm:text-7xl md:text-[8rem] lg:text-[10rem] text-luxury text-primary leading-none tracking-tighter">
+                    <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-[10rem] text-luxury text-primary leading-none tracking-tighter">
                         THE <br />
                         <span className="text-accent italic font-light">DASHBOARD.</span>
                     </h1>
@@ -131,12 +131,12 @@ export default function DashboardPage() {
                             {/* Recovery Banner */}
                             <motion.div
                                 variants={item}
-                                className="relative overflow-hidden bg-primary p-12 md:p-20 text-white"
+                                className="relative overflow-hidden bg-primary p-8 sm:p-12 md:p-20 text-white"
                             >
                                 <div className="relative z-10 space-y-8 max-w-xl">
                                     <p className="text-[10px] font-black tracking-[0.5em] text-accent-light uppercase">RECOVERY LOUNGE</p>
-                                    <h3 className="text-4xl sm:text-5xl md:text-7xl text-luxury leading-none">Accelerate <br /> Recovery.</h3>
-                                    <p className="text-white/60 font-medium leading-relaxed">
+                                    <h3 className="text-2xl sm:text-4xl md:text-7xl text-luxury leading-none">Accelerate <br /> Recovery.</h3>
+                                    <p className="text-sm sm:text-base text-white/60 font-medium leading-relaxed">
                                         The work doesn't end when the set does. Recovery is where the body actually changes — and this protocol makes sure you don't leave that part to chance.
                                     </p>
                                     <button className="text-[10px] font-black tracking-[0.5em] uppercase border-b-2 border-accent pb-4 hover:tracking-[0.8em] transition-all duration-700">
@@ -159,13 +159,13 @@ export default function DashboardPage() {
 
 function StatCard({ label, value, desc, icon: Icon }: { label: string, value: string, desc: string, icon: any }) {
     return (
-        <div className="bg-white p-10 border border-primary/5 shadow-sm group hover:border-accent/20 transition-all duration-700">
+        <div className="bg-white p-6 sm:p-10 border border-primary/5 shadow-sm group hover:border-accent/20 transition-all duration-700">
             <div className="flex justify-between items-start mb-8">
-                <Icon className="w-8 h-8 text-accent opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" strokeWidth={1.5} />
+                <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-accent opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" strokeWidth={1.5} />
                 <span className="text-[10px] font-black tracking-widest text-text-muted">{label}</span>
             </div>
             <div className="space-y-2">
-                <p className="text-5xl font-black text-primary tracking-tighter">{value}</p>
+                <p className="text-2xl sm:text-4xl md:text-5xl font-black text-primary tracking-tighter">{value}</p>
                 <p className="text-[10px] font-black text-text-muted tracking-widest uppercase">{desc}</p>
             </div>
         </div>
