@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Plus, Trash2, Eye, Package } from 'lucide-react'
+import { Plus, Trash2, Eye, Package, Settings, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/api/products/list')
@@ -19,116 +20,135 @@ export default function AdminProductsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this product? This cannot be undone.')) return
+    setDeletingId(id)
     try {
       const res = await fetch('/api/products', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id })
       })
-      if (res.ok) setProducts(prev => prev.filter(p => p.id !== id))
+      if (res.ok) {
+        setProducts(prev => prev.filter(p => p.id !== id))
+      } else {
+        const data = await res.json()
+        alert(data.error || 'Failed to delete.')
+      }
     } catch {
       alert('Failed to delete.')
+    } finally {
+      setDeletingId(null)
     }
   }
 
   return (
-    <div className="p-4 sm:p-8 space-y-8">
-      <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-primary uppercase font-display">
-            The <span className="text-accent italic font-light lowercase">Inventory.</span>
-          </h1>
-          <p className="text-slate-500 font-medium text-sm">Manage your collection.</p>
-        </div>
-        <div className="flex gap-4">
+    <div className="min-h-screen bg-[#fafafa]">
+      {/* Top Bar */}
+      <div className="bg-white border-b border-gray-100 px-6 sm:px-10 py-5 flex items-center justify-between sticky top-0 z-50">
+        <h1 className="text-lg font-bold text-gray-900">Products</h1>
+        <div className="flex items-center gap-3">
           <Link
             href="/admin/attributes"
-            className="flex items-center justify-center gap-3 bg-secondary text-primary px-6 sm:px-8 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all border border-primary/5 shadow-sm"
+            className="flex items-center gap-2 bg-white border border-gray-200 text-gray-600 px-4 py-2.5 rounded-lg text-xs font-bold hover:bg-gray-50 transition-colors"
           >
-            Manage Attributes
+            <Settings className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Store Settings</span>
           </Link>
           <Link
             href="/admin/products/new"
-            className="flex items-center justify-center gap-3 bg-primary text-white px-6 sm:px-8 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-accent transition-all shadow-lg"
+            className="flex items-center gap-2 bg-gray-900 text-white px-5 py-2.5 rounded-lg text-xs font-bold hover:bg-accent transition-colors"
           >
-            <Plus className="w-4 h-4" /> New Product
+            <Plus className="w-3.5 h-3.5" />
+            Add Product
           </Link>
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[600px]">
-          <thead>
-            <tr className="border-b border-primary/5 bg-secondary/10">
-              <th className="px-4 sm:px-8 py-4 sm:py-6 text-[10px] font-black uppercase tracking-widest text-primary">Product</th>
-              <th className="px-4 sm:px-8 py-4 sm:py-6 text-[10px] font-black uppercase tracking-widest text-primary">Brand</th>
-              <th className="px-4 sm:px-8 py-4 sm:py-6 text-[10px] font-black uppercase tracking-widest text-primary">Price</th>
-              <th className="px-4 sm:px-8 py-4 sm:py-6 text-[10px] font-black uppercase tracking-widest text-primary">Status</th>
-              <th className="px-4 sm:px-8 py-4 sm:py-6 text-[10px] font-black uppercase tracking-widest text-primary text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-primary/5">
-            {loading ? (
-              <tr>
-                <td colSpan={5} className="px-8 py-20 text-center text-slate-400 font-medium text-sm">Loading products...</td>
+      {/* Content */}
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 py-10">
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          <table className="w-full text-left border-collapse min-w-[600px]">
+            <thead>
+              <tr className="border-b border-gray-100 bg-gray-50/50">
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Product</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Brand</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Price</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide text-right">Actions</th>
               </tr>
-            ) : products.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-8 py-20 text-center text-slate-400 font-medium text-sm">No products yet. Add your first piece.</td>
-              </tr>
-            ) : (
-              products.map((product: any) => (
-                <tr key={product.id} className="hover:bg-white/50 transition-colors group">
-                  <td className="px-4 sm:px-8 py-4 sm:py-6">
-                    <div className="flex items-center gap-4 sm:gap-6">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-secondary relative overflow-hidden flex-shrink-0">
-                        {(Array.isArray(product.images) && product.images.length > 0) ? (
-                          <Image src={product.images[0]} alt="" fill className="object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <Package className="w-5 h-5 text-slate-300" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="text-xs sm:text-sm font-bold text-primary group-hover:text-accent transition-colors truncate">{product.name}</div>
-                        <div className="text-[9px] sm:text-[10px] text-slate-400 font-medium uppercase tracking-wider">{product.type || 'Standard'}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 sm:px-8 py-4 sm:py-6">
-                    <span className="text-[9px] sm:text-[10px] font-black text-primary uppercase tracking-widest border border-primary/10 px-2 sm:px-3 py-1 bg-white">
-                      {product.brand?.name || '—'}
-                    </span>
-                  </td>
-                  <td className="px-4 sm:px-8 py-4 sm:py-6">
-                    <div className="flex flex-col">
-                      <span className="text-xs sm:text-sm font-bold text-primary tabular-nums">₦{product.price?.toLocaleString()}</span>
-                      {product.promoPrice && (
-                        <span className="text-[9px] text-accent font-bold tabular-nums">₦{product.promoPrice.toLocaleString()} promo</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-4 sm:px-8 py-4 sm:py-6">
-                    <span className={`text-[9px] font-black px-2 sm:px-3 py-1 uppercase tracking-widest ${product.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                      {product.isActive ? 'Active' : 'Archived'}
-                    </span>
-                  </td>
-                  <td className="px-4 sm:px-8 py-4 sm:py-6">
-                    <div className="flex justify-end gap-2 sm:gap-3">
-                      <Link href={`/products/${product.id}`} className="p-2 text-slate-400 hover:text-primary transition-colors">
-                        <Eye className="w-4 h-4" />
-                      </Link>
-                      <button onClick={() => handleDelete(product.id)} className="p-2 text-slate-400 hover:text-red-600 transition-colors">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {loading ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-20 text-center">
+                    <Loader2 className="w-6 h-6 text-gray-300 animate-spin mx-auto" />
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : products.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-20 text-center text-gray-400 text-sm">No products yet. Add your first one.</td>
+                </tr>
+              ) : (
+                products.map((product: any) => (
+                  <tr key={product.id} className="hover:bg-gray-50/50 transition-colors group">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gray-100 rounded-lg relative overflow-hidden flex-shrink-0">
+                          {(Array.isArray(product.images) && product.images.length > 0) ? (
+                            <Image src={product.images[0]} alt="" fill className="object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Package className="w-5 h-5 text-gray-300" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate">{product.name}</p>
+                          <p className="text-xs text-gray-400">{product.type || 'Uncategorized'}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-xs font-semibold text-gray-600 bg-gray-100 px-2.5 py-1 rounded-full">
+                        {product.brand?.name || '—'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold text-gray-900 tabular-nums">₦{product.price?.toLocaleString()}</span>
+                        {product.promoPrice && (
+                          <span className="text-xs text-green-600 font-semibold tabular-nums">₦{product.promoPrice.toLocaleString()} promo</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide ${product.isActive !== false ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                        {product.isActive !== false ? 'Active' : 'Archived'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end items-center gap-3">
+                        {deletingId === product.id && <span className="text-[10px] font-bold text-gray-400 animate-pulse uppercase">Deleting</span>}
+                        <Link href={`/admin/products/${product.id}`} className={`p-2 text-gray-300 hover:text-accent transition-colors rounded-lg hover:bg-accent/5 ${deletingId === product.id ? 'opacity-20 pointer-events-none' : ''}`}>
+                          <Settings className="w-4 h-4" />
+                        </Link>
+                        <Link href={`/products/${product.id}`} className={`p-2 text-gray-300 hover:text-gray-700 transition-colors rounded-lg hover:bg-gray-100 ${deletingId === product.id ? 'opacity-20 pointer-events-none' : ''}`}>
+                          <Eye className="w-4 h-4" />
+                        </Link>
+                        <button 
+                          onClick={() => handleDelete(product.id)} 
+                          disabled={deletingId !== null}
+                          className={`p-2 transition-all rounded-lg ${deletingId === product.id ? 'text-red-500 bg-red-50' : 'text-gray-300 hover:text-red-500 hover:bg-red-50 disabled:opacity-30'}`}
+                        >
+                          {deletingId === product.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )

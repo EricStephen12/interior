@@ -92,6 +92,9 @@ model Product {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   
+  promoCodeId String?
+  promoCode   PromoCode? @relation(fields: [promoCodeId], references: [id])
+  
   categories  ProductCategory[]
 }
 
@@ -102,6 +105,7 @@ model PromoCode {
   isActive    Boolean  @default(true)
   expiresAt   DateTime?
   createdAt   DateTime @default(now())
+  products    Product[]
 }
 
 model CreditPack {

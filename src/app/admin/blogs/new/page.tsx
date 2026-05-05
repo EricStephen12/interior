@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Save, ArrowLeft, Sparkles, Loader2, UploadCloud } from 'lucide-react'
+import { ArrowLeft, Save, Sparkles, Loader2, ImageIcon } from 'lucide-react'
 import Link from 'next/link'
 import { CldUploadWidget } from 'next-cloudinary'
 
@@ -22,7 +22,6 @@ export default function NewBlogPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-
     try {
       const res = await fetch('/api/blogs', {
         method: 'POST',
@@ -36,15 +35,13 @@ export default function NewBlogPage() {
       }
     } catch {
       alert('Network error. Try again.')
-    } finally {
-      setIsSubmitting(false)
     }
+    setIsSubmitting(false)
   }
 
   const enhanceText = async (field: 'excerpt' | 'content') => {
     const text = formData[field]
     if (!text.trim()) return
-
     setEnhancing(field)
     try {
       const res = await fetch('/api/ai/enhance', {
@@ -56,150 +53,183 @@ export default function NewBlogPage() {
       if (data.enhanced) {
         setFormData(prev => ({ ...prev, [field]: data.enhanced }))
       }
-    } catch {
-      // Silently fail
-    } finally {
-      setEnhancing(null)
-    }
+    } catch {}
+    setEnhancing(null)
   }
 
   return (
-    <div className="p-4 sm:p-8 max-w-4xl mx-auto space-y-8">
-      <div className="flex items-center gap-4 mb-8">
-        <Link href="/admin/blogs" className="p-2 bg-secondary text-primary hover:bg-accent hover:text-white transition-colors">
-          <ArrowLeft className="w-5 h-5" />
-        </Link>
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-primary uppercase font-display">
-            Draft <span className="text-accent italic font-light lowercase">Article.</span>
-          </h1>
-          <p className="text-slate-500 font-medium text-sm">Publish a new piece to the Journal.</p>
+    <div className="min-h-screen bg-[#fafafa]">
+      {/* Top Bar */}
+      <div className="bg-white border-b border-gray-100 px-6 sm:px-10 py-5 flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center gap-5">
+          <Link href="/admin/blogs" className="flex items-center gap-2 text-gray-400 hover:text-gray-900 transition-colors text-sm font-semibold">
+            <ArrowLeft className="w-4 h-4" />
+            <span className="hidden sm:inline">Articles</span>
+          </Link>
+          <div className="h-5 w-px bg-gray-200" />
+          <h1 className="text-lg font-bold text-gray-900">New Article</h1>
         </div>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="bg-white p-6 sm:p-8 space-y-8 shadow-sm border border-primary/5">
-          <div className="space-y-3">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Headline</label>
-            <input 
-              required
-              type="text" 
-              value={formData.title}
-              onChange={e => setFormData({ ...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') })}
-              className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors font-bold text-lg sm:text-2xl text-primary placeholder:text-slate-300" 
-              placeholder="e.g. The Science of Recovery"
-            />
-          </div>
-
-          <div className="space-y-3">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">URL Slug</label>
-            <input 
-              required
-              type="text" 
-              value={formData.slug}
-              onChange={e => setFormData({ ...formData, slug: e.target.value })}
-              className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors font-mono text-sm text-slate-500 placeholder:text-slate-300" 
-              placeholder="the-science-of-recovery"
-            />
-          </div>
-
-          <div className="space-y-3">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cover Image (Cloudinary)</label>
-            <div className="pt-2">
-              <CldUploadWidget 
-                uploadPreset="sharers_gym" 
-                onSuccess={(result: any) => {
-                  setFormData({ ...formData, coverImg: result.info.secure_url })
-                }}
-              >
-                {({ open }) => {
-                  return (
-                    <button
-                      type="button"
-                      onClick={() => open()}
-                      className="flex items-center gap-3 px-6 py-4 border-2 border-dashed border-primary/20 hover:border-accent text-primary transition-all w-full justify-center"
-                    >
-                      <UploadCloud className="w-5 h-5" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">
-                        {formData.coverImg ? 'Image Uploaded - Click to Change' : 'Upload Cover Image'}
-                      </span>
-                    </button>
-                  )
-                }}
-              </CldUploadWidget>
-              {formData.coverImg && (
-                <div className="mt-4 aspect-video w-48 relative border border-primary/10">
-                  <img src={formData.coverImg} alt="Preview" className="object-cover w-full h-full" />
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Excerpt</label>
-              <button
-                type="button"
-                onClick={() => enhanceText('excerpt')}
-                disabled={!!enhancing || !formData.excerpt.trim()}
-                className="flex items-center gap-1.5 text-[9px] font-black text-accent uppercase tracking-widest hover:text-accent/70 transition-colors disabled:opacity-30"
-              >
-                {enhancing === 'excerpt' ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                AI Enhance
-              </button>
-            </div>
-            <textarea 
-              required
-              rows={2}
-              value={formData.excerpt}
-              onChange={e => setFormData({ ...formData, excerpt: e.target.value })}
-              className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors resize-none leading-relaxed text-sm placeholder:text-slate-300" 
-              placeholder="A brief summary for the catalog..."
-            />
-          </div>
-
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Content</label>
-              <button
-                type="button"
-                onClick={() => enhanceText('content')}
-                disabled={!!enhancing || !formData.content.trim()}
-                className="flex items-center gap-1.5 text-[9px] font-black text-accent uppercase tracking-widest hover:text-accent/70 transition-colors disabled:opacity-30"
-              >
-                {enhancing === 'content' ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                AI Enhance
-              </button>
-            </div>
-            <textarea 
-              required
-              rows={10}
-              value={formData.content}
-              onChange={e => setFormData({ ...formData, content: e.target.value })}
-              className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors resize-none leading-relaxed text-sm placeholder:text-slate-300" 
-              placeholder="Write the full article here..."
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-4">
-          <label className="flex items-center gap-3 cursor-pointer">
+        <div className="flex items-center gap-4">
+          <label className="flex items-center gap-2.5 cursor-pointer select-none">
             <input
               type="checkbox"
               checked={formData.published}
               onChange={e => setFormData({ ...formData, published: e.target.checked })}
-              className="w-4 h-4 accent-accent"
+              className="w-4 h-4 accent-accent rounded"
             />
-            <span className="text-[10px] font-black text-primary uppercase tracking-widest">Publish immediately</span>
+            <span className="text-xs font-semibold text-gray-600">Publish now</span>
           </label>
-          <button 
-            type="submit" 
+          <button
+            type="button"
+            onClick={handleSubmit}
             disabled={isSubmitting}
-            className="flex items-center gap-3 bg-primary text-white px-8 sm:px-10 py-3 sm:py-4 rounded-none text-[10px] font-black uppercase tracking-widest hover:bg-accent transition-all shadow-xl disabled:opacity-50"
+            className="flex items-center gap-2 bg-gray-900 text-white px-6 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-accent transition-colors disabled:opacity-40 rounded-md"
           >
-            <Save className="w-4 h-4" /> 
-            {isSubmitting ? 'PUBLISHING...' : 'PUBLISH ARTICLE'}
+            {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            {isSubmitting ? 'Publishing...' : 'Publish'}
           </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <form onSubmit={handleSubmit} className="max-w-[1200px] mx-auto px-6 sm:px-10 py-10">
+        <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-10">
+
+          {/* Left — Main Editor */}
+          <div className="space-y-8">
+            {/* Title & Slug */}
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-8 py-5 border-b border-gray-50">
+                <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Article Details</h2>
+              </div>
+              <div className="p-8 space-y-6">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Headline</label>
+                  <input
+                    required
+                    type="text"
+                    value={formData.title}
+                    onChange={e => setFormData({ ...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') })}
+                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 text-xl font-bold placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+                    placeholder="e.g. The Science of Recovery"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">URL Slug</label>
+                  <input
+                    required
+                    type="text"
+                    value={formData.slug}
+                    onChange={e => setFormData({ ...formData, slug: e.target.value })}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-500 font-mono text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+                    placeholder="the-science-of-recovery"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-8 py-5 border-b border-gray-50">
+                <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Content</h2>
+              </div>
+              <div className="p-8 space-y-6">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Excerpt</label>
+                    <button
+                      type="button"
+                      onClick={() => enhanceText('excerpt')}
+                      disabled={!!enhancing || !formData.excerpt.trim()}
+                      className="flex items-center gap-1.5 text-xs font-bold text-accent hover:text-accent/70 disabled:opacity-30 transition-colors"
+                    >
+                      {enhancing === 'excerpt' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                      AI Enhance
+                    </button>
+                  </div>
+                  <textarea
+                    required
+                    rows={3}
+                    value={formData.excerpt}
+                    onChange={e => setFormData({ ...formData, excerpt: e.target.value })}
+                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 text-sm leading-relaxed placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all resize-none"
+                    placeholder="A brief summary for the catalog..."
+                  />
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Full Article</label>
+                    <button
+                      type="button"
+                      onClick={() => enhanceText('content')}
+                      disabled={!!enhancing || !formData.content.trim()}
+                      className="flex items-center gap-1.5 text-xs font-bold text-accent hover:text-accent/70 disabled:opacity-30 transition-colors"
+                    >
+                      {enhancing === 'content' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                      AI Enhance
+                    </button>
+                  </div>
+                  <textarea
+                    required
+                    rows={14}
+                    value={formData.content}
+                    onChange={e => setFormData({ ...formData, content: e.target.value })}
+                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 text-sm leading-relaxed placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all resize-none"
+                    placeholder="Write the full article here..."
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right — Cover Image */}
+          <div className="space-y-8">
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-8 py-5 border-b border-gray-50">
+                <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Cover Image</h2>
+              </div>
+              <div className="p-8">
+                <CldUploadWidget
+                  uploadPreset="sharers_gym"
+                  options={{
+                    cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+                  }}
+                  onSuccess={(result: any) => {
+                    setFormData(prev => ({ ...prev, coverImg: result.info.secure_url }))
+                  }}
+                >
+                  {({ open }) => (
+                    <div>
+                      {formData.coverImg ? (
+                        <div className="space-y-4">
+                          <div className="aspect-video w-full rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                            <img src={formData.coverImg} alt="Cover" className="w-full h-full object-cover" />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => open()}
+                            className="w-full py-3 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-50 transition-colors"
+                          >
+                            Replace Image
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => open()}
+                          className="w-full aspect-video border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center gap-3 hover:border-accent hover:bg-accent/5 transition-all group"
+                        >
+                          <ImageIcon className="w-8 h-8 text-gray-300 group-hover:text-accent transition-colors" />
+                          <span className="text-xs font-bold text-gray-400">Upload Cover Image</span>
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </CldUploadWidget>
+              </div>
+            </div>
+          </div>
+
         </div>
       </form>
     </div>

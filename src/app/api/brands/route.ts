@@ -13,9 +13,16 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const { name } = await req.json()
-    const brand = await prisma.brand.create({ data: { name } })
+    const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+    const brand = await prisma.brand.create({ 
+      data: { 
+        name,
+        slug: `${slug}-${Math.random().toString(36).substring(2, 5)}`
+      } 
+    })
     return NextResponse.json({ success: true, brand })
-  } catch {
+  } catch (error) {
+    console.error('Brand POST error:', error)
     return NextResponse.json({ error: 'Failed' }, { status: 500 })
   }
 }
@@ -23,9 +30,16 @@ export async function POST(req: Request) {
 export async function DELETE(req: Request) {
   try {
     const { id } = await req.json()
+    
+    // Check if brand is in use
+    const products = await prisma.product.count({ where: { brandId: id } })
+    if (products > 0) {
+      return NextResponse.json({ error: 'Cannot delete brand while it has products. Delete or move the products first.' }, { status: 400 })
+    }
+
     await prisma.brand.delete({ where: { id } })
     return NextResponse.json({ success: true })
-  } catch {
+  } catch (error) {
     return NextResponse.json({ error: 'Failed' }, { status: 500 })
   }
 }

@@ -13,18 +13,24 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const { name, credits, price, description, isPopular } = await req.json()
+    
+    if (!name || !credits || !price) {
+      return NextResponse.json({ error: 'Name, credits, and price are required' }, { status: 400 })
+    }
+
     const pack = await prisma.creditPack.create({
       data: {
-        name: name.toUpperCase(),
+        name: name.toUpperCase().trim(),
         credits: parseInt(credits),
         price: parseFloat(price),
-        description,
+        description: description?.trim() || null,
         isPopular: !!isPopular
       }
     })
     return NextResponse.json({ success: true, pack })
   } catch (error) {
-    return NextResponse.json({ error: 'Invalid data' }, { status: 400 })
+    console.error('Credit Pack POST error:', error)
+    return NextResponse.json({ error: 'Failed to create pack. Ensure numbers are valid.' }, { status: 400 })
   }
 }
 

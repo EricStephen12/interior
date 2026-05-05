@@ -16,7 +16,7 @@ export async function createProduct(data: any) {
       sizeId: data.sizeId,
       price: data.price,
       promoPrice: data.promoPrice,
-      imageUrl: data.imageUrl,
+      images: data.images || [],
     }
   })
 }

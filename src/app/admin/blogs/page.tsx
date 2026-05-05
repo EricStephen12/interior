@@ -1,15 +1,13 @@
 'use client'
 
-import { getBlogs } from '@/lib/services/blog'
-import Link from 'next/link'
-import { Plus, Edit, Trash2, Eye, Calendar, FileText } from 'lucide-react'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { Plus, Trash2, Eye, Calendar, FileText, Loader2, ArrowLeft } from 'lucide-react'
 
 export default function AdminBlogsPage() {
   const [blogs, setBlogs] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const router = useRouter()
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/api/blogs/list')
@@ -21,7 +19,7 @@ export default function AdminBlogsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this article? This cannot be undone.')) return
-
+    setDeletingId(id)
     try {
       const res = await fetch('/api/blogs', {
         method: 'DELETE',
@@ -30,101 +28,105 @@ export default function AdminBlogsPage() {
       })
       if (res.ok) {
         setBlogs(prev => prev.filter(b => b.id !== id))
+      } else {
+        const data = await res.json()
+        alert(data.error || 'Failed to delete.')
       }
     } catch {
       alert('Failed to delete.')
+    } finally {
+      setDeletingId(null)
     }
   }
 
   return (
-    <div className="p-4 sm:p-8 space-y-8">
-      <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-primary uppercase font-display">
-            The <span className="text-accent italic font-light lowercase">Journal.</span>
-          </h1>
-          <p className="text-slate-500 font-medium text-sm">Manage your editorial content.</p>
-        </div>
-        <Link 
+    <div className="min-h-screen bg-[#fafafa]">
+      {/* Top Bar */}
+      <div className="bg-white border-b border-gray-100 px-6 sm:px-10 py-5 flex items-center justify-between sticky top-0 z-50">
+        <h1 className="text-lg font-bold text-gray-900">Blog Articles</h1>
+        <Link
           href="/admin/blogs/new"
-          className="flex items-center justify-center gap-3 bg-primary text-white px-6 sm:px-8 py-3 rounded-none text-[10px] font-black uppercase tracking-widest hover:bg-accent transition-all shadow-lg"
+          className="flex items-center gap-2 bg-gray-900 text-white px-5 py-2.5 rounded-lg text-xs font-bold hover:bg-accent transition-colors"
         >
-          <Plus className="w-4 h-4" /> New Article
+          <Plus className="w-3.5 h-3.5" />
+          New Article
         </Link>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[500px]">
-          <thead>
-            <tr className="border-b border-primary/5 bg-secondary/10">
-              <th className="px-4 sm:px-8 py-4 sm:py-6 text-[10px] font-black uppercase tracking-widest text-primary">Article</th>
-              <th className="px-4 sm:px-8 py-4 sm:py-6 text-[10px] font-black uppercase tracking-widest text-primary">Status</th>
-              <th className="px-4 sm:px-8 py-4 sm:py-6 text-[10px] font-black uppercase tracking-widest text-primary">Date</th>
-              <th className="px-4 sm:px-8 py-4 sm:py-6 text-[10px] font-black uppercase tracking-widest text-primary text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-primary/5">
-            {loading ? (
-              <tr>
-                <td colSpan={4} className="px-8 py-20 text-center text-slate-400 font-medium text-sm">
-                  Loading articles...
-                </td>
+      {/* Content */}
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 py-10">
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          <table className="w-full text-left border-collapse min-w-[500px]">
+            <thead>
+              <tr className="border-b border-gray-100 bg-gray-50/50">
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Article</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Date</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide text-right">Actions</th>
               </tr>
-            ) : blogs.length === 0 ? (
-              <tr>
-                <td colSpan={4} className="px-8 py-20 text-center text-slate-400 font-medium text-sm">
-                  No articles found. Start writing the future.
-                </td>
-              </tr>
-            ) : (
-              blogs.map((blog: any) => (
-                <tr key={blog.id} className="hover:bg-white/50 transition-colors group">
-                  <td className="px-4 sm:px-8 py-4 sm:py-6">
-                    <div className="flex items-center gap-4 sm:gap-6">
-                      {blog.coverImg ? (
-                        <div className="w-16 sm:w-20 aspect-video bg-secondary overflow-hidden flex-shrink-0">
-                          <img src={blog.coverImg} alt="" className="w-full h-full object-cover" />
-                        </div>
-                      ) : (
-                        <div className="w-16 sm:w-20 aspect-video bg-secondary flex items-center justify-center flex-shrink-0">
-                          <FileText className="w-5 h-5 text-slate-300" />
-                        </div>
-                      )}
-                      <div className="min-w-0">
-                        <div className="text-xs sm:text-sm font-bold text-primary group-hover:text-accent transition-colors truncate">{blog.title}</div>
-                        <div className="text-[9px] sm:text-[10px] text-slate-400 font-medium uppercase tracking-wider">{blog.slug}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 sm:px-8 py-4 sm:py-6">
-                    <span className={`text-[9px] font-black px-3 py-1 uppercase tracking-widest ${blog.published ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
-                      {blog.published ? 'Published' : 'Draft'}
-                    </span>
-                  </td>
-                  <td className="px-4 sm:px-8 py-4 sm:py-6">
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
-                      <Calendar className="w-3 h-3" />
-                      {new Date(blog.createdAt).toLocaleDateString()}
-                    </div>
-                  </td>
-                  <td className="px-4 sm:px-8 py-4 sm:py-6">
-                    <div className="flex justify-end gap-2 sm:gap-3">
-                      <Link href={`/blog/${blog.slug}`} className="p-2 text-slate-400 hover:text-primary transition-colors">
-                        <Eye className="w-4 h-4" />
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(blog.id)}
-                        className="p-2 text-slate-400 hover:text-red-600 transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {loading ? (
+                <tr>
+                  <td colSpan={4} className="px-6 py-20 text-center">
+                    <Loader2 className="w-6 h-6 text-gray-300 animate-spin mx-auto" />
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : blogs.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-6 py-20 text-center text-gray-400 text-sm">No articles yet. Write your first one.</td>
+                </tr>
+              ) : (
+                blogs.map((blog: any) => (
+                  <tr key={blog.id} className="hover:bg-gray-50/50 transition-colors group">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        {blog.coverImg ? (
+                          <div className="w-16 aspect-video bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                            <img src={blog.coverImg} alt="" className="w-full h-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="w-16 aspect-video bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <FileText className="w-5 h-5 text-gray-300" />
+                          </div>
+                        )}
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate">{blog.title}</p>
+                          <p className="text-xs text-gray-400 truncate">{blog.slug}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide ${blog.published ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}`}>
+                        {blog.published ? 'Published' : 'Draft'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                        <Calendar className="w-3.5 h-3.5 text-gray-300" />
+                        {new Date(blog.createdAt).toLocaleDateString()}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end gap-1">
+                        <Link href={`/blog/${blog.slug}`} className="p-2 text-gray-300 hover:text-gray-700 transition-colors rounded-lg hover:bg-gray-100">
+                          <Eye className="w-4 h-4" />
+                        </Link>
+                        <button 
+                          onClick={() => handleDelete(blog.id)} 
+                          disabled={deletingId === blog.id}
+                          className="p-2 text-gray-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50 disabled:opacity-30"
+                        >
+                          {deletingId === blog.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )

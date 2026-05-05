@@ -74,6 +74,7 @@ export const metadata: Metadata = {
 };
 
 import { MembershipProvider } from "@/lib/membership-context";
+import { WishlistProvider } from "@/lib/wishlist-context";
 import { ClerkProvider } from "@clerk/nextjs";
 import CustomCursor from "@/components/CustomCursor";
 
@@ -90,11 +91,13 @@ export default function RootLayout({
         >
           <CustomCursor />
           <MembershipProvider>
-            <CartProvider>
-              <Layout>
-                {children}
-              </Layout>
-            </CartProvider>
+            <WishlistProvider>
+              <CartProvider>
+                <Layout>
+                  {children}
+                </Layout>
+              </CartProvider>
+            </WishlistProvider>
           </MembershipProvider>
         </body>
       </html>
