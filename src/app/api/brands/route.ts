@@ -9,3 +9,23 @@ export async function GET() {
     return NextResponse.json({ brands: [] })
   }
 }
+
+export async function POST(req: Request) {
+  try {
+    const { name } = await req.json()
+    const brand = await prisma.brand.create({ data: { name } })
+    return NextResponse.json({ success: true, brand })
+  } catch {
+    return NextResponse.json({ error: 'Failed' }, { status: 500 })
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const { id } = await req.json()
+    await prisma.brand.delete({ where: { id } })
+    return NextResponse.json({ success: true })
+  } catch {
+    return NextResponse.json({ error: 'Failed' }, { status: 500 })
+  }
+}

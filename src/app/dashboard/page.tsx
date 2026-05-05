@@ -6,6 +6,7 @@ import { useMembership } from '@/lib/membership-context'
 import MemberPass from '@/components/MemberPass'
 import { Activity, Clock, Award, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
+import TopupCredits from '@/components/TopupCredits'
 
 export default function DashboardPage() {
     const { state } = useMembership()
@@ -30,17 +31,18 @@ export default function DashboardPage() {
             <div className="max-w-[1400px] mx-auto">
 
                 {/* Editorial Header */}
-                <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="mb-16 md:mb-24"
-                >
-                    <p className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-4">THE MEMBER PROTOCOL</p>
-                    <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-[10rem] text-luxury text-primary leading-none tracking-tighter">
-                        THE <br />
-                        <span className="text-accent italic font-light">DASHBOARD.</span>
-                    </h1>
-                </motion.div>
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+                        <div>
+                            <p className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-4">THE MEMBER PROTOCOL</p>
+                            <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-[10rem] text-luxury text-primary leading-none tracking-tighter">
+                                THE <br />
+                                <span className="text-accent italic font-light">DASHBOARD.</span>
+                            </h1>
+                        </div>
+                        <div className="pb-4">
+                            <TopupCredits />
+                        </div>
+                    </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
 
@@ -139,9 +141,11 @@ export default function DashboardPage() {
                                     <p className="text-sm sm:text-base text-white/60 font-medium leading-relaxed">
                                         The work doesn't end when the set does. Recovery is where the body actually changes — and this protocol makes sure you don't leave that part to chance.
                                     </p>
-                                    <button className="text-[10px] font-black tracking-[0.5em] uppercase border-b-2 border-accent pb-4 hover:tracking-[0.8em] transition-all duration-700">
-                                        BOOK RECOVERY &rarr;
-                                    </button>
+                                    <Link href="/contact">
+                                        <button className="text-[10px] font-black tracking-[0.5em] uppercase border-b-2 border-accent pb-4 hover:tracking-[0.8em] transition-all duration-700">
+                                            BOOK RECOVERY &rarr;
+                                        </button>
+                                    </Link>
                                 </div>
                                 {/* Decorative background logo */}
                                 <div className="absolute top-1/2 right-0 -translate-y-1/2 opacity-5 pointer-events-none translate-x-1/2">

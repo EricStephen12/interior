@@ -1,101 +1,48 @@
-export interface SendChampEmailOptions {
-  to: string;
-  subject: string;
-  html: string;
-  sender_email?: string;
-}
+const BASE_URL = 'https://api.sendchamp.com/api/v1'
 
-export interface SendChampSMSOptions {
-  to: string[]; // Phone numbers array
-  message: string;
-  sender_name?: string;
-}
-
-/**
- * SendChamp Integration
- * Handles both Email marketing/transactional and SMS notifications.
- * SMS is only used for subscription expiration reminders.
- */
 class SendChampService {
-  private apiKey: string;
-  private baseUrl: string = 'https://api.sendchamp.com/api/v1';
+  private apiKey: string
 
   constructor() {
-    this.apiKey = process.env.SENDCHAMP_API_KEY || '';
+    this.apiKey = process.env.SENDCHAMP_API_KEY || ''
   }
 
-  /**
-   * Send an Email via SendChamp
-   */
-  async sendEmail({ to, subject, html, sender_email = 'hello@sharers.gym' }: SendChampEmailOptions) {
-    if (!this.apiKey) {
-      console.warn('[SendChamp] API key missing. Email skipped.');
-      return;
-    }
+  async sendEmail({ to, subject, html, sender_email = 'hello@sharersgym.com' }: {
+    to: string; subject: string; html: string; sender_email?: string
+  }) {
+    if (!this.apiKey) return null
 
-    try {
-      console.log(`[SendChamp] Sending Email to ${to} | Subject: ${subject}`);
-      
-      const response = await fetch(`${this.baseUrl}/email/send`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
-        },
-        body: JSON.stringify({
-          to: [{ email: to }],
-          subject,
-          sender: { email: sender_email },
-          message_body: { type: 'text/html', value: html }
-        })
-      });
-
-      const data = await response.json();
-      console.log('[SendChamp] Email sent successfully:', data);
-      return data;
-    } catch (error) {
-      console.error('[SendChamp] Failed to send email:', error);
-      throw error;
-    }
+    const res = await fetch(`${BASE_URL}/email/send`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`
+      },
+      body: JSON.stringify({
+        to: [{ email: to }],
+        subject,
+        sender: { email: sender_email },
+        message_body: { type: 'text/html', value: html }
+      })
+    })
+    return res.json()
   }
 
-  /**
-   * Send an SMS via SendChamp
-   * Strictly used for subscription expiration reminders
-   */
-  async sendSMS({ to, message, sender_name = 'SHARERS' }: SendChampSMSOptions) {
-    if (!this.apiKey) {
-      console.warn('[SendChamp] API key missing. SMS skipped.');
-      return;
-    }
+  async sendSMS({ to, message, sender_name = 'SHARERS' }: {
+    to: string[]; message: string; sender_name?: string
+  }) {
+    if (!this.apiKey) return null
 
-    try {
-      console.log(`[SendChamp] Sending Reminder SMS to ${to.join(', ')}`);
-
-      const response = await fetch(`${this.baseUrl}/sms/send`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
-        },
-        body: JSON.stringify({
-          to,
-          message,
-          sender_name,
-          route: 'dnd'
-        })
-      });
-
-      const data = await response.json();
-      console.log('[SendChamp] Reminder SMS sent successfully:', data);
-      return data;
-    } catch (error) {
-      console.error('[SendChamp] Failed to send reminder SMS:', error);
-      throw error;
-    }
+    const res = await fetch(`${BASE_URL}/sms/send`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`
+      },
+      body: JSON.stringify({ to, message, sender_name, route: 'dnd' })
+    })
+    return res.json()
   }
 }
 
-export const sendChamp = new SendChampService();
+export const sendChamp = new SendChampService()

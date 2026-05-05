@@ -4,11 +4,19 @@ import React, { useState, useEffect } from 'react';
 import { ShoppingBag, CreditCard, MessageCircle, MapPin, CheckCircle2 } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import { useMembership } from '@/lib/membership-context';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
 
 export default function CheckoutPage() {
   const { state, clearCart } = useCart();
+  const searchParams = useSearchParams();
+  const isCreditTopup = searchParams.get('type') === 'credits';
+  const creditPack = isCreditTopup ? {
+    amount: parseInt(searchParams.get('amount') || '0'),
+    price: parseFloat(searchParams.get('price') || '0'),
+    label: searchParams.get('label') || 'TOPUP'
+  } : null;
+
   const { subscribe } = useMembership();
   const { user } = useUser();
   const router = useRouter();
@@ -21,6 +29,10 @@ export default function CheckoutPage() {
     email: '',
     address: ''
   });
+  const [promoCode, setPromoCode] = useState('');
+  const [activePromo, setActivePromo] = useState<any>(null);
+  const [promoError, setPromoError] = useState('');
+  const [applyingPromo, setApplyingPromo] = useState(false);
 
   useEffect(() => {
     fetch('/api/delivery')
@@ -36,26 +48,54 @@ export default function CheckoutPage() {
           setSelectedZone(zones[0]);
         }
       })
-      .catch(console.error);
+      .catch(() => {});
   }, []);
 
-  const cartTotal = state.items.reduce((acc, item) => {
-    const price = item.variant?.promo_price || item.variant?.price || 0
-    return acc + (price * item.quantity)
-  }, 0);
-  const total = cartTotal + (selectedZone?.price || 0);
+  const cartTotal = isCreditTopup 
+    ? (creditPack?.price || 0)
+    : state.items.reduce((acc, item) => {
+        const price = item.variant?.promo_price || item.variant?.price || 0
+        return acc + (price * item.quantity)
+      }, 0);
+      
+  const discountAmount = activePromo ? (cartTotal * (activePromo.discount / 100)) : 0;
+  const total = isCreditTopup ? cartTotal : (cartTotal + (selectedZone?.price || 0) - discountAmount);
+
+  const applyPromoCode = async () => {
+    if (!promoCode.trim()) return;
+    setApplyingPromo(true);
+    setPromoError('');
+    try {
+      const res = await fetch('/api/promo/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: promoCode })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setActivePromo(data);
+      } else {
+        setPromoError(data.error || 'Invalid code');
+      }
+    } catch {
+      setPromoError('Validation failed');
+    } finally {
+      setApplyingPromo(false);
+    }
+  };
 
   const handleCompleteOrder = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Check if membership is in the cart
     const hasMembership = state.items.some(
-      item => item.product?.category === 'Memberships' 
-        || item.product?.name.toLowerCase().includes('membership')
+      item => item.product?.category === 'Memberships'
+        || item.product?.name?.toLowerCase().includes('membership')
     );
 
-    if (hasMembership) {
-      subscribe(30); // Add 30 days to Member Pass
+    if (isCreditTopup) {
+      subscribe(creditPack?.amount || 0);
+    } else if (hasMembership) {
+      subscribe(30); // Standard membership is 30 credits
     }
 
     try {
@@ -63,14 +103,18 @@ export default function CheckoutPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userEmail: user?.primaryEmailAddress?.emailAddress || formData.email || 'customer@sharers.gym',
+          userEmail: user?.primaryEmailAddress?.emailAddress || formData.email,
+          phone: formData.phone,
           totalAmount: total,
-          items: state.items.map(i => ({ name: i.product?.name, quantity: i.quantity, price: i.variant?.price })),
-          hasMembership
+          items: isCreditTopup 
+            ? [{ name: `${creditPack?.amount} Credits (${creditPack?.label})`, quantity: 1, price: creditPack?.price }]
+            : state.items.map(i => ({ name: i.product?.name, quantity: i.quantity, price: i.variant?.price })),
+          hasMembership: hasMembership || isCreditTopup,
+          promoUsed: activePromo?.code || null
         })
       });
-    } catch (err) {
-      console.error(err);
+    } catch {
+      // Order recorded client-side, WhatsApp will confirm
     }
 
     clearCart();
@@ -198,7 +242,17 @@ export default function CheckoutPage() {
               </h2>
 
               <div className="space-y-8 mb-12 max-h-[400px] overflow-auto pr-4 custom-scrollbar relative z-10">
-                {state.items.length > 0 ? state.items.map((item, idx) => {
+                {isCreditTopup ? (
+                    <div className="flex justify-between items-start gap-6 pb-6 border-b border-white/5">
+                      <div className="flex-1">
+                        <p className="font-bold text-sm tracking-tight mb-2">SHARERS CREDIT TOP-UP</p>
+                        <p className="text-accent text-[10px] font-black uppercase tracking-widest leading-none opacity-80">
+                          {creditPack?.amount} CREDITS • {creditPack?.label}
+                        </p>
+                      </div>
+                      <p className="font-light tabular-nums text-lg">₦{creditPack?.price.toLocaleString()}</p>
+                    </div>
+                ) : state.items.length > 0 ? state.items.map((item, idx) => {
                   const itemPrice = item.variant?.promo_price || item.variant?.price || 0
                   return (
                     <div key={idx} className="flex justify-between items-start gap-6 pb-6 border-b border-white/5 last:border-0 last:pb-0">
@@ -221,19 +275,51 @@ export default function CheckoutPage() {
                   <span>Subtotal</span>
                   <span className="tabular-nums font-light text-white text-lg">₦{cartTotal.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-slate-400 text-xs font-black uppercase tracking-widest leading-tight">
-                  <span className="max-w-[150px]">Shipping ({selectedZone?.name || '...'})</span>
-                  <span className="tabular-nums font-light text-white text-lg">₦{selectedZone?.price?.toLocaleString() || 0}</span>
-                </div>
+                {activePromo && (
+                  <div className="flex justify-between text-green-400 text-xs font-black uppercase tracking-widest">
+                    <span>Discount ({activePromo.code})</span>
+                    <span className="tabular-nums font-light text-green-400 text-lg">-₦{discountAmount.toLocaleString()}</span>
+                  </div>
+                )}
+                {!isCreditTopup && (
+                    <div className="flex justify-between text-slate-400 text-xs font-black uppercase tracking-widest leading-tight">
+                        <span className="max-w-[150px]">Shipping ({selectedZone?.name || '...'})</span>
+                        <span className="tabular-nums font-light text-white text-lg">₦{selectedZone?.price?.toLocaleString() || 0}</span>
+                    </div>
+                )}
                 <div className="flex justify-between text-3xl font-light pt-8 border-t border-white/5">
                   <span className="uppercase tracking-tighter">Total</span>
                   <span className="text-accent tabular-nums underline decoration-accent/20 decoration-8 underline-offset-[-2px]">₦{total.toLocaleString()}</span>
                 </div>
               </div>
 
+              {/* Promo Code Input */}
+              {!isCreditTopup && !activePromo && (
+                <div className="mt-8 relative z-10 px-2">
+                  <div className="flex gap-2">
+                    <input 
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                      placeholder="PROMO CODE"
+                      className="flex-1 bg-white/5 border border-white/10 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-white outline-none focus:border-accent transition-colors"
+                    />
+                    <button 
+                      type="button"
+                      onClick={applyPromoCode}
+                      disabled={applyingPromo || !promoCode}
+                      className="bg-accent text-white px-6 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-primary transition-all disabled:opacity-30"
+                    >
+                      {applyingPromo ? '...' : 'APPLY'}
+                    </button>
+                  </div>
+                  {promoError && <p className="text-red-400 text-[8px] font-black uppercase mt-2 tracking-widest">{promoError}</p>}
+                </div>
+              )}
+
               <button
                 type="submit"
-                disabled={state.items.length === 0}
+                disabled={!isCreditTopup && state.items.length === 0}
                 className="w-full mt-12 btn-primary !bg-white !text-primary hover:!bg-accent hover:!text-white disabled:opacity-20 py-7 relative z-10"
               >
                 <MessageCircle className="w-5 h-5" />

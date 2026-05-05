@@ -1,5 +1,6 @@
 import React from 'react';
-import { Mail, Phone, MapPin, MessageCircle, Clock, Send, ArrowUpRight, Zap } from 'lucide-react';
+import { Mail, Phone, MapPin, MessageCircle, Clock, Zap, ArrowUpRight } from 'lucide-react';
+import ContactForm from '@/components/ContactForm';
 import { Metadata } from 'next';
 import Image from 'next/image';
 
@@ -51,63 +52,7 @@ export default function ContactPage() {
                   </h2>
                 </div>
 
-                <form className="space-y-6 sm:space-y-10">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Full Name</label>
-                      <input
-                        type="text"
-                        className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors text-sm sm:text-base text-primary font-medium placeholder:text-slate-300"
-                        placeholder="Your full name"
-                      />
-                    </div>
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Email Address</label>
-                      <input
-                        type="email"
-                        className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors text-sm sm:text-base text-primary font-medium placeholder:text-slate-300"
-                        placeholder="you@example.com"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Phone / WhatsApp</label>
-                      <input
-                        type="text"
-                        className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors text-sm sm:text-base text-primary font-medium placeholder:text-slate-300"
-                        placeholder="+234..."
-                      />
-                    </div>
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Subject</label>
-                      <select className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors text-sm sm:text-base text-primary font-medium appearance-none cursor-pointer">
-                        <option>Membership & The Pass</option>
-                        <option>Personal Training</option>
-                        <option>Recovery Lab Booking</option>
-                        <option>Apparel & Shop</option>
-                        <option>General Question</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Your Message</label>
-                    <textarea
-                      rows={5}
-                      className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors resize-none text-sm sm:text-base text-primary font-medium placeholder:text-slate-300"
-                      placeholder="Tell us what you need..."
-                    />
-                  </div>
-
-                  <div className="pt-4 sm:pt-6">
-                    <button type="button" className="w-full bg-primary text-white py-4 sm:py-5 flex items-center justify-center gap-3 hover:bg-accent transition-all duration-500 group">
-                      <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em]">Send Message</span>
-                    </button>
-                  </div>
-                </form>
+                <ContactForm />
               </div>
             </div>
 
@@ -126,7 +71,7 @@ export default function ContactPage() {
               <ContactCard
                 icon={Mail}
                 title="Email Us"
-                value="ops@sharers.gym"
+                value="ops@sharersgym.com"
                 subtitle="Business inquiries & partnerships"
               />
               <ContactCard

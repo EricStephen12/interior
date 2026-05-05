@@ -40,13 +40,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://sharers.gym",
+    url: "https://sharersgym.com",
     title: "SHARERS GYM | Elite Performance & High-Tech Recovery",
     description: "Experience the pinnacle of human potential. Master-tier coaching and hyper-oxygen recovery protocols.",
     siteName: "SHARERS GYM",
     images: [
       {
-        url: "https://sharers.gym/og-image.jpg",
+        url: "https://sharersgym.com/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "SHARERS GYM - The Forge of Performance",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "SHARERS GYM | Elite Performance & High-Tech Recovery",
     description: "Experience the pinnacle of human potential. Master-tier coaching and hyper-oxygen recovery protocols.",
-    images: ["https://sharers.gym/og-image.jpg"],
+    images: ["https://sharersgym.com/og-image.jpg"],
     creator: "@sharersgym",
   },
   robots: {

@@ -338,7 +338,7 @@ function ProductCard({ product, index, isLarge }: { product: any, index: number,
     e.stopPropagation()
 
     if (product.category === 'Memberships') {
-      subscribe(30) // Default 30 sessions for demo
+      subscribe(30)
       router.push('/dashboard')
     }
   }

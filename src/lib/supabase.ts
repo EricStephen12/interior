@@ -1,11 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
+// Types used by cart and shop components
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
-
-// Database types
 export interface Brand {
   id: string
   name: string
@@ -59,33 +53,6 @@ export interface CartItem {
   variant?: ProductVariant
   product?: Product
   quantity: number
-}
-
-export interface Order {
-  id: string
-  user_id?: string
-  customer_name: string
-  customer_email?: string
-  customer_phone: string
-  delivery_address: string
-  delivery_zone_id: string
-  delivery_cost: number
-  total_amount: number
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
-  payment_method: 'whatsapp' | 'card' | 'transfer'
-  payment_status: 'pending' | 'paid' | 'failed'
-  created_at: string
-}
-
-export interface OrderItem {
-  id: string
-  order_id: string
-  product_variant_id: string
-  product_name: string
-  size_name: string
-  quantity: number
-  price: number
-  created_at: string
 }
 
 export interface DeliveryZone {

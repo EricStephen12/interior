@@ -102,7 +102,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                                     <div>
                                       <div className="flex justify-between text-base font-bold text-primary">
                                         <h3>{item.product?.name}</h3>
-                                        <p className="ml-4 tabular-nums">${((item.variant?.promo_price || item.variant?.price || 0) * item.quantity).toLocaleString()}</p>
+                                        <p className="ml-4 tabular-nums">₦{((item.variant?.promo_price || item.variant?.price || 0) * item.quantity).toLocaleString()}</p>
                                       </div>
                                       <p className="mt-1 text-xs text-text-muted uppercase tracking-widest">
                                         {item.variant?.size?.name || 'Standard'}
@@ -149,7 +149,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       <div className="border-t border-gray-100 px-4 py-8 sm:px-8 bg-secondary/50">
                         <div className="flex justify-between text-xl font-black text-primary">
                           <p className="tracking-tight uppercase">Subtotal</p>
-                          <p className="tabular-nums">${subtotal.toLocaleString()}</p>
+                          <p className="tabular-nums">₦{subtotal.toLocaleString()}</p>
                         </div>
                         <p className="mt-1 text-[10px] font-black text-text-muted uppercase tracking-widest">
                           Taxes and shipping calculated at checkout.

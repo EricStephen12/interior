@@ -18,6 +18,7 @@ model User {
   clerkId   String   @unique
   name      String?
   email     String   @unique
+  phone     String?
   role      Role     @default(CUSTOMER)
   credits   Int      @default(0)
   tier      String   @default("NONE")
@@ -79,6 +80,7 @@ model Product {
   sizeId       String
   size         Size     @relation(fields: [sizeId], references: [id])
   type        String?  // Mattress, Pillow, etc.
+  description String?  @db.Text
   materials   String?
   firmness    String?
   finishing   String?
@@ -86,11 +88,30 @@ model Product {
   promoPrice  Float?
   isNegotiable Boolean  @default(false)
   warranty    String?
-  imageUrl    String?
+  images      Json?
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   
   categories  ProductCategory[]
+}
+
+model PromoCode {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  discount    Float    // Percentage (e.g., 10 for 10%)
+  isActive    Boolean  @default(true)
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model CreditPack {
+  id          String   @id @default(uuid())
+  name        String
+  credits     Int
+  price       Float
+  description String?
+  isPopular   Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }
 
 model ProductCategory {

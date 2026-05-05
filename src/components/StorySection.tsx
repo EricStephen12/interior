@@ -5,18 +5,6 @@ import { useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-/**
- * StorySection Component
- * 
- * An editorial-style showcase section that combines high-performance video backgrounds
- * with asymmetric layouts and staggered reveal animations.
- * 
- * Features:
- * - Autoplay high-definition videos
- * - Parallax-style text content
- * - Framer-motion interaction triggers
- */
-
 export default function StorySection() {
   const containerRef = useRef(null)
 

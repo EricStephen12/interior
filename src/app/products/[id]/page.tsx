@@ -16,50 +16,64 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const product = {
-  id: '1',
-  name: 'Sharers Obsidian Black Pass',
-  brand: 'Sharers Elite',
-  description: 'The definitive membership for the modern athlete. The Obsidian Black Pass grants unlimited access to the SHARERS performance floor, neural-recovery labs, and bespoke biomechanical coaching. This is not just entry; it is an invitation to peak evolution.',
-  material: 'Digital Asset / Biometric',
-  gemstone: 'Unlimited Access',
-  origin: 'SHARERS Performance Floor',
-  isNegotiable: false,
-  features: [
-    'Unlimited performance floor access',
-    'Daily Bio-Recovery protocol sessions',
-    'Personal Biometric dashboard',
-    'Priority Neural-Reset booking'
-  ],
-  images: [
-    'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1593079831268-3381b0db4a77?auto=format&fit=crop&w=800&q=80'
-  ],
-  variants: [
-    { id: 'v1', size: { name: '30 Sessions / Flex' }, price: 450, promo_price: 395 },
-    { id: 'v2', size: { name: 'Annual / Unlimited' }, price: 3200, promo_price: 2850 },
-    { id: 'v3', size: { name: 'Founder / Lifetime' }, price: 12500, promo_price: 11000 }
-  ]
-};
+
 
 import { useMembership } from '@/lib/membership-context';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function ProductDetailsPage() {
+  const { id } = useParams();
   const { addToCart } = useCart();
   const { subscribe } = useMembership();
   const router = useRouter();
-  const [selectedVariant, setSelectedVariant] = useState(product.variants[1]);
-  const [activeImage, setActiveImage] = useState(product.images[0]);
+  const [realProduct, setRealProduct] = useState<any>(null);
+  const [selectedVariant, setSelectedVariant] = useState<any>(null);
+  const [activeImage, setActiveImage] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`/api/products/${id}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error) {
+          setRealProduct(data);
+          const firstImg = Array.isArray(data.images) ? data.images[0] : (data.imageUrl || '');
+          setActiveImage(firstImg);
+          // Create a default variant from the product price
+          setSelectedVariant({
+            id: 'default',
+            size: { name: data.size?.label || 'Standard' },
+            price: data.price,
+            promo_price: data.promoPrice
+          });
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [id]);
+
+  if (loading) return <div className="pt-40 text-center text-[10px] font-black uppercase tracking-widest text-primary animate-pulse">Initializing Protocol...</div>;
+  if (!realProduct) return <div className="pt-40 text-center text-[10px] font-black uppercase tracking-widest text-primary">Item not found in Vault.</div>;
+
+  const productObj = realProduct;
 
   const handleAction = () => {
-    // If it's the membership pass, trigger subscribe
-    subscribe(30);
-    router.push('/dashboard');
+    // If it's a membership, handle accordingly
+    if (productObj.name.toLowerCase().includes('membership') || productObj.categories?.some((c:any) => c.category.name === 'Memberships')) {
+      subscribe(30);
+      router.push('/dashboard');
+    } else {
+      addToCart({
+        product: productObj,
+        variant: selectedVariant,
+        quantity: 1
+      });
+    }
   };
 
   const handleWhatsAppOrder = () => {
-    const text = `Hello SHARERS GYM, I would like to inquire about the ${product.name} (${selectedVariant.size.name}). Current Price: $${(selectedVariant.promo_price || selectedVariant.price).toLocaleString()}. URL: ${window.location.href}`;
+    const text = `Hello SHARERS GYM, I would like to inquire about the ${productObj.name}. Current Price: ₦${(selectedVariant.promo_price || selectedVariant.price).toLocaleString()}. URL: ${window.location.href}`;
     const encodedText = encodeURIComponent(text);
     window.open(`https://wa.me/2349033333333?text=${encodedText}`, '_blank');
   };
@@ -91,8 +105,8 @@ export default function ProductDetailsPage() {
               className="aspect-[4/5] rounded-none overflow-hidden bg-secondary relative editorial-shadow group"
             >
               <Image
-                src={activeImage}
-                alt={product.name}
+                src={activeImage || (Array.isArray(productObj.images) ? productObj.images[0] : '/placeholder.jpg')}
+                alt={productObj.name}
                 fill
                 className="object-cover transition-all duration-[2.5s] ease-out group-hover:scale-105"
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -102,7 +116,7 @@ export default function ProductDetailsPage() {
 
               <div className="absolute bottom-8 left-8 z-10">
                 <span className="glass-light px-6 py-3 rounded-none text-[10px] font-black text-primary uppercase tracking-[0.4em] border border-white/20">
-                  {product.brand} • ELITE TIER
+                  {productObj.brand?.name || 'SHARERS ELITE'} • ELITE TIER
                 </span>
               </div>
             </motion.div>
@@ -113,7 +127,7 @@ export default function ProductDetailsPage() {
               transition={{ delay: 0.6 }}
               className="flex gap-6 p-4 bg-secondary/20 rounded-none w-fit border border-primary/5"
             >
-              {product.images.map((img, idx) => (
+              {Array.isArray(productObj.images) && productObj.images.map((img: string, idx: number) => (
                 <button
                   key={idx}
                   onClick={() => setActiveImage(img)}
@@ -121,7 +135,7 @@ export default function ProductDetailsPage() {
                 >
                   <Image
                     src={img}
-                    alt={`${product.name} thumbnail ${idx + 1}`}
+                    alt={`${productObj.name} ${idx + 1}`}
                     fill
                     className="object-cover"
                   />
@@ -148,7 +162,7 @@ export default function ProductDetailsPage() {
               </div>
 
               <h1 className="text-5xl sm:text-6xl md:text-8xl text-luxury text-primary">
-                {product.name}
+                {productObj.name}
               </h1>
 
               <div className="flex items-center gap-6">
@@ -163,11 +177,11 @@ export default function ProductDetailsPage() {
               <div className="flex items-center gap-8 pb-12 border-b border-primary/5 flex-wrap">
                 <div className="flex items-baseline gap-6">
                   <span className="text-5xl sm:text-7xl font-light text-primary tabular-nums">
-                    ${(selectedVariant.promo_price || selectedVariant.price).toLocaleString()}
+                    ₦{(selectedVariant.promo_price || selectedVariant.price).toLocaleString()}
                   </span>
                   {selectedVariant.promo_price && (
                     <span className="text-2xl text-slate-200 line-through font-light tabular-nums">
-                      ${selectedVariant.price.toLocaleString()}
+                      ₦{selectedVariant.price.toLocaleString()}
                     </span>
                   )}
                 </div>
@@ -182,18 +196,12 @@ export default function ProductDetailsPage() {
                   </span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {product.variants.map((v, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setSelectedVariant(v)}
-                      className={`px-8 py-6 rounded-none text-[10px] font-black border-2 transition-all uppercase tracking-[0.3em] relative overflow-hidden group
-                          ${selectedVariant.id === v.id
-                          ? 'border-primary bg-primary text-white shadow-[0_20px_50px_rgba(0,0,0,0.2)]'
-                          : 'border-secondary bg-secondary/30 text-primary hover:border-accent/40'}`}
-                    >
-                      {v.size.name}
-                    </button>
-                  ))}
+                  <button
+                    onClick={() => setSelectedVariant({ id: 'default', size: { name: productObj.size?.label || 'Standard' }, price: productObj.price, promo_price: productObj.promoPrice })}
+                    className={`px-8 py-6 rounded-none text-[10px] font-black border-2 transition-all uppercase tracking-[0.3em] relative overflow-hidden group border-primary bg-primary text-white shadow-[0_20px_50px_rgba(0,0,0,0.2)]`}
+                  >
+                    {productObj.size?.label || 'Standard'}
+                  </button>
                 </div>
               </div>
 
@@ -201,30 +209,32 @@ export default function ProductDetailsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 pt-8 border-t border-primary/5">
                 <div className="p-8 bg-secondary/10 border-r border-primary/5">
                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Tier</p>
-                  <p className="text-[12px] font-black text-primary uppercase tracking-widest">{product.material}</p>
+                  <p className="text-[12px] font-black text-primary uppercase tracking-widest">{productObj.materials || 'Elite Protocol'}</p>
                 </div>
                 <div className="p-8 bg-secondary/10 border-r border-primary/5">
                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Access</p>
-                  <p className="text-[12px] font-black text-primary uppercase tracking-widest">{product.gemstone}</p>
+                  <p className="text-[12px] font-black text-primary uppercase tracking-widest">{productObj.type || 'Unlimited'}</p>
                 </div>
                 <div className="p-8 bg-secondary/10">
                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Location</p>
-                  <p className="text-[12px] font-black text-primary uppercase tracking-widest">{product.origin}</p>
+                  <p className="text-[12px] font-black text-primary uppercase tracking-widest">{productObj.finishing || 'Abuja HQ'}</p>
                 </div>
               </div>
 
               {/* Description Reveal */}
               <div className="space-y-10">
                 <p className="text-xl text-text-muted font-light leading-[1.8] max-w-2xl">
-                  {product.description}
+                  {productObj.description}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6">
-                  {product.features.map((f, i) => (
-                    <div key={i} className="flex items-center gap-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
-                      <div className="w-10 h-[1px] bg-accent/40" />
-                      {f}
-                    </div>
-                  ))}
+                  <div className="flex items-center gap-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
+                    <div className="w-10 h-[1px] bg-accent/40" />
+                    Verified Performance floor access
+                  </div>
+                  <div className="flex items-center gap-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
+                    <div className="w-10 h-[1px] bg-accent/40" />
+                    Neural-Recovery protocol sessions
+                  </div>
                 </div>
               </div>
 

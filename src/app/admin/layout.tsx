@@ -19,7 +19,8 @@ export default function AdminLayout({
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Products', href: '/admin/products', icon: ShoppingBag },
     { name: 'Blogs', href: '/admin/blogs', icon: FileText },
-    { name: 'Customers', href: '/admin/users', icon: Users },
+    { name: 'Members', href: '/admin/users', icon: Users },
+    { name: 'Scanner', href: '/admin/scanner', icon: Settings },
   ]
 
   return (

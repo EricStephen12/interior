@@ -38,7 +38,6 @@ const INITIAL_STATE: MembershipState = {
 export function MembershipProvider({ children }: { children: React.ReactNode }) {
     const [state, setState] = useState<MembershipState>(INITIAL_STATE)
 
-    // Load from DB instead of local storage
     useEffect(() => {
         const fetchMembership = async () => {
             try {
@@ -60,15 +59,14 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
                         })
                     }
                 }
-            } catch (err) {
-                console.error('Failed to fetch membership', err)
+            } catch {
+                // Silently fail — user might not be logged in
             }
         }
         fetchMembership()
     }, [])
 
     const subscribe = (credits: number) => {
-        // Optimistic UI update - actual DB update happens in /api/checkout
         setState(prev => ({
             ...prev,
             hasActiveMembership: true,
@@ -102,14 +100,13 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
                     })
                 }
             }
-        } catch (err) {
-            console.error('Failed to check in', err)
+        } catch {
+            // Silently fail
         }
     }
 
     const resetMembership = () => {
-        setState(INITIAL_STATE);
-        // We omit DB reset for safety, just reset local UI
+        setState(INITIAL_STATE)
     }
 
     return (
