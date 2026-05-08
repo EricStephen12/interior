@@ -5,7 +5,7 @@ import { currentUser } from '@clerk/nextjs/server'
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { userEmail, phone, totalAmount, items, hasMembership } = body
+    const { userEmail, phone, totalAmount, items, hasMembership, creditAmount } = body
 
     if (!items) return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
 
@@ -18,8 +18,8 @@ export async function POST(req: Request) {
       where: { email },
       update: {
         phone: phone || undefined,
-        credits: hasMembership ? { increment: 30 } : undefined,
-        tier: hasMembership ? 'BLACK' : undefined,
+        credits: creditAmount ? { increment: creditAmount } : (hasMembership ? { increment: 30 } : undefined),
+        tier: (hasMembership || creditAmount) ? 'BLACK' : undefined,
         clerkId: clerkUser?.id || undefined
       },
       create: {
@@ -27,8 +27,8 @@ export async function POST(req: Request) {
         phone,
         clerkId: clerkUser?.id || 'guest_' + Date.now(),
         name: clerkUser?.fullName || 'Guest Member',
-        credits: hasMembership ? 30 : 0,
-        tier: hasMembership ? 'BLACK' : 'NONE'
+        credits: creditAmount || (hasMembership ? 30 : 0),
+        tier: (hasMembership || creditAmount) ? 'BLACK' : 'NONE'
       }
     })
 

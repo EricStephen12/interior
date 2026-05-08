@@ -30,19 +30,19 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   title: {
-    default: "SHARERS GYM | Elite Performance & High-Tech Recovery",
+    default: "SHARERS GYM | Elite Performance & Athletic Mastery",
     template: "%s | SHARERS GYM"
   },
-  description: "Experience the pinnacle of human potential. SHARERS GYM offers master-tier coaching, hyper-oxygen recovery protocols, and premium athletic apparel in an elite editorial environment.",
-  keywords: ["Elite Gym", "High-Performance Training", "Hyper-Oxygen Recovery", "SHARERS GYM", "Luxury Fitness", "Athletic Power", "Professional Coaching"],
+  description: "Experience the pinnacle of human potential. SHARERS GYM offers master-tier coaching and premium athletic apparel in an elite editorial environment.",
+  keywords: ["Elite Gym", "High-Performance Training", "SHARERS GYM", "Luxury Fitness", "Athletic Power", "Professional Coaching"],
   authors: [{ name: "SHARERS GYM Team" }],
   creator: "SHARERS GYM",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://sharersgym.com",
-    title: "SHARERS GYM | Elite Performance & High-Tech Recovery",
-    description: "Experience the pinnacle of human potential. Master-tier coaching and hyper-oxygen recovery protocols.",
+    title: "SHARERS GYM | Elite Performance & Athletic Mastery",
+    description: "Experience the pinnacle of human potential. Master-tier coaching and premium athletic gear.",
     siteName: "SHARERS GYM",
     images: [
       {
@@ -55,8 +55,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SHARERS GYM | Elite Performance & High-Tech Recovery",
-    description: "Experience the pinnacle of human potential. Master-tier coaching and hyper-oxygen recovery protocols.",
+    title: "SHARERS GYM | Elite Performance & Athletic Mastery",
+    description: "Experience the pinnacle of human potential. Master-tier coaching and premium athletic gear.",
     images: ["https://sharersgym.com/og-image.jpg"],
     creator: "@sharersgym",
   },
@@ -74,9 +74,9 @@ export const metadata: Metadata = {
 };
 
 import { MembershipProvider } from "@/lib/membership-context";
-import { WishlistProvider } from "@/lib/wishlist-context";
 import { ClerkProvider } from "@clerk/nextjs";
 import CustomCursor from "@/components/CustomCursor";
+import ScrollToTop from "@/components/ScrollToTop";
 
 export default function RootLayout({
   children,
@@ -89,15 +89,14 @@ export default function RootLayout({
         <body
           className={`${playfair.variable} ${inter.variable} ${crimson.variable} ${montserrat.variable} font-sans antialiased`}
         >
+          <ScrollToTop />
           <CustomCursor />
           <MembershipProvider>
-            <WishlistProvider>
-              <CartProvider>
-                <Layout>
-                  {children}
-                </Layout>
-              </CartProvider>
-            </WishlistProvider>
+            <CartProvider>
+              <Layout>
+                {children}
+              </Layout>
+            </CartProvider>
           </MembershipProvider>
         </body>
       </html>

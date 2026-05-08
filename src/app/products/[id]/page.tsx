@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { useCart } from '@/lib/cart-context';
 import {
   ArrowLeft,
-  Heart,
   ShoppingCart,
   MessageCircle,
   Minus,
@@ -21,7 +20,6 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMembership } from '@/lib/membership-context';
 import { useRouter, useParams } from 'next/navigation';
-import { useWishlist } from '@/lib/wishlist-context';
 
 export default function ProductDetailsPage() {
   const { id } = useParams();
@@ -34,7 +32,6 @@ export default function ProductDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
-  const { isInWishlist, toggleItem } = useWishlist();
 
   useEffect(() => {
     fetch(`/api/products/${id}`)
@@ -79,22 +76,26 @@ export default function ProductDetailsPage() {
     </div>
   );
 
-  const images: string[] = Array.isArray(product.images) ? product.images : [];
+  const getImages = () => {
+    if (!product) return [];
+    if (Array.isArray(product.images)) return product.images;
+    if (typeof product.images === 'string') {
+      try {
+        const parsed = JSON.parse(product.images);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
+  };
+
+  const images = getImages();
   const activeImage = images[activeIndex] || '';
   const displayPrice = selectedVariant?.promo_price || selectedVariant?.price || product.price;
   const originalPrice = selectedVariant?.price || product.price;
   const hasDiscount = selectedVariant?.promo_price && selectedVariant.promo_price < selectedVariant.price;
   const discountPercent = hasDiscount ? Math.round((1 - selectedVariant.promo_price / selectedVariant.price) * 100) : 0;
-  const liked = product ? isInWishlist(product.id) : false;
-  const wishlistItem = product ? {
-    id: product.id,
-    name: product.name,
-    price: product.price,
-    promoPrice: product.promoPrice,
-    image: images[0] || '',
-    brand: product.brand?.name,
-    type: product.type
-  } : null;
 
   const handleAddToCart = () => {
     if (product.name.toLowerCase().includes('membership') || product.categories?.some((c: any) => c.category.name === 'Memberships')) {
@@ -155,7 +156,7 @@ export default function ProductDetailsPage() {
             {/* Main Image */}
             <div className="relative aspect-[4/5] bg-[#f8f7f5] rounded-2xl overflow-hidden group cursor-crosshair">
               <AnimatePresence mode="wait">
-                {activeImage && (
+                {activeImage ? (
                   <motion.div
                     key={activeIndex}
                     initial={{ opacity: 0, scale: 1.02 }}
@@ -173,6 +174,10 @@ export default function ProductDetailsPage() {
                       priority
                     />
                   </motion.div>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-50">
+                    <p className="text-gray-300 text-[10px] font-bold uppercase tracking-widest">No Image Found</p>
+                  </div>
                 )}
               </AnimatePresence>
 
@@ -209,24 +214,12 @@ export default function ProductDetailsPage() {
                   </span>
                 </motion.div>
               )}
-
-              {/* Wishlist floating */}
-              <button
-                onClick={() => wishlistItem && toggleItem(wishlistItem)}
-                className={`absolute top-5 right-5 w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg ${
-                  liked
-                    ? 'bg-red-500 text-white shadow-red-200'
-                    : 'bg-white/80 backdrop-blur-md text-gray-400 hover:text-red-500 hover:bg-white shadow-black/5'
-                }`}
-              >
-                <Heart className={`w-5 h-5 transition-all ${liked ? 'fill-current scale-110' : ''}`} />
-              </button>
             </div>
 
             {/* Thumbnails */}
             {images.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
-                {images.map((img, idx) => (
+                {(images as string[]).map((img: string, idx: number) => (
                   <motion.button
                     key={idx}
                     whileHover={{ scale: 1.05 }}

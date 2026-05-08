@@ -1,11 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, CreditCard, MessageCircle, MapPin, CheckCircle2 } from 'lucide-react';
+import { ShoppingBag, CreditCard, MessageCircle, MapPin, CheckCircle2, Shield } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import { useMembership } from '@/lib/membership-context';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
+import Script from 'next/script';
+
+declare global {
+  interface Window {
+    PaystackPop: any;
+  }
+}
 
 export default function CheckoutPage() {
   const { state, clearCart } = useCart();
@@ -22,13 +29,25 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [deliveryZones, setDeliveryZones] = useState<any[]>([]);
   const [selectedZone, setSelectedZone] = useState<any>(null);
-  const [paymentMethod, setPaymentMethod] = useState('whatsapp');
+  const [paymentMethod, setPaymentMethod] = useState('bank_transfer');
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     email: '',
     address: ''
   });
+
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.fullName || '',
+        email: user.primaryEmailAddress?.emailAddress || '',
+        phone: user.primaryPhoneNumber?.phoneNumber || ''
+      }));
+    }
+  }, [user]);
+
   const [promoCode, setPromoCode] = useState('');
   const [activePromo, setActivePromo] = useState<any>(null);
   const [promoError, setPromoError] = useState('');
@@ -54,12 +73,14 @@ export default function CheckoutPage() {
   const cartTotal = isCreditTopup 
     ? (creditPack?.price || 0)
     : state.items.reduce((acc, item) => {
-        const price = item.variant?.promo_price || item.variant?.price || 0
-        return acc + (price * item.quantity)
+        // Handle both promo_price (Supabase style) and promoPrice (Prisma style)
+        const variant = item.variant as any;
+        const price = variant?.promo_price || variant?.promoPrice || variant?.price || 0;
+        return acc + (price * item.quantity);
       }, 0);
       
   const discountAmount = activePromo ? (cartTotal * (activePromo.discount / 100)) : 0;
-  const total = isCreditTopup ? cartTotal : (cartTotal + (selectedZone?.price || 0) - discountAmount);
+  const total = isCreditTopup ? cartTotal : Math.max(0, (cartTotal + (selectedZone?.price || 0) - discountAmount));
 
   const applyPromoCode = async () => {
     if (!promoCode.trim()) return;
@@ -98,41 +119,84 @@ export default function CheckoutPage() {
       subscribe(30); // Standard membership is 30 credits
     }
 
-    try {
-      await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userEmail: user?.primaryEmailAddress?.emailAddress || formData.email,
-          phone: formData.phone,
-          totalAmount: total,
-          items: isCreditTopup 
-            ? [{ name: `${creditPack?.amount} Credits (${creditPack?.label})`, quantity: 1, price: creditPack?.price }]
-            : state.items.map(i => ({ name: i.product?.name, quantity: i.quantity, price: i.variant?.price })),
-          hasMembership: hasMembership || isCreditTopup,
-          promoUsed: activePromo?.code || null
-        })
-      });
-    } catch {
-      // Order recorded client-side, WhatsApp will confirm
+    if (isCreditTopup) {
+      // Logic handled after successful payment
     }
 
-    clearCart();
-    router.push('/dashboard');
+    const paystack = new window.PaystackPop();
+    paystack.newTransaction({
+      key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || 'pk_test_placeholder', 
+      email: user?.primaryEmailAddress?.emailAddress || formData.email,
+      amount: Math.round(total * 100), // Paystack works in kobo
+      currency: 'NGN',
+      channels: ['bank_transfer'],
+      metadata: {
+        creditAmount: isCreditTopup ? (creditPack?.amount || 0) : (hasMembership ? 30 : 0),
+        hasMembership: hasMembership || isCreditTopup,
+        items: isCreditTopup 
+          ? [{ name: `${creditPack?.amount} Credits (${creditPack?.label})`, quantity: 1, price: creditPack?.price }]
+          : state.items.map(i => ({ name: i.product?.name, quantity: i.quantity, price: i.variant?.price })),
+        custom_fields: [
+          {
+            display_name: "Customer Name",
+            variable_name: "customer_name",
+            value: formData.name
+          }
+        ]
+      },
+      onSuccess: async (transaction: any) => {
+        // Record order in DB
+        try {
+          await fetch('/api/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userEmail: user?.primaryEmailAddress?.emailAddress || formData.email,
+              phone: formData.phone,
+              totalAmount: total,
+              items: isCreditTopup 
+                ? [{ name: `${creditPack?.amount} Credits (${creditPack?.label})`, quantity: 1, price: creditPack?.price }]
+                : state.items.map(i => ({ name: i.product?.name, quantity: i.quantity, price: i.variant?.price })),
+              hasMembership: hasMembership || isCreditTopup,
+              creditAmount: isCreditTopup ? (creditPack?.amount || 0) : (hasMembership ? 30 : 0),
+              promoUsed: activePromo?.code || null,
+              paystackRef: transaction.reference
+            })
+          });
+
+          if (isCreditTopup) {
+            subscribe(creditPack?.amount || 0);
+          } else if (hasMembership) {
+            subscribe(30);
+          }
+
+          clearCart();
+          router.push('/dashboard?payment=success');
+        } catch (err) {
+          console.error('Failed to record order', err);
+          router.push('/dashboard?payment=manual_review');
+        }
+      },
+      onCancel: () => {
+        alert('Payment cancelled. Please try again to secure your gear.');
+      }
+    });
   };
 
   return (
     <div className="pt-24 sm:pt-40 pb-24 bg-secondary/20 min-h-screen selection:bg-accent/20">
+      <Script src="https://js.paystack.co/v2/inline.js" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-20">
           <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-6 block">Order Details</span>
           <h1 className="text-5xl sm:text-6xl md:text-8xl text-luxury text-primary">Secure <span className="text-accent italic">Checkout.</span></h1>
         </div>
 
-        <form onSubmit={handleCompleteOrder} className="grid grid-cols-1 lg:grid-cols-3 gap-16 sm:gap-24">
+        <form onSubmit={handleCompleteOrder} className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-12 sm:gap-20">
 
-          <div className="lg:col-span-2 space-y-16">
-            {/* Delivery Information */}
+          <div className="space-y-16">
+            {/* Delivery Information - Only show if NOT a credit topup */}
+            {!isCreditTopup && (
             <div className="bg-white rounded-none p-8 sm:p-16 border border-primary/5 editorial-shadow space-y-12">
               <div className="flex items-center gap-6">
                 <div className="w-12 h-12 bg-primary rounded-none flex items-center justify-center text-white shadow-xl">
@@ -154,12 +218,12 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div className="space-y-4">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">WhatsApp Channel</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Phone Number</label>
                   <input
                     required
-                    type="text"
+                    type="tel"
                     className="w-full px-0 py-4 bg-transparent border-b border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors font-medium tabular-nums"
-                    placeholder="+..."
+                    placeholder="+234..."
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   />
@@ -179,8 +243,8 @@ export default function CheckoutPage() {
               </div>
 
               <div className="space-y-8">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Transport Protocol</label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Delivery Method</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {deliveryZones.map(zone => (
                     <button
                       key={zone.id}
@@ -197,9 +261,15 @@ export default function CheckoutPage() {
                       </p>
                     </button>
                   ))}
+                  {deliveryZones.length === 0 && (
+                    <div className="col-span-full py-12 bg-secondary/10 border border-dashed border-primary/10 text-center">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">No delivery methods available</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
+            )}
 
             {/* Payment Method */}
             <div className="bg-white rounded-none p-8 sm:p-16 border border-primary/5 editorial-shadow space-y-12">
@@ -212,19 +282,11 @@ export default function CheckoutPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <PaymentOption
-                  active={paymentMethod === 'whatsapp'}
-                  onClick={() => setPaymentMethod('whatsapp')}
-                  icon={MessageCircle}
-                  title="WhatsApp Confirmation"
-                  description="Confirm your order and pay via secure payment link."
-                />
-                <PaymentOption
-                  active={paymentMethod === 'online'}
-                  onClick={() => setPaymentMethod('online')}
+                  active={paymentMethod === 'bank_transfer'}
+                  onClick={() => setPaymentMethod('bank_transfer')}
                   icon={CreditCard}
-                  title="Card Payment"
-                  description="Direct secure card processing (Coming Soon)"
-                  disabled={true}
+                  title="Direct Bank Transfer"
+                  description="Secure transfer via Paystack Titan virtual account."
                 />
               </div>
             </div>
@@ -232,7 +294,7 @@ export default function CheckoutPage() {
 
           <div className="space-y-12">
             {/* Order Summary */}
-            <div className="bg-primary text-white rounded-none p-10 sm:p-14 shadow-[0_50px_100px_rgba(0,0,0,0.3)] lg:sticky lg:top-32 relative overflow-hidden">
+            <div className="bg-primary text-white rounded-none p-8 sm:p-12 shadow-[0_50px_100px_rgba(0,0,0,0.3)] lg:sticky lg:top-32 relative overflow-hidden">
               {/* Subtle texture overlay */}
               <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
 
@@ -253,7 +315,8 @@ export default function CheckoutPage() {
                       <p className="font-light tabular-nums text-lg">₦{creditPack?.price.toLocaleString()}</p>
                     </div>
                 ) : state.items.length > 0 ? state.items.map((item, idx) => {
-                  const itemPrice = item.variant?.promo_price || item.variant?.price || 0
+                  const variant = item.variant as any;
+                  const itemPrice = variant?.promo_price || variant?.promoPrice || variant?.price || 0
                   return (
                     <div key={idx} className="flex justify-between items-start gap-6 pb-6 border-b border-white/5 last:border-0 last:pb-0">
                       <div className="flex-1">

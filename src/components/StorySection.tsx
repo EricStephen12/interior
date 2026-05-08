@@ -95,12 +95,12 @@ export default function StorySection() {
 
               <div className="grid grid-cols-2 gap-12 border-t border-primary/5 pt-12">
                 <div>
-                  <h4 className="text-3xl sm:text-5xl text-luxury text-primary leading-none mb-3">100%</h4>
-                  <p className="text-[10px] font-black tracking-widest text-text-muted uppercase">Real Results</p>
+                  <h4 className="text-3xl sm:text-5xl text-luxury text-primary leading-none mb-3 italic">REAL</h4>
+                  <p className="text-[10px] font-black tracking-widest text-text-muted uppercase">Results Driven</p>
                 </div>
                 <div>
-                  <h4 className="text-3xl sm:text-5xl text-luxury text-primary leading-none mb-3">#01</h4>
-                  <p className="text-[10px] font-black tracking-widest text-text-muted uppercase">Expert Team</p>
+                  <h4 className="text-3xl sm:text-5xl text-luxury text-primary leading-none mb-3 italic">EXPERT</h4>
+                  <p className="text-[10px] font-black tracking-widest text-text-muted uppercase">Coaching Team</p>
                 </div>
               </div>
 

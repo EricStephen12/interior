@@ -104,8 +104,8 @@ export default function AboutPage() {
                             description="Not someone watching you from across the room. Coaches who build your program around your body, track your progress, and adjust on the fly."
                         />
                         <DifferenceRow
-                            title="Recovery Built In"
-                            description="The work doesn't end when the set does. Hyper-oxygen protocols, cold therapy, guided recovery — because that's where the body actually changes."
+                            title="Performance Precision"
+                            description="Every movement, every set, and every rep is tracked and optimized. We don't guess—we use data and top-tier coaching to drive your athletic mastery."
                         />
                         <DifferenceRow
                             title="Equipment That Makes Sense"

@@ -8,7 +8,8 @@ import {
   CheckCircle2,
   TrendingUp,
   CreditCard,
-  Activity
+  Activity,
+  MessageSquare
 } from 'lucide-react'
 
 import prisma from '@/lib/prisma'
@@ -30,17 +31,20 @@ export default async function AdminDashboard() {
     select: { name: true, email: true, tier: true, credits: true, createdAt: true }
   })
 
+  // @ts-ignore
+  const ticketCount = prisma.supportTicket ? await prisma.supportTicket.count({ where: { status: 'OPEN' } }) : 0
   const stats = [
     { name: 'Revenue', value: `₦${(totalRevenue._sum.totalAmount || 0).toLocaleString()}`, icon: TrendingUp, color: 'text-green-500' },
     { name: 'Orders', value: orderCount.toString(), icon: ShoppingBag, color: 'text-accent' },
+    { name: 'Pending Support', value: ticketCount.toString(), icon: MessageSquare, color: 'text-red-500' },
     { name: 'Members', value: userCount.toString(), icon: Users, color: 'text-blue-500' },
-    { name: 'Products', value: productCount.toString(), icon: Package, color: 'text-amber-500' },
     { name: 'Check-ins', value: totalCheckIns.toString(), icon: Activity, color: 'text-purple-500' },
     { name: 'Articles', value: blogCount.toString(), icon: FileText, color: 'text-pink-500' },
   ]
 
   const quickActions = [
     { name: 'Access Scanner', href: '/admin/scanner', icon: QrCode },
+    { name: 'Support Desk', href: '/admin/support', icon: MessageSquare },
     { name: 'Manage Products', href: '/admin/products', icon: Package },
     { name: 'Manage Blogs', href: '/admin/blogs', icon: FileText },
     { name: 'View Members', href: '/admin/users', icon: Users },
@@ -50,7 +54,7 @@ export default async function AdminDashboard() {
     <div className="admin-page-container">
       <div className="admin-header">
         <h1 className="admin-title">
-          Command <span className="text-accent italic font-light lowercase">Center.</span>
+          Admin <span className="text-accent italic font-light lowercase">Registry.</span>
         </h1>
         <p className="admin-subtitle">Manage the SHARERS ecosystem.</p>
       </div>

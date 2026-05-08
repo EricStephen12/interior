@@ -7,9 +7,17 @@ import MemberPass from '@/components/MemberPass'
 import { Activity, Clock, Award, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import TopupCredits from '@/components/TopupCredits'
+import { useUser } from '@clerk/nextjs'
 
 export default function DashboardPage() {
     const { state } = useMembership()
+    const { isLoaded, isSignedIn, user } = useUser()
+
+    if (!isLoaded) return (
+        <div className="min-h-screen bg-secondary flex items-center justify-center">
+            <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
+        </div>
+    )
 
     const container: any = {
         hidden: { opacity: 0 },
@@ -31,12 +39,12 @@ export default function DashboardPage() {
             <div className="max-w-[1400px] mx-auto">
 
                 {/* Editorial Header */}
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-24 sm:mb-32">
                         <div>
-                            <p className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-4">THE MEMBER PROTOCOL</p>
-                            <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-[10rem] text-luxury text-primary leading-none tracking-tighter">
-                                THE <br />
-                                <span className="text-accent italic font-light">DASHBOARD.</span>
+                            <p className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-6">THE MEMBER PROTOCOL</p>
+                            <h1 className="text-4xl sm:text-6xl lg:text-7xl text-luxury text-primary leading-none tracking-tighter">
+                                WELCOME <br />
+                                <span className="text-2xl sm:text-4xl lg:text-5xl text-accent italic font-light">{user?.firstName || 'MEMBER'}.</span>
                             </h1>
                         </div>
                         <div className="pb-4">
@@ -130,28 +138,6 @@ export default function DashboardPage() {
                                 )}
                             </motion.div>
 
-                            {/* Recovery Banner */}
-                            <motion.div
-                                variants={item}
-                                className="relative overflow-hidden bg-primary p-8 sm:p-12 md:p-20 text-white"
-                            >
-                                <div className="relative z-10 space-y-8 max-w-xl">
-                                    <p className="text-[10px] font-black tracking-[0.5em] text-accent-light uppercase">RECOVERY LOUNGE</p>
-                                    <h3 className="text-2xl sm:text-4xl md:text-7xl text-luxury leading-none">Accelerate <br /> Recovery.</h3>
-                                    <p className="text-sm sm:text-base text-white/60 font-medium leading-relaxed">
-                                        The work doesn't end when the set does. Recovery is where the body actually changes — and this protocol makes sure you don't leave that part to chance.
-                                    </p>
-                                    <Link href="/contact">
-                                        <button className="text-[10px] font-black tracking-[0.5em] uppercase border-b-2 border-accent pb-4 hover:tracking-[0.8em] transition-all duration-700">
-                                            BOOK RECOVERY &rarr;
-                                        </button>
-                                    </Link>
-                                </div>
-                                {/* Decorative background logo */}
-                                <div className="absolute top-1/2 right-0 -translate-y-1/2 opacity-5 pointer-events-none translate-x-1/2">
-                                    <span className="text-[30vw] font-black leading-none">SHARERS</span>
-                                </div>
-                            </motion.div>
 
                         </motion.div>
                     </div>

@@ -129,6 +129,33 @@ export default function SupportChat() {
                   )}
                 </div>
               ))}
+              
+              {/* Talk to Human CTA */}
+              {!isLoading && messages.length > 3 && (
+                <div className="flex justify-center pt-2">
+                  <button 
+                    onClick={async () => {
+                      const lastUserMsg = [...messages].reverse().find(m => m.role === 'user')?.content || 'No context';
+                      setIsLoading(true);
+                      try {
+                        await fetch('/api/support', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ message: `ESCALATION: ${lastUserMsg}`, source: 'CHAT' })
+                        });
+                        setMessages(prev => [...prev, { role: 'assistant', content: "I've flagged this for my human team. They'll review our chat and get back to you if you've provided contact info, or you can email us at lab@sharersgym.com." }]);
+                      } catch {
+                        setMessages(prev => [...prev, { role: 'assistant', content: "I couldn't reach them right now. Please email lab@sharersgym.com directly." }]);
+                      }
+                      setIsLoading(false);
+                    }}
+                    className="text-[10px] font-black tracking-widest text-accent hover:text-primary transition-colors border-b border-accent/20 pb-0.5"
+                  >
+                    TALK TO A HUMAN &rarr;
+                  </button>
+                </div>
+              )}
+
               {isLoading && (
                 <div className="flex gap-2.5 justify-start">
                   <div className="w-6 h-6 bg-accent/10 flex items-center justify-center flex-shrink-0">

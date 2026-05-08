@@ -20,6 +20,7 @@
     "next": "^16.1.4",
     "next-cloudinary": "^6.17.5",
     "prisma": "^6.19.3",
+    "qrcode.react": "^4.2.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "tailwind-merge": "^3.4.0"

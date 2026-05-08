@@ -5,22 +5,51 @@ import {
   Settings, 
   LayoutDashboard,
   LogOut,
-  ArrowLeft
+  ArrowLeft,
+  MessageSquare,
+  Truck
 } from 'lucide-react'
 import Link from 'next/link'
 import { UserButton } from "@clerk/nextjs"
+import { auth, currentUser } from "@clerk/nextjs/server"
+import { redirect } from "next/navigation"
+import prisma from "@/lib/prisma"
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const { userId } = await auth()
+  const clerkUser = await currentUser()
+  const email = clerkUser?.emailAddresses[0]?.emailAddress
+
+  // Find user by clerkId or email
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { clerkId: userId || 'undefined' },
+        { email: email || 'undefined' }
+      ]
+    }
+  })
+
+  // HARD OVERRIDE FOR THE OWNER
+  const isOwner = email === 'sharersgymtest@gmail.com'
+  const isAdmin = user?.role === 'ADMIN' || isOwner
+
+  if (!isAdmin) {
+    console.log(`ACCESS DENIED for ${email}. Role in DB: ${user?.role}`)
+    redirect('/')
+  }
   const navItems = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Products', href: '/admin/products', icon: ShoppingBag },
     { name: 'Blogs', href: '/admin/blogs', icon: FileText },
     { name: 'Members', href: '/admin/users', icon: Users },
+    { name: 'Support', href: '/admin/support', icon: MessageSquare },
     { name: 'Scanner', href: '/admin/scanner', icon: Settings },
+    { name: 'Delivery', href: '/admin/delivery', icon: Truck },
   ]
 
   return (

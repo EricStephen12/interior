@@ -16,24 +16,51 @@ import {
 import Image from 'next/image'
 import Link from 'next/link'
 
-const THE_COLLECTION = ['All', 'Sharers Elite', 'Performance Lab', 'Apparel Core', 'Boutique']
-const CATEGORIES = ['All', 'Training', 'Recovery', 'Apparel', 'Nutrition']
-const SIZES = ['All', 'Standard', 'Custom']
-const PRICE_RANGES = ['All', 'Under ₦50,000', '₦50,000 - ₦200,000', '₦200,000 - ₦500,000', 'Above ₦500,000']
+export default function ShopSection({ 
+  initialProducts = [],
+  brands = ['All'],
+  categories = ['All']
+}: { 
+  initialProducts?: any[],
+  brands?: string[],
+  categories?: string[]
+}) {
+  const SIZES = ['All', 'Standard', 'Custom']
+  const PRICE_RANGES = ['All', 'Under ₦50,000', '₦50,000 - ₦200,000', '₦200,000 - ₦500,000', 'Above ₦500,000']
+  const normalizedProducts = useMemo(() => initialProducts.map(p => {
+    let productImages: string[] = []
+    if (Array.isArray(p.images)) {
+      productImages = p.images
+    } else if (typeof p.images === 'string') {
+      try {
+        productImages = JSON.parse(p.images)
+      } catch {
+        productImages = []
+      }
+    }
 
-export default function ShopSection({ initialProducts = [] }: { initialProducts?: any[] }) {
-  const normalizedProducts = useMemo(() => initialProducts.map(p => ({
-    id: p.id,
-    name: p.name,
-    brand: p.brand?.name || 'Sharers Elite',
-    category: p.categories?.[0]?.category?.name || 'Training',
-    size: p.size?.name || 'Standard',
-    price: Number(p.price) || 0,
-    promo_price: p.promoPrice ? Number(p.promoPrice) : undefined,
-    images: p.imageUrl ? [p.imageUrl] : ['https://images.unsplash.com/photo-1581009146145-b5ef03a74e7f?auto=format&fit=crop&w=800&q=80'],
-    description: p.description || '',
-    in_stock: p.inStock ?? true,
-  })), [initialProducts])
+    if (productImages.length === 0 && p.imageUrl) {
+      productImages = [p.imageUrl]
+    }
+
+    if (productImages.length === 0) {
+      productImages = ['https://images.unsplash.com/photo-1581009146145-b5ef03a74e7f?auto=format&fit=crop&w=800&q=80']
+    }
+
+    return {
+      id: p.id,
+      name: p.name,
+      brand: p.brand?.name || 'Sharers Elite',
+      category: p.categories?.[0]?.category?.name || 'Training',
+      size: p.size?.label || 'Standard',
+      price: Number(p.price) || 0,
+      promo_price: p.promoPrice ? Number(p.promoPrice) : undefined,
+      images: productImages,
+      description: p.description || '',
+      in_stock: p.isActive ?? true,
+    }
+  }), [initialProducts])
+
   const [selectedBrand, setSelectedBrand] = useState('All')
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [selectedSize, setSelectedSize] = useState('All')
@@ -61,10 +88,10 @@ export default function ShopSection({ initialProducts = [] }: { initialProducts?
     if (selectedPrice !== 'All') {
       result = result.filter(p => {
         const price = p.promo_price || p.price
-        if (selectedPrice === 'Under $200') return price < 200
-        if (selectedPrice === '$200 - $1,000') return price >= 200 && price <= 1000
-        if (selectedPrice === '$1,000 - $5,000') return price > 1000 && price <= 5000
-        if (selectedPrice === 'Above $5,000') return price > 5000
+        if (selectedPrice === 'Under ₦50,000') return price < 50000
+        if (selectedPrice === '₦50,000 - ₦200,000') return price >= 50000 && price <= 200000
+        if (selectedPrice === '₦200,000 - ₦500,000') return price > 200000 && price <= 500000
+        if (selectedPrice === 'Above ₦500,000') return price > 500000
         return true
       })
     }
@@ -192,20 +219,20 @@ export default function ShopSection({ initialProducts = [] }: { initialProducts?
                     <Tag className="w-3 h-3" />
                     <span className="text-[10px] font-black uppercase tracking-widest">Collection</span>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {THE_COLLECTION.map((brand: string) => (
-                      <button
-                        key={brand}
-                        onClick={() => setSelectedBrand(brand)}
-                        className={`px-4 sm:px-6 py-2 rounded-none text-[9px] font-black tracking-widest uppercase transition-all
-                          ${selectedBrand === brand
-                            ? 'bg-accent text-white'
-                            : 'bg-white text-slate-400 hover:bg-secondary/30 border border-slate-100'}`}
-                      >
-                        {brand}
-                      </button>
-                    ))}
-                  </div>
+                    <div className="flex flex-wrap gap-2">
+                      {brands.map((brand) => (
+                        <button
+                          key={brand}
+                          onClick={() => setSelectedBrand(brand)}
+                          className={`px-4 sm:px-6 py-2 rounded-none text-[9px] font-black tracking-widest uppercase transition-all
+                            ${selectedBrand === brand
+                              ? 'bg-accent text-white'
+                              : 'bg-white text-slate-400 hover:bg-secondary/30 border border-slate-100'}`}
+                        >
+                          {brand}
+                        </button>
+                      ))}
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
@@ -216,7 +243,7 @@ export default function ShopSection({ initialProducts = [] }: { initialProducts?
                       <span className="text-[10px] font-black uppercase tracking-widest">Essence</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {CATEGORIES.map((cat) => (
+                      {categories.map((cat) => (
                         <button
                           key={cat}
                           onClick={() => setSelectedCategory(cat)}

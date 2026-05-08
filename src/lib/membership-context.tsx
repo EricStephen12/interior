@@ -15,6 +15,7 @@ interface MembershipState {
     checkInHistory: CheckIn[]
     memberId: string
     tier: string
+    role: 'ADMIN' | 'CUSTOMER' | 'NONE'
 }
 
 interface MembershipContextType {
@@ -32,7 +33,8 @@ const INITIAL_STATE: MembershipState = {
     remainingCredits: 0,
     checkInHistory: [],
     memberId: 'PENDING',
-    tier: 'NONE'
+    tier: 'NONE',
+    role: 'NONE'
 }
 
 export function MembershipProvider({ children }: { children: React.ReactNode }) {
@@ -41,6 +43,9 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
     useEffect(() => {
         const fetchMembership = async () => {
             try {
+                // First sync with Clerk to ensure user exists in DB
+                await fetch('/api/auth/sync')
+                
                 const res = await fetch('/api/membership')
                 if (res.ok) {
                     const data = await res.json()
@@ -51,6 +56,7 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
                             remainingCredits: data.user.credits,
                             memberId: data.user.memberId,
                             tier: data.user.tier,
+                            role: data.user.role,
                             checkInHistory: data.user.checkIns.map((c: any) => ({
                                 id: c.id,
                                 date: c.date,
@@ -86,18 +92,19 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
             if (res.ok) {
                 const data = await res.json()
                 if (data.user) {
-                    setState({
-                        hasActiveMembership: data.user.tier !== 'NONE',
-                        totalCredits: data.user.credits + data.user.checkIns.length,
-                        remainingCredits: data.user.credits,
-                        memberId: data.user.memberId,
-                        tier: data.user.tier,
-                        checkInHistory: data.user.checkIns.map((c: any) => ({
-                            id: c.id,
-                            date: c.date,
-                            protocol: c.protocol
-                        }))
-                    })
+                        setState({
+                            hasActiveMembership: data.user.tier !== 'NONE',
+                            totalCredits: data.user.credits + data.user.checkIns.length,
+                            remainingCredits: data.user.credits,
+                            memberId: data.user.memberId,
+                            tier: data.user.tier,
+                            role: data.user.role,
+                            checkInHistory: data.user.checkIns.map((c: any) => ({
+                                id: c.id,
+                                date: c.date,
+                                protocol: c.protocol
+                            }))
+                        })
                 }
             }
         } catch {

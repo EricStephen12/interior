@@ -1,11 +1,11 @@
-'use client'
-
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { useUser } from '@clerk/nextjs'
 import { Instagram, MessageCircle, MapPin, Mail, ArrowUpRight, Phone } from 'lucide-react'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
+  const { isSignedIn, isLoaded } = useUser()
 
   return (
     <footer className="bg-primary text-white pt-16 sm:pt-32 pb-12 overflow-hidden relative border-t border-accent/10">
@@ -27,7 +27,7 @@ export default function Footer() {
             </p>
           </div>
 
-          <div className="glass-dark p-12 rounded-none border border-white/5 space-y-8 self-center">
+          <div className="glass-dark p-8 sm:p-12 rounded-none border border-white/5 space-y-8 self-center">
             <h4 className="text-[10px] font-black tracking-[0.4em] text-accent uppercase">Newsletter</h4>
             <h3 className="text-xl sm:text-3xl font-bold tracking-tight">Stay updated.</h3>
             <div className="relative">
@@ -44,31 +44,28 @@ export default function Footer() {
         </div>
 
         {/* Middle Section: Links */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16 sm:mb-32">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16 mb-16 sm:mb-32">
           <FooterSection
             title="Shop"
             links={[
-              { label: 'The Pass', href: '/dashboard' },
-              { label: 'Performance Training', href: '/products?category=Training' },
-              { label: 'Recovery', href: '/products?category=Recovery' },
-              { label: 'Apparel', href: '/products?category=Apparel' }
+              { label: 'shop now', href: '/products' },
+              { label: 'dashboard', href: '/dashboard' },
+              { label: 'Journal', href: '/blog' }
             ]}
           />
           <FooterSection
-            title="Our Company"
+            title="Protocol"
             links={[
-              { label: 'The Facility', href: '/about' },
-              { label: 'Elite Coaches', href: '#' },
-              { label: 'Contact Support', href: '/contact' },
-              { label: 'Member Concierge', href: '/faqs' }
+              { label: 'About', href: '/about' },
+              { label: 'Support', href: '/contact' }
             ]}
           />
           <FooterSection
-            title="Registry"
+            title="Legal"
             links={[
-              { label: 'Terms', href: '/terms' },
-              { label: 'Privacy', href: '/privacy' },
-              { label: 'Ethics Code', href: '/refund' }
+              { label: 'Terms of Use', href: '/terms' },
+              { label: 'Privacy Policy', href: '/privacy' },
+              { label: 'Refund Policy', href: '/refund' }
             ]}
           />
           <div className="space-y-8">
@@ -78,28 +75,35 @@ export default function Footer() {
               <SocialLink icon={MessageCircle} href="#" />
               <SocialLink icon={Phone} href="#" />
             </div>
-            <div className="space-y-4">
+            <div className="space-y-4 pt-4">
               <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">
                 <MapPin className="w-4 h-4 text-accent" />
                 <span>Lagos, Nigeria</span>
               </div>
               <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">
                 <Mail className="w-4 h-4 text-accent" />
-                <span>lab@sharersgym.com</span>
+                <span>support@sharersgym.com</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Section */}
-        <div className="pt-12 border-t border-white/5 flex flex-row justify-between items-center gap-8">
-          <p className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase">
+        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
+          <p className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase order-2 md:order-1">
             © {currentYear} SHARERS GYM. All Rights Reserved.
           </p>
-          <div className="flex gap-8 text-[10px] font-black tracking-widest text-slate-500 uppercase">
-            <Link href="/dashboard" className="px-5 py-2.5 bg-primary text-white hover:bg-accent transition-all duration-500 shadow-sm hidden sm:block">JOIN NOW</Link>
-            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-white transition-colors">Legal</Link>
+          <div className="flex items-center gap-8 order-1 md:order-2">
+            {!isSignedIn && isLoaded && (
+              <Link href="/sign-up" className="px-6 py-2 bg-accent text-primary text-[10px] font-black tracking-widest uppercase hover:bg-white transition-all">
+                JOIN NOW
+              </Link>
+            )}
+            <div className="flex gap-6 text-[10px] font-black tracking-widest text-slate-500 uppercase">
+              <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+              <Link href="/terms" className="hover:text-white transition-colors">Legal</Link>
+              <Link href="/refund" className="hover:text-white transition-colors">Refund</Link>
+            </div>
           </div>
         </div>
       </div>

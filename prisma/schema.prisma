@@ -150,3 +150,15 @@ model Order {
   status        String   @default("COMPLETED")
   createdAt     DateTime @default(now())
 }
+
+model SupportTicket {
+  id        String   @id @default(uuid())
+  email     String?
+  name      String?
+  subject   String?
+  message   String   @db.Text
+  status    String   @default("OPEN") // OPEN, CLOSED, IN_PROGRESS
+  source    String   @default("CHAT") // CHAT, CONTACT_FORM
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -28,3 +28,13 @@ export async function updateProduct(id: string, data: any) {
 export async function deleteProduct(id: string) {
   return prisma.product.delete({ where: { id } })
 }
+
+export async function getBrands() {
+  const brands = await prisma.brand.findMany({ where: { isActive: true }, orderBy: { name: 'asc' } })
+  return ['All', ...brands.map(b => b.name)]
+}
+
+export async function getCategories() {
+  const categories = await prisma.category.findMany({ orderBy: { name: 'asc' } })
+  return ['All', ...categories.map(c => c.name)]
+}

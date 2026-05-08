@@ -3,10 +3,14 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { useMembership } from '@/lib/membership-context'
-import { QrCode, Shield } from 'lucide-react'
+import { Shield } from 'lucide-react'
+import { QRCodeSVG } from 'qrcode.react'
 
 export default function MemberPass() {
     const { state } = useMembership()
+    
+    // The value to be encoded in the QR code - unique to each member
+    const passValue = `SHARERS_PASS_${state.memberId || 'PENDING'}`
 
     return (
         <div className="w-full max-w-sm mx-auto relative group">
@@ -59,7 +63,15 @@ export default function MemberPass() {
                             <div className="absolute bottom-0 left-0 w-6 h-6 sm:w-8 sm:h-8 border-b-[3px] sm:border-b-4 border-l-[3px] sm:border-l-4 border-accent -translate-x-1.5 sm:-translate-x-2 translate-y-1.5 sm:translate-y-2" />
                             <div className="absolute bottom-0 right-0 w-6 h-6 sm:w-8 sm:h-8 border-b-[3px] sm:border-b-4 border-r-[3px] sm:border-r-4 border-accent translate-x-1.5 sm:translate-x-2 translate-y-1.5 sm:translate-y-2" />
 
-                            <QrCode className="w-28 h-28 sm:w-40 sm:h-40 md:w-48 md:h-48 text-primary" strokeWidth={1.5} />
+                            <div className="p-2 sm:p-3 bg-white">
+                                <QRCodeSVG 
+                                    value={passValue} 
+                                    size={160}
+                                    level="H"
+                                    includeMargin={false}
+                                    className="w-28 h-28 sm:w-40 sm:h-40 md:w-48 md:h-48"
+                                />
+                            </div>
 
                             {/* Scanning Animation */}
                             <motion.div
@@ -84,7 +96,7 @@ export default function MemberPass() {
                             </div>
                             <div className="text-right">
                                 <p className="text-[8px] sm:text-[9px] font-black tracking-widest text-white/40 mb-1 uppercase">MEMBER LEVEL</p>
-                                <p className="text-[10px] sm:text-sm font-black text-white uppercase">{state.tier === 'NONE' ? 'BASIC' : `${state.tier} ELITE`}</p>
+                                <p className="text-[10px] sm:text-sm font-black text-white uppercase">{state.tier === 'NONE' ? 'BASIC' : state.tier}</p>
                             </div>
                         </div>
 

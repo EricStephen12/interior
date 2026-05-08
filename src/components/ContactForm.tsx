@@ -101,7 +101,7 @@ export default function ContactForm() {
           >
             <option>Membership & The Pass</option>
             <option>Personal Training</option>
-            <option>Recovery Lab Booking</option>
+            <option>Coaching & Training</option>
             <option>Apparel & Shop</option>
             <option>General Question</option>
           </select>

@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useReducer, ReactNode } from 'react'
+import { createContext, useContext, useReducer, ReactNode, useEffect } from 'react'
 import { Product, CartItem, ProductVariant } from '@/lib/supabase'
 
 interface CartState {
@@ -14,6 +14,7 @@ type CartAction =
   | { type: 'UPDATE_QUANTITY'; itemId: string; quantity: number }
   | { type: 'CLEAR_CART' }
   | { type: 'TOGGLE_CART' }
+  | { type: 'SET_CART'; items: CartItem[] }
 
 interface CartContextType {
   state: CartState
@@ -28,6 +29,8 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
+    case 'SET_CART':
+      return { ...state, items: action.items }
     case 'ADD_ITEM': {
       const existingItem = state.items.find(item => item.product_variant_id === action.variant.id)
 
@@ -103,6 +106,24 @@ const initialState: CartState = {
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, initialState)
+
+  // Load cart from localStorage
+  useEffect(() => {
+    const savedCart = localStorage.getItem('sharers-cart')
+    if (savedCart) {
+      try {
+        const items = JSON.parse(savedCart)
+        dispatch({ type: 'SET_CART', items })
+      } catch (e) {
+        console.error('Failed to load cart', e)
+      }
+    }
+  }, [])
+
+  // Save cart to localStorage
+  useEffect(() => {
+    localStorage.setItem('sharers-cart', JSON.stringify(state.items))
+  }, [state.items])
 
   const addToCart = (product: Product, variant: ProductVariant, quantity = 1) => {
     dispatch({ type: 'ADD_ITEM', product, variant, quantity })

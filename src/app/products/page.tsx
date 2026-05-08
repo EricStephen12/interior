@@ -1,5 +1,5 @@
 import ShopSection from '@/components/ShopSection'
-import { getProducts } from '@/lib/services/product'
+import { getProducts, getBrands, getCategories } from '@/lib/services/product'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -8,11 +8,19 @@ export const metadata: Metadata = {
 };
 
 export default async function ProductsPage() {
-  const products = await getProducts()
+  const [products, brands, categories] = await Promise.all([
+    getProducts(),
+    getBrands(),
+    getCategories()
+  ])
 
   return (
     <div className="pt-16">
-      <ShopSection initialProducts={products} />
+      <ShopSection 
+        initialProducts={products} 
+        brands={brands}
+        categories={categories}
+      />
     </div>
   )
 }

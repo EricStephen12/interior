@@ -4,12 +4,17 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ShoppingCartIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Shield, ChevronDown, LogOut, Users } from 'lucide-react'
 import CartDrawer from './CartDrawer'
 import { useCart } from '@/lib/cart-context'
+import { UserButton, useUser, SignOutButton } from '@clerk/nextjs'
+import { useMembership } from '@/lib/membership-context'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { state, toggleCart } = useCart()
+  const { state: cartState, toggleCart } = useCart()
+  const membership = useMembership()
+  const { isLoaded, isSignedIn, user } = useUser()
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
@@ -71,9 +76,51 @@ export default function Header() {
               </Link>
             </nav>
 
-            <Link href="/dashboard" className="px-5 py-2.5 bg-primary text-white hover:bg-accent transition-all duration-500 shadow-sm hidden sm:block">
-              <span className="text-[9px] font-black uppercase tracking-[0.2em]">JOIN NOW</span>
-            </Link>
+            {isLoaded && isSignedIn ? (
+              <div className="flex items-center gap-6">
+                <Link href="/dashboard" className="hidden sm:block">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary hover:text-accent transition-colors">MY PASS</span>
+                </Link>
+                <div className="h-4 w-[1px] bg-primary/10 hidden sm:block" />
+                
+                {/* Custom Profile Dropdown */}
+                <div className="relative group/user">
+                  <button className="flex items-center gap-3 p-1 hover:bg-secondary transition-colors">
+                    <div className="w-8 h-8 bg-primary flex items-center justify-center text-[10px] font-black text-white">
+                      {user?.firstName?.[0] || user?.emailAddresses[0].emailAddress[0].toUpperCase()}
+                    </div>
+                    <ChevronDown className="w-3 h-3 text-primary group-hover/user:rotate-180 transition-transform duration-500" />
+                  </button>
+
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-primary/5 editorial-shadow opacity-0 invisible group-hover/user:opacity-100 group-hover/user:visible transition-all duration-300 z-50">
+                    <div className="p-4 border-b border-primary/5">
+                      <p className="text-[10px] font-black text-primary uppercase truncate">{user?.fullName || 'Member'}</p>
+                      <p className="text-[8px] text-slate-400 uppercase tracking-widest truncate">{user?.primaryEmailAddress?.emailAddress}</p>
+                    </div>
+                    <div className="p-2">
+                      <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 text-[10px] font-black text-primary hover:bg-secondary transition-colors uppercase tracking-widest">
+                        <Users className="w-3.5 h-3.5" /> My Pass
+                      </Link>
+                      {membership.state.role === 'ADMIN' && (
+                        <Link href="/admin" className="flex items-center gap-3 px-3 py-2 text-[10px] font-black text-accent hover:bg-secondary transition-colors uppercase tracking-widest">
+                          <Shield className="w-3.5 h-3.5" /> Admin Panel
+                        </Link>
+                      )}
+                      <div className="h-[1px] bg-primary/5 my-2" />
+                      <SignOutButton>
+                        <button className="flex w-full items-center gap-3 px-3 py-2 text-[10px] font-black text-red-500 hover:bg-red-50 transition-colors uppercase tracking-widest">
+                          <LogOut className="w-3.5 h-3.5" /> Logout
+                        </button>
+                      </SignOutButton>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : isLoaded && (
+              <Link href="/sign-up" className="px-5 py-2.5 bg-primary text-white hover:bg-accent transition-all duration-500 shadow-sm hidden sm:block">
+                <span className="text-[9px] font-black uppercase tracking-[0.2em]">JOIN NOW</span>
+              </Link>
+            )}
 
             {/* Cart Button - ALWAYS VISIBLE */}
             <motion.button
@@ -84,9 +131,9 @@ export default function Header() {
                 }`}
             >
               <ShoppingCartIcon className="h-6 w-6" />
-              {state.items.length > 0 && (
+              {cartState.items.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-accent text-white text-[9px] font-black rounded-none h-4 w-4 flex items-center justify-center shadow-2xl">
-                  {state.items.length}
+                  {cartState.items.length}
                 </span>
               )}
             </motion.button>
@@ -156,12 +203,30 @@ export default function Header() {
             >
               THE PASS
             </Link>
+            {membership.state.role === 'ADMIN' && (
+              <Link
+                href="/admin"
+                className="block transition-colors uppercase text-xs font-black tracking-[0.4em] text-accent border-l-2 border-accent pl-4"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                ADMIN
+              </Link>
+            )}
+            {isSignedIn && (
+              <div className="pt-4">
+                <SignOutButton>
+                  <button className="text-[10px] font-black uppercase tracking-[0.3em] text-red-500 hover:text-red-600 transition-colors">
+                    SIGN OUT
+                  </button>
+                </SignOutButton>
+              </div>
+            )}
           </div>
         </motion.div>
       </div>
 
       {/* Cart Drawer */}
-      <CartDrawer isOpen={state.isOpen} onClose={toggleCart} />
+      <CartDrawer isOpen={cartState.isOpen} onClose={toggleCart} />
     </motion.header>
   )
 }
