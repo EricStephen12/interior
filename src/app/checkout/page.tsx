@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { ShoppingBag, CreditCard, MessageCircle, MapPin, CheckCircle2, Shield } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import { useMembership } from '@/lib/membership-context';
@@ -14,7 +14,7 @@ declare global {
   }
 }
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const { state, clearCart } = useCart();
   const searchParams = useSearchParams();
   const isCreditTopup = searchParams.get('type') === 'credits';
@@ -421,5 +421,17 @@ function PaymentOption({ icon: Icon, title, description, active, onClick, color,
         </div>
       )}
     </button>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-secondary flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <CheckoutContent />
+    </Suspense>
   );
 }
