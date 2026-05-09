@@ -14,6 +14,7 @@ import { UserButton } from "@clerk/nextjs"
 import { auth, currentUser } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import prisma from "@/lib/prisma"
+import AdminMobileNav from "@/components/AdminMobileNav"
 
 export default async function AdminLayout({
   children,
@@ -21,8 +22,14 @@ export default async function AdminLayout({
   children: React.ReactNode
 }) {
   const { userId } = await auth()
-  const clerkUser = await currentUser()
-  const email = clerkUser?.emailAddresses[0]?.emailAddress
+  let email = undefined
+  
+  try {
+    const clerkUser = await currentUser()
+    email = clerkUser?.emailAddresses[0]?.emailAddress
+  } catch (error) {
+    console.error("Clerk API Error fetching user details:", error)
+  }
 
   // Find user by clerkId or email
   const user = await prisma.user.findFirst({
@@ -54,6 +61,8 @@ export default async function AdminLayout({
 
   return (
     <div className="admin-layout-container">
+      <AdminMobileNav />
+      
       {/* Sidebar */}
       <aside className="admin-sidebar">
         <div className="admin-sidebar-bg"></div>
@@ -93,7 +102,7 @@ export default async function AdminLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="admin-main">
+      <main className="admin-main pt-16 md:pt-0">
         <div className="admin-main-bg"></div>
         {children}
       </main>

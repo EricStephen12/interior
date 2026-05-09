@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 
-const FALLBACK = "Our support team is currently offline. Please reach out at ops@sharersgym.com and we'll get back to you shortly."
+const FALLBACK = "Our support team is currently offline. Please reach out at support@sharersgym.com and we'll get back to you shortly."
 
 export async function POST(req: Request) {
   try {
@@ -55,12 +55,12 @@ RULES:
       })
     })
 
-    if (!res.ok) return NextResponse.json({ reply: "I'm having trouble right now. Please try again or reach us at ops@sharersgym.com." })
+    if (!res.ok) return NextResponse.json({ reply: "I'm having trouble right now. Please try again or reach us at support@sharersgym.com." })
 
     const data = await res.json()
     return NextResponse.json({ reply: data.choices?.[0]?.message?.content?.trim() || "Sorry, try again." })
   } catch (error) {
     console.error('Chat error:', error);
-    return NextResponse.json({ reply: "Something went wrong. Contact us at ops@sharersgym.com." })
+    return NextResponse.json({ reply: "Something went wrong. Contact us at support@sharersgym.com." })
   }
 }

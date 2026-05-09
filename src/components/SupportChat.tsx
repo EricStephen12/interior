@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle, X, Send, Bot, User } from 'lucide-react'
+import { useUser } from '@clerk/nextjs'
 
 interface ChatMessage {
   role: 'user' | 'assistant'
@@ -10,19 +11,63 @@ interface ChatMessage {
 }
 
 export default function SupportChat() {
+  const { user } = useUser()
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: 'assistant', content: "Hey — welcome to SHARERS. How can I help you today?" }
   ])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [activeTicketId, setActiveTicketId] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const savedId = localStorage.getItem('sharers_active_ticket')
+    if (savedId) setActiveTicketId(savedId)
+  }, [])
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
   }, [messages])
+
+  // Polling for admin replies
+  useEffect(() => {
+    if (!activeTicketId || !isOpen) return
+
+    const checkReplies = async () => {
+      try {
+        const res = await fetch(`/api/support?id=${activeTicketId}`)
+        const data = await res.json()
+        if (data.ticket && data.ticket.replies) {
+           const adminReplies = (data.ticket.replies as any[]).map(r => ({
+             role: 'assistant' as const,
+             content: `[ADMIN REPLY]: ${r.content}`
+           }))
+           
+           // Simple merge: if we have more assistant messages than before, update
+           // For a production app, we'd use IDs to prevent duplication
+           setMessages(prev => {
+             const userMsgs = prev.filter(m => m.role === 'user')
+             const aiMsgs = prev.filter(m => m.role === 'assistant' && !m.content.startsWith('[ADMIN REPLY]'))
+             const currentAdminReplies = prev.filter(m => m.content.startsWith('[ADMIN REPLY]'))
+             
+             if (adminReplies.length > currentAdminReplies.length) {
+               return [...aiMsgs, ...userMsgs, ...adminReplies].sort((a, b) => 0) // Keep simple for now
+             }
+             return prev
+           })
+        }
+      } catch (err) {
+        console.error('Polling error:', err)
+      }
+    }
+
+    const interval = setInterval(checkReplies, 10000) // Poll every 10 seconds
+    checkReplies() // Initial check
+    return () => clearInterval(interval)
+  }, [activeTicketId, isOpen])
 
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return
@@ -138,14 +183,28 @@ export default function SupportChat() {
                       const lastUserMsg = [...messages].reverse().find(m => m.role === 'user')?.content || 'No context';
                       setIsLoading(true);
                       try {
-                        await fetch('/api/support', {
+                        const res = await fetch('/api/support', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ message: `ESCALATION: ${lastUserMsg}`, source: 'CHAT' })
+                          body: JSON.stringify({ 
+                            message: `ESCALATION: ${lastUserMsg}`, 
+                            source: 'CHAT',
+                            email: user?.primaryEmailAddress?.emailAddress || null,
+                            name: user?.firstName || 'Member',
+                            chatHistory: messages
+                          })
                         });
-                        setMessages(prev => [...prev, { role: 'assistant', content: "I've flagged this for my human team. They'll review our chat and get back to you if you've provided contact info, or you can email us at lab@sharersgym.com." }]);
-                      } catch {
-                        setMessages(prev => [...prev, { role: 'assistant', content: "I couldn't reach them right now. Please email lab@sharersgym.com directly." }]);
+                        if (!res.ok) throw new Error('Network error');
+                        const data = await res.json();
+                        if (data.success && data.ticket?.id) {
+                           localStorage.setItem('sharers_active_ticket', data.ticket.id);
+                           setActiveTicketId(data.ticket.id);
+                           setMessages(prev => [...prev, { role: 'assistant', content: "I've flagged this for my human team. They'll review our chat and get back to you if you've provided contact info, or you can email us at support@sharersgym.com." }]);
+                        } else {
+                           throw new Error('API reported failure');
+                        }
+                      } catch (err) {
+                        setMessages(prev => [...prev, { role: 'assistant', content: "I couldn't reach them right now. Please email support@sharersgym.com directly." }]);
                       }
                       setIsLoading(false);
                     }}

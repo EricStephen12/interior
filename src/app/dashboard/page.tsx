@@ -4,7 +4,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { useMembership } from '@/lib/membership-context'
 import MemberPass from '@/components/MemberPass'
-import { Activity, Clock, Award, ChevronRight } from 'lucide-react'
+import { Activity, Clock, Award, ChevronRight, ShoppingBag } from 'lucide-react'
 import Link from 'next/link'
 import TopupCredits from '@/components/TopupCredits'
 import { useUser } from '@clerk/nextjs'
@@ -137,7 +137,58 @@ export default function DashboardPage() {
                                     </div>
                                 )}
                             </motion.div>
+                            {/* Order History - Editorial List */}
+                            <motion.div variants={item} className="space-y-12">
+                                <div className="flex items-end justify-between border-b border-primary/10 pb-8">
+                                    <h3 className="text-3xl sm:text-4xl text-luxury text-primary">Order <span className="text-accent italic">History.</span></h3>
+                                    <span className="text-[10px] font-black tracking-widest text-text-muted hidden sm:block">PURCHASE RECORDS</span>
+                                </div>
 
+                                {state.orderHistory.length === 0 ? (
+                                    <div className="py-20 text-center border border-dashed border-primary/10">
+                                        <p className="text-text-muted font-medium mb-8">No purchases on record. Explore the collection.</p>
+                                        <Link href="/products">
+                                            <button className="text-[10px] font-black text-accent tracking-[0.4em] uppercase border-b border-accent pb-2">VIEW COLLECTION &rarr;</button>
+                                        </Link>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-4">
+                                        {state.orderHistory.map((order, idx) => (
+                                            <motion.div
+                                                key={order.id}
+                                                initial={{ opacity: 0, x: -20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: idx * 0.1 }}
+                                                className="group flex flex-col sm:flex-row sm:items-center justify-between p-8 bg-white border border-primary/5 hover:border-accent/20 transition-all duration-500"
+                                            >
+                                                <div className="flex items-center gap-10">
+                                                    <div className="w-10 h-10 bg-secondary flex items-center justify-center">
+                                                        <ShoppingBag className="w-5 h-5 text-accent" />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="text-xl font-bold text-primary group-hover:text-accent transition-colors">
+                                                            {typeof order.items === 'string' ? order.items : 
+                                                             Array.isArray(order.items) ? order.items.map((i: any) => `${i.quantity}x ${i.name}`).join(', ') : 
+                                                             'Product Order'}
+                                                        </h4>
+                                                        <p className="text-[10px] font-black text-text-muted tracking-widest uppercase mt-1">
+                                                            REF: {order.id.substring(0, 8).toUpperCase()} • {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="mt-6 sm:mt-0 flex items-center gap-4">
+                                                    <span className="px-5 py-2 bg-secondary text-[9px] font-black tracking-widest text-primary uppercase">
+                                                        ₦{order.totalAmount.toLocaleString()}
+                                                    </span>
+                                                    <div className={`px-4 py-2 text-[8px] font-black tracking-widest uppercase ${order.status === 'COMPLETED' ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-600'}`}>
+                                                        {order.status}
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </div>
+                                )}
+                            </motion.div>
 
                         </motion.div>
                     </div>

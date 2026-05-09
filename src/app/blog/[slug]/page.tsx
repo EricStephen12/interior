@@ -3,17 +3,41 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Calendar, User, Share2 } from 'lucide-react'
 import Image from 'next/image'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import remarkBreaks from 'remark-breaks'
 
-export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
-  const post = await getBlogBySlug(params.slug)
+export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const post = await getBlogBySlug(slug)
 
   if (!post || (!post.published)) {
     notFound()
   }
 
+  const cleanMarkdown = (text: string) => {
+    return text
+      .replace(/\*\* /g, '**') // Fix bold start
+      .replace(/ \*\*/g, '**') // Fix bold end
+      .replace(/([^#\n])##/g, '$1\n## ') // Force heading to new line
+      .replace(/\[([^\]]+)\]\(url\)/g, '$1') // Strip accidental '(url)' placeholders
+      // Shorten raw URLs that aren't already markdown links
+      .replace(/(?<!\]\()(https?:\/\/[^\s]+)/g, (url) => {
+        try {
+          const domain = new URL(url).hostname.replace('www.', '');
+          return `[${domain}](${url})`;
+        } catch {
+          return url;
+        }
+      })
+      .split('\n')
+      .map(line => line.trim())
+      .join('\n')
+  }
+
   return (
     <article className="bg-white min-h-screen">
-      {/* Editorial Hero Header */}
+      {/* ... Hero Header ... */}
       <header className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center overflow-hidden bg-primary">
         {post.coverImg && (
           <Image 
@@ -56,22 +80,34 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
         {/* Intro / Excerpt */}
         {post.excerpt && (
           <div className="mb-16">
-            <p className="text-2xl md:text-3xl font-medium text-primary italic leading-relaxed border-l-4 border-accent pl-8 py-4">
-              {post.excerpt}
-            </p>
+            <div className="prose prose-2xl prose-slate italic border-l-4 border-accent pl-8 py-4 
+              prose-p:text-primary prose-p:leading-relaxed prose-p:font-medium
+              prose-strong:text-accent prose-strong:font-black
+              prose-a:text-blue-600 prose-a:bg-blue-50 prose-a:px-2 prose-a:py-1 prose-a:rounded-md prose-a:font-bold prose-a:underline prose-a:decoration-blue-600/30 hover:prose-a:decoration-blue-600 hover:prose-a:bg-blue-100 prose-a:transition-all
+            ">
+              <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+                {cleanMarkdown(post.excerpt)}
+              </ReactMarkdown>
+            </div>
           </div>
         )}
 
         {/* Content Body */}
-        <div className="prose prose-lg prose-slate max-w-none 
+        <div className="prose prose-xl prose-slate max-w-none 
           prose-headings:font-display prose-headings:font-black prose-headings:tracking-tight prose-headings:text-primary
+          prose-headings:mt-12 prose-headings:mb-6
           prose-p:text-slate-600 prose-p:leading-[1.8] prose-p:font-medium
           prose-strong:text-primary prose-strong:font-black
-          prose-blockquote:border-accent prose-blockquote:bg-secondary/10 prose-blockquote:px-8 prose-blockquote:py-2 prose-blockquote:not-italic
+          prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:bg-accent/5 prose-blockquote:px-8 prose-blockquote:py-6 prose-blockquote:not-italic prose-blockquote:text-primary prose-blockquote:font-bold
+          prose-a:text-blue-600 prose-a:bg-blue-50 prose-a:px-2 prose-a:py-1 prose-a:rounded-md prose-a:font-bold prose-a:underline prose-a:decoration-blue-600/30 hover:prose-a:decoration-blue-600 hover:prose-a:bg-blue-100 prose-a:transition-all
+          prose-img:rounded-2xl prose-img:shadow-xl
+          prose-li:marker:text-accent
         ">
-          {post.content.split('\n').map((para: string, i: number) => (
-             para.trim() ? <p key={i}>{para}</p> : <br key={i} />
-          ))}
+          <div className="first-letter:text-7xl first-letter:font-black first-letter:text-primary first-letter:mr-3 first-letter:float-left first-letter:leading-none">
+            <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+              {cleanMarkdown(post.content)}
+            </ReactMarkdown>
+          </div>
         </div>
 
         {/* Footer Actions */}

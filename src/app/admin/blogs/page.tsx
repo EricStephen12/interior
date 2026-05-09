@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Plus, Trash2, Eye, Calendar, FileText, Loader2, ArrowLeft } from 'lucide-react'
+import { Plus, Trash2, Eye, Calendar, FileText, Loader2, ArrowLeft, Edit } from 'lucide-react'
 
 export default function AdminBlogsPage() {
   const [blogs, setBlogs] = useState<any[]>([])
@@ -55,7 +55,7 @@ export default function AdminBlogsPage() {
 
       {/* Content */}
       <div className="max-w-[1400px] mx-auto px-6 sm:px-10 py-10">
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[500px]">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/50">
@@ -107,15 +107,19 @@ export default function AdminBlogsPage() {
                         {new Date(blog.createdAt).toLocaleDateString()}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-1">
-                        <Link href={`/blog/${blog.slug}`} className="p-2 text-gray-300 hover:text-gray-700 transition-colors rounded-lg hover:bg-gray-100">
+                        <Link href={`/admin/blogs/${blog.id}`} className="p-2 text-gray-300 hover:text-accent transition-colors rounded-lg hover:bg-accent/5" title="Edit Article">
+                          <Edit className="w-4 h-4" />
+                        </Link>
+                        <Link href={`/blog/${blog.slug}`} className="p-2 text-gray-300 hover:text-gray-700 transition-colors rounded-lg hover:bg-gray-100" title="View Article">
                           <Eye className="w-4 h-4" />
                         </Link>
                         <button 
                           onClick={() => handleDelete(blog.id)} 
                           disabled={deletingId === blog.id}
                           className="p-2 text-gray-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50 disabled:opacity-30"
+                          title="Delete Article"
                         >
                           {deletingId === blog.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                         </button>

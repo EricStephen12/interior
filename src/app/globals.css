@@ -94,10 +94,10 @@
 
   /* Admin Panel Utilities */
   .admin-layout-container {
-    @apply flex min-h-screen bg-white;
+    @apply flex h-[100dvh] overflow-hidden bg-white;
   }
   .admin-sidebar {
-    @apply w-72 bg-primary text-white hidden md:flex flex-col border-r border-white/10 relative;
+    @apply w-72 h-full bg-primary text-white hidden md:flex flex-col border-r border-white/10 relative shrink-0;
   }
   .admin-sidebar-bg {
     @apply absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')] opacity-10 pointer-events-none mix-blend-overlay;
@@ -112,7 +112,7 @@
     @apply text-[10px] text-accent font-sans uppercase tracking-[0.5em] block mt-2;
   }
   .admin-nav {
-    @apply flex-1 py-8 space-y-2 relative z-10;
+    @apply flex-1 py-8 space-y-2 relative z-10 overflow-y-auto;
   }
   .admin-nav-item {
     @apply flex items-center gap-6 px-10 py-4 text-[10px] font-black uppercase tracking-[0.3em] text-white/50 hover:text-white hover:bg-white/5 transition-all border-l-2 border-transparent hover:border-accent;
@@ -136,7 +136,7 @@
     @apply flex items-center justify-center gap-4 w-full py-5 text-[10px] font-black uppercase tracking-[0.3em] text-accent hover:bg-accent hover:text-white transition-all duration-700 border border-accent/20 hover:border-accent;
   }
   .admin-main {
-    @apply flex-1 overflow-auto bg-secondary/30 relative;
+    @apply flex-1 h-full overflow-y-auto bg-secondary/30 relative;
   }
   .admin-main-bg {
     @apply absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')] opacity-[0.02] pointer-events-none mix-blend-overlay;

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(req: Request) {
   try {
     const data = await req.json()
@@ -14,6 +16,7 @@ export async function POST(req: Request) {
         email: data.email || null,
         name: data.name || null,
         message: data.message,
+        chatHistory: data.chatHistory || null,
         source: data.source || 'CHAT',
         status: 'OPEN'
       }
@@ -28,6 +31,14 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url)
+    const id = searchParams.get('id')
+
+    if (id) {
+      const ticket = await prisma.supportTicket.findUnique({ where: { id } })
+      return NextResponse.json({ ticket })
+    }
+
     const tickets = await prisma.supportTicket.findMany({
       orderBy: { createdAt: 'desc' }
     })
@@ -50,5 +61,17 @@ export async function PUT(req: Request) {
     return NextResponse.json({ success: true, ticket })
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update ticket' }, { status: 500 })
+  }
+}
+export async function DELETE(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url)
+    const id = searchParams.get('id')
+    if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 })
+
+    await prisma.supportTicket.delete({ where: { id } })
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to delete ticket' }, { status: 500 })
   }
 }

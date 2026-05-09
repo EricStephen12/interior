@@ -65,8 +65,13 @@ export default async function BlogPage() {
                     {post.title}
                   </h3>
                   
-                  <p className="text-slate-500 line-clamp-2 text-sm leading-relaxed font-medium">
-                    {post.excerpt || post.content.substring(0, 150).replace(/[#*]/g, '') + '...'}
+                  <p className="text-slate-500 line-clamp-3 text-sm leading-relaxed font-medium">
+                    {(post.excerpt || post.content)
+                      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // [text](url) -> text
+                      .replace(/[#*`_~-]/g, '') // Remove markdown symbols (added hyphen)
+                      .replace(/\s+/g, ' ') // Normalize spaces
+                      .trim()
+                      .substring(0, 160) + '...'}
                   </p>
                   
                   <div className="pt-4 flex items-center justify-between border-t border-primary/5">

@@ -65,7 +65,7 @@ export default function AdminProductsPage() {
 
       {/* Content */}
       <div className="max-w-[1400px] mx-auto px-6 sm:px-10 py-10">
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[600px]">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/50">

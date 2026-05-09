@@ -85,7 +85,7 @@ export default function UserManagement() {
 
       <div className="bg-white border border-primary/5 editorial-shadow overflow-hidden mx-4 sm:mx-8">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="border-b border-primary/5 bg-secondary/30">
                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Member Details</th>

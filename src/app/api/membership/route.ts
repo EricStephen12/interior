@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { currentUser } from '@clerk/nextjs/server'
 import { sendChamp } from '@/lib/services/sendchamp'
+import { emailService } from '@/lib/services/email'
 
 const COOLDOWN_MINUTES = 2
 const EMAIL_THRESHOLD = 7
@@ -32,11 +33,18 @@ export async function GET() {
 
     const user = await prisma.user.findUnique({
       where: { email },
-      include: { checkIns: { orderBy: { date: 'desc' } } }
+      include: { 
+        checkIns: { orderBy: { date: 'desc' } }
+      }
     })
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
-    return NextResponse.json({ user })
+    const orders = await prisma.order.findMany({
+      where: { userEmail: email },
+      orderBy: { createdAt: 'desc' }
+    })
+
+    return NextResponse.json({ user, orders })
   } catch {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
@@ -83,7 +91,7 @@ export async function POST(req: Request) {
 
     // Email alert at 7 credits or below (fire-and-forget)
     if (credits <= EMAIL_THRESHOLD && credits > SMS_THRESHOLD) {
-      sendChamp.sendEmail({
+      emailService.sendEmail({
         to: email,
         subject: `${credits} credit${credits !== 1 ? 's' : ''} remaining — SHARERS GYM`,
         html: lowCreditEmail(updatedUser.name || 'Member', credits)
@@ -99,9 +107,15 @@ export async function POST(req: Request) {
       }).catch(() => {})
     }
 
+    const orders = await prisma.order.findMany({
+      where: { userEmail: email },
+      orderBy: { createdAt: 'desc' }
+    })
+
     return NextResponse.json({
       success: true,
       user: updatedUser,
+      orders,
       creditsRemaining: credits,
       lowCredit: credits <= EMAIL_THRESHOLD
     })

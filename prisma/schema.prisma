@@ -157,6 +157,8 @@ model SupportTicket {
   name      String?
   subject   String?
   message   String   @db.Text
+  chatHistory Json?
+  replies     Json?
   status    String   @default("OPEN") // OPEN, CLOSED, IN_PROGRESS
   source    String   @default("CHAT") // CHAT, CONTACT_FORM
   createdAt DateTime @default(now())

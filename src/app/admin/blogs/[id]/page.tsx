@@ -1,14 +1,18 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Save, Sparkles, Loader2, ImageIcon } from 'lucide-react'
 import Link from 'next/link'
 import { CldUploadWidget } from 'next-cloudinary'
 import RichTextEditor from '@/components/RichTextEditor'
 
-export default function NewBlogPage() {
+export default function EditBlogPage() {
   const router = useRouter()
+  const params = useParams()
+  const id = params.id as string
+
+  const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [enhancing, setEnhancing] = useState<string | null>(null)
   const [formData, setFormData] = useState({
@@ -20,19 +24,44 @@ export default function NewBlogPage() {
     published: true,
   })
 
+  useEffect(() => {
+    const fetchBlog = async () => {
+      try {
+        const res = await fetch(`/api/blogs/list`) // I'll assume I can find it here or fetch all and filter
+        const data = await res.json()
+        const blog = (data.blogs || []).find((b: any) => b.id === id)
+        if (blog) {
+          setFormData({
+            title: blog.title,
+            slug: blog.slug,
+            excerpt: blog.excerpt,
+            content: blog.content,
+            coverImg: blog.coverImg || '',
+            published: blog.published,
+          })
+        }
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchBlog()
+  }, [id])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     try {
       const res = await fetch('/api/blogs', {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ id, ...formData })
       })
       if (res.ok) {
         router.push('/admin/blogs')
       } else {
-        alert('Failed to create blog post. Check all fields.')
+        alert('Failed to update article.')
       }
     } catch {
       alert('Network error. Try again.')
@@ -58,6 +87,12 @@ export default function NewBlogPage() {
     setEnhancing(null)
   }
 
+  if (isLoading) return (
+    <div className="min-h-screen flex items-center justify-center bg-[#fafafa]">
+      <Loader2 className="w-10 h-10 animate-spin text-accent" />
+    </div>
+  )
+
   return (
     <div className="min-h-screen bg-[#fafafa]">
       {/* Top Bar */}
@@ -68,7 +103,7 @@ export default function NewBlogPage() {
             <span className="hidden sm:inline">Articles</span>
           </Link>
           <div className="h-5 w-px bg-gray-200" />
-          <h1 className="text-lg font-bold text-gray-900">New Article</h1>
+          <h1 className="text-lg font-bold text-gray-900">Edit Article</h1>
         </div>
         <div className="flex items-center gap-4">
           <label className="flex items-center gap-2.5 cursor-pointer select-none">
@@ -78,7 +113,7 @@ export default function NewBlogPage() {
               onChange={e => setFormData({ ...formData, published: e.target.checked })}
               className="w-4 h-4 accent-accent rounded"
             />
-            <span className="text-xs font-semibold text-gray-600">Publish now</span>
+            <span className="text-xs font-semibold text-gray-600">Published</span>
           </label>
           <button
             type="button"
@@ -87,7 +122,7 @@ export default function NewBlogPage() {
             className="flex items-center gap-2 bg-gray-900 text-white px-6 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-accent transition-colors disabled:opacity-40 rounded-md"
           >
             {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            {isSubmitting ? 'Publishing...' : 'Publish'}
+            {isSubmitting ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </div>
@@ -110,9 +145,8 @@ export default function NewBlogPage() {
                     required
                     type="text"
                     value={formData.title}
-                    onChange={e => setFormData({ ...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') })}
+                    onChange={e => setFormData({ ...formData, title: e.target.value })}
                     className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 text-xl font-bold placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
-                    placeholder="e.g. The Science of Recovery"
                   />
                 </div>
                 <div>
@@ -123,7 +157,6 @@ export default function NewBlogPage() {
                     value={formData.slug}
                     onChange={e => setFormData({ ...formData, slug: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-500 font-mono text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
-                    placeholder="the-science-of-recovery"
                   />
                 </div>
               </div>
@@ -151,7 +184,7 @@ export default function NewBlogPage() {
                   <RichTextEditor 
                     value={formData.excerpt}
                     onChange={(val) => setFormData({ ...formData, excerpt: val })}
-                    placeholder="A brief summary for the catalog..."
+                    placeholder="Brief summary..."
                   />
                 </div>
                 <div>
@@ -170,7 +203,7 @@ export default function NewBlogPage() {
                   <RichTextEditor 
                     value={formData.content}
                     onChange={(val) => setFormData({ ...formData, content: val })}
-                    placeholder="Unleash your expertise..."
+                    placeholder="The full story..."
                   />
                 </div>
               </div>
