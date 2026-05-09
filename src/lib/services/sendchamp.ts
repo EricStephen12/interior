@@ -22,6 +22,27 @@ class SendChampService {
     })
     return res.json()
   }
+
+  async sendEmail({ to, subject, html, sender_email }: {
+    to: string; subject: string; html: string; sender_email: string
+  }) {
+    if (!this.apiKey) return null
+
+    const res = await fetch(`${BASE_URL}/email/send`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`
+      },
+      body: JSON.stringify({
+        to: [{ email: to }],
+        subject,
+        html_body: html,
+        from: { email: sender_email }
+      })
+    })
+    return res.json()
+  }
 }
 
 export const sendChamp = new SendChampService()
