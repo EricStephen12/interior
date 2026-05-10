@@ -78,10 +78,8 @@ export default function Header() {
 
             {isLoaded && isSignedIn ? (
               <div className="flex items-center gap-6">
-                <Link href="/dashboard" className="flex items-center">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary hover:text-accent transition-colors">MY PASS</span>
-                </Link>
-                <div className="h-4 w-[1px] bg-primary/10 hidden sm:block" />
+                {/* Profile dropdown only */}
+
                 
                 {/* Custom Profile Dropdown */}
                 <div className="relative group/user">
