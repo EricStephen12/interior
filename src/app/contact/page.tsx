@@ -71,7 +71,7 @@ export default function ContactPage() {
               <ContactCard
                 icon={Mail}
                 title="Email Us"
-                value="ops@sharersgym.com"
+                value="support@sharersgym.com"
                 subtitle="Business inquiries & partnerships"
               />
               <ContactCard

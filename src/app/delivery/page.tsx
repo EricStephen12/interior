@@ -170,7 +170,7 @@ export default function DeliveryPage() {
                 </div>
                 <div className="flex items-center space-x-4">
                   <ShieldCheckIcon className="h-5 w-5 text-accent" />
-                  <span className="text-white/80 font-medium tracking-wide">logistics@sharersgym.com</span>
+                  <span className="text-white/80 font-medium tracking-wide">support@sharersgym.com</span>
                 </div>
               </div>
 

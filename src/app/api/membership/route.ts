@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { currentUser } from '@clerk/nextjs/server'
-import { sendChamp } from '@/lib/services/sendchamp'
+
 import { emailService } from '@/lib/services/email'
 
 const COOLDOWN_MINUTES = 2
@@ -104,7 +104,7 @@ export async function POST(req: Request) {
 
     const credits = updatedUser.credits
 
-    // Email alert exactly at 7 credits (fire-and-forget)
+    // Email alert exactly at 7 credits (First Warning)
     if (credits === EMAIL_THRESHOLD) {
       emailService.sendEmail({
         to: email,
@@ -113,12 +113,12 @@ export async function POST(req: Request) {
       }).catch(() => {})
     }
 
-    // SMS alert exactly at 2 credits (fire-and-forget) to save SMS costs
-    if (credits === SMS_THRESHOLD) {
-      const targetPhone = updatedUser.phone || email;
-      sendChamp.sendSMS({
-        to: [targetPhone],
-        message: `SHARERS GYM: You have ${credits} credits left. Top up at sharersgym.com/products to keep your access.`
+    // Final Email alert exactly at 2 credits (Final Warning)
+    if (credits === 2) {
+      emailService.sendEmail({
+        to: email,
+        subject: `FINAL WARNING: ${credits} credits left — SHARERS GYM`,
+        html: lowCreditEmail(updatedUser.name || 'Member', credits)
       }).catch(() => {})
     }
 

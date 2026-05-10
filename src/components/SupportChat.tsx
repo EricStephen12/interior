@@ -89,7 +89,7 @@ export default function SupportChat() {
       const data = await res.json()
       setMessages(prev => [...prev, { role: 'assistant', content: data.reply }])
     } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, something went wrong. Try reaching us at ops@sharersgym.com." }])
+      setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, something went wrong. Try reaching us at support@sharersgym.com." }])
     } finally {
       setIsLoading(false)
     }

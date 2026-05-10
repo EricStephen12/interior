@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { sendChamp } from '@/lib/services/sendchamp'
+import { emailService } from '@/lib/services/email'
 
 export async function POST(req: Request) {
   try {
@@ -26,11 +26,10 @@ export async function POST(req: Request) {
       </div>
     `
 
-    await sendChamp.sendEmail({
-      to: process.env.CONTACT_EMAIL || 'admin@sharersgym.com', 
+    await emailService.sendEmail({
+      to: process.env.CONTACT_EMAIL || 'support@sharersgym.com', 
       subject: `[Contact Form] ${subject} - ${name}`,
       html,
-      sender_email: process.env.SENDER_EMAIL || 'support@sharersgym.com'
     })
 
     return NextResponse.json({ success: true })
