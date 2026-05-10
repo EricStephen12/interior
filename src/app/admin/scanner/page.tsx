@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import { QrCode, CheckCircle2, XCircle, AlertTriangle, Clock, CreditCard } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { QrCode, CheckCircle2, XCircle, AlertTriangle, Clock, CreditCard, Camera } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { Html5Qrcode } from 'html5-qrcode'
 
 type ScanResult = {
   status: 'idle' | 'scanning' | 'success' | 'denied' | 'duplicate' | 'error'
@@ -13,14 +14,21 @@ type ScanResult = {
 
 export default function QRScannerPage() {
   const [scan, setScan] = useState<ScanResult>({ status: 'idle' })
+  const [cameraActive, setCameraActive] = useState(false)
 
-  const handleScan = async () => {
+  const processScan = async (rawCode: string) => {
+    if (!rawCode.trim()) return;
+
     setScan({ status: 'scanning' })
+    setCameraActive(false); // Turn off camera upon scan
+    
+    const memberId = rawCode.startsWith('SHARERS_PASS_') ? rawCode.replace('SHARERS_PASS_', '') : rawCode;
+
     try {
       const res = await fetch('/api/membership', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'CHECK_IN', protocol: 'Gym Access Scan' })
+        body: JSON.stringify({ action: 'CHECK_IN', protocol: 'Gym Access Scan', memberId })
       })
       const data = await res.json()
 
@@ -41,7 +49,47 @@ export default function QRScannerPage() {
     }
   }
 
-  const reset = () => setScan({ status: 'idle' })
+  const reset = () => {
+    setScan({ status: 'idle' })
+    setCameraActive(false)
+  }
+
+  useEffect(() => {
+    if (!cameraActive) return;
+
+    let html5QrCode: Html5Qrcode;
+    
+    const startScanner = async () => {
+      html5QrCode = new Html5Qrcode("qr-reader");
+      try {
+        await html5QrCode.start(
+          { facingMode: "environment" }, 
+          {
+            fps: 10,
+            qrbox: { width: 250, height: 250 }
+          },
+          (decodedText) => {
+            html5QrCode.pause();
+            processScan(decodedText);
+          },
+          (error) => {
+            // ignore background scan errors
+          }
+        );
+      } catch (err) {
+        console.error("Camera startup error:", err);
+      }
+    };
+
+    startScanner();
+
+    return () => {
+      if (html5QrCode && html5QrCode.isScanning) {
+        html5QrCode.stop().then(() => html5QrCode.clear()).catch(console.error);
+      }
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cameraActive])
 
   return (
     <div className="p-4 sm:p-8 flex flex-col items-center justify-center min-h-[80vh]">
@@ -50,9 +98,13 @@ export default function QRScannerPage() {
         <p className="text-[10px] tracking-[0.3em] uppercase text-text-muted">Validate Member Passes</p>
       </div>
 
-      <div className="relative w-full max-w-sm sm:max-w-md aspect-square bg-secondary/50 border-2 border-dashed border-primary/20 flex flex-col items-center justify-center p-8">
+      <div className="relative w-full max-w-sm sm:max-w-md aspect-square bg-secondary/50 border-2 border-dashed border-primary/20 flex flex-col items-center justify-center p-8 overflow-hidden">
 
-        {scan.status === 'idle' && (
+        {cameraActive && (
+           <div id="qr-reader" className="w-full h-full absolute inset-0 z-10 [&_video]:object-cover" />
+        )}
+
+        {!cameraActive && scan.status === 'idle' && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center text-primary/40">
             <QrCode className="w-24 h-24 sm:w-32 sm:h-32 mb-6" />
             <p className="text-xs uppercase font-black tracking-widest">Ready to Scan</p>
@@ -114,11 +166,18 @@ export default function QRScannerPage() {
         )}
       </div>
 
-      <div className="mt-12 flex gap-4">
-        <button onClick={handleScan} disabled={scan.status === 'scanning'} className="bg-primary text-white px-8 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-accent transition-all disabled:opacity-50">
-          {scan.status === 'idle' ? 'SCAN PASS' : 'SCAN NEXT'}
+      <div className="mt-8 flex gap-4 w-full max-w-sm">
+        <button 
+          onClick={() => { setScan({status: 'idle'}); setCameraActive(true); }} 
+          disabled={cameraActive}
+          className="flex-1 bg-accent text-white px-4 py-4 text-[10px] font-black uppercase tracking-widest hover:bg-primary transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          <Camera className="w-4 h-4" /> LIVE CAMERA
         </button>
-        <button onClick={reset} className="border border-primary/10 text-primary px-8 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-secondary transition-all">
+        <button 
+          onClick={reset} 
+          className="flex-1 border border-primary/10 text-primary px-4 py-4 text-[10px] font-black uppercase tracking-widest hover:bg-secondary transition-all"
+        >
           RESET
         </button>
       </div>

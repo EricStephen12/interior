@@ -52,18 +52,33 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const { action, protocol } = await req.json()
+    const { action, protocol, memberId } = await req.json()
     if (action !== 'CHECK_IN') return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
 
     const clerkUser = await currentUser()
     const email = clerkUser?.emailAddresses[0]?.emailAddress
     if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const user = await prisma.user.findUnique({
-      where: { email },
-      include: { checkIns: { orderBy: { date: 'desc' }, take: 1 } }
-    })
-    if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    let user;
+    
+    if (memberId) {
+      // Admin scanning someone else's pass
+      const callerUser = await prisma.user.findUnique({ where: { email } })
+      if (callerUser?.role !== 'ADMIN') return NextResponse.json({ error: 'Unauthorized Admin' }, { status: 403 })
+      
+      user = await prisma.user.findUnique({
+        where: { memberId },
+        include: { checkIns: { orderBy: { date: 'desc' }, take: 1 } }
+      })
+    } else {
+      // User scanning their own pass
+      user = await prisma.user.findUnique({
+        where: { email },
+        include: { checkIns: { orderBy: { date: 'desc' }, take: 1 } }
+      })
+    }
+
+    if (!user) return NextResponse.json({ error: 'User/Pass not found' }, { status: 404 })
     if (user.credits <= 0) return NextResponse.json({ error: 'No credits remaining. Please top up your pass.' }, { status: 400 })
 
     // Double-tap guard: same member scanned twice within 2 minutes

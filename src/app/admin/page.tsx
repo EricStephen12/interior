@@ -14,25 +14,49 @@ import {
 
 import prisma from '@/lib/prisma'
 
-export default async function AdminDashboard() {
-  const productCount = await prisma.product.count()
-  const blogCount = await prisma.blogPost.count()
-  const userCount = await prisma.user.count()
-  const orderCount = await prisma.order.count()
-  const totalRevenue = await prisma.order.aggregate({ _sum: { totalAmount: true } })
-  const totalCheckIns = await prisma.checkIn.count()
+export default async function AdminDashboard({ searchParams }: { searchParams: Promise<{ filter?: string }> }) {
+  const params = await searchParams;
+  const filter = params.filter || 'all-time';
+
+  let dateFilter = {};
+  const now = new Date();
+  if (filter === 'daily') {
+    dateFilter = { gte: new Date(now.setHours(0, 0, 0, 0)) };
+  } else if (filter === 'weekly') {
+    const lastWeek = new Date();
+    lastWeek.setDate(lastWeek.getDate() - 7);
+    dateFilter = { gte: lastWeek };
+  } else if (filter === 'monthly') {
+    const lastMonth = new Date();
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+    dateFilter = { gte: lastMonth };
+  }
+
+  const dateQuery = Object.keys(dateFilter).length > 0 ? { createdAt: dateFilter } : {};
+  const checkInQuery = Object.keys(dateFilter).length > 0 ? { date: dateFilter } : {};
+
+  const productCount = await prisma.product.count({ where: dateQuery })
+  const blogCount = await prisma.blogPost.count({ where: dateQuery })
+  const userCount = await prisma.user.count({ where: dateQuery })
+  const orderCount = await prisma.order.count({ where: dateQuery })
+  const totalRevenue = await prisma.order.aggregate({ where: dateQuery, _sum: { totalAmount: true } })
+  const totalCheckIns = await prisma.checkIn.count({ where: checkInQuery })
+  
   const recentOrders = await prisma.order.findMany({
     take: 5,
-    orderBy: { createdAt: 'desc' }
+    orderBy: { createdAt: 'desc' },
+    where: dateQuery
   })
   const recentMembers = await prisma.user.findMany({
     take: 5,
     orderBy: { createdAt: 'desc' },
-    select: { name: true, email: true, tier: true, credits: true, createdAt: true }
+    select: { name: true, email: true, tier: true, credits: true, createdAt: true },
+    where: dateQuery
   })
 
   // @ts-ignore
-  const ticketCount = prisma.supportTicket ? await prisma.supportTicket.count({ where: { status: 'OPEN' } }) : 0
+  const ticketCount = prisma.supportTicket ? await prisma.supportTicket.count({ where: { status: 'OPEN', ...dateQuery } }) : 0
+  
   const stats = [
     { name: 'Revenue', value: `₦${(totalRevenue._sum.totalAmount || 0).toLocaleString()}`, icon: TrendingUp, color: 'text-green-500' },
     { name: 'Orders', value: orderCount.toString(), icon: ShoppingBag, color: 'text-accent' },
@@ -52,11 +76,35 @@ export default async function AdminDashboard() {
 
   return (
     <div className="admin-page-container">
-      <div className="admin-header">
-        <h1 className="admin-title">
-          Admin <span className="text-accent italic font-light lowercase">Registry.</span>
-        </h1>
-        <p className="admin-subtitle">Manage the SHARERS ecosystem.</p>
+      <div className="admin-header flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+        <div>
+          <h1 className="admin-title">
+            Admin <span className="text-accent italic font-light lowercase">Registry.</span>
+          </h1>
+          <p className="admin-subtitle">Manage the SHARERS ecosystem.</p>
+        </div>
+        
+        {/* Analytics Filter */}
+        <div className="flex bg-white border border-primary/5 p-1">
+          {[
+            { label: 'Today', value: 'daily' },
+            { label: '7 Days', value: 'weekly' },
+            { label: '30 Days', value: 'monthly' },
+            { label: 'All-Time', value: 'all-time' }
+          ].map((f) => (
+            <Link
+              key={f.value}
+              href={`/admin?filter=${f.value}`}
+              className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-colors ${
+                filter === f.value 
+                  ? 'bg-primary text-white shadow-sm' 
+                  : 'text-text-muted hover:text-primary hover:bg-secondary/50'
+              }`}
+            >
+              {f.label}
+            </Link>
+          ))}
+        </div>
       </div>
 
       {/* Analytics Grid */}
