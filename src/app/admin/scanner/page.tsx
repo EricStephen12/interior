@@ -178,7 +178,7 @@ export default function QRScannerPage() {
           onClick={reset} 
           className="flex-1 border border-primary/10 text-primary px-4 py-4 text-[10px] font-black uppercase tracking-widest hover:bg-secondary transition-all"
         >
-          RESET
+          CLOSE CAMERA
         </button>
       </div>
     </div>

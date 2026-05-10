@@ -104,21 +104,21 @@ export async function POST(req: Request) {
 
     const credits = updatedUser.credits
 
-    // Email alert at 7 credits or below (fire-and-forget)
-    if (credits <= EMAIL_THRESHOLD && credits > SMS_THRESHOLD) {
+    // Email alert exactly at 7 credits (fire-and-forget)
+    if (credits === EMAIL_THRESHOLD) {
       emailService.sendEmail({
         to: email,
-        subject: `${credits} credit${credits !== 1 ? 's' : ''} remaining — SHARERS GYM`,
+        subject: `${credits} credits remaining — SHARERS GYM`,
         html: lowCreditEmail(updatedUser.name || 'Member', credits)
       }).catch(() => {})
     }
 
-    // SMS alert at 2 credits or below (fire-and-forget)
-    if (credits <= SMS_THRESHOLD && credits > 0) {
+    // SMS alert exactly at 2 credits (fire-and-forget) to save SMS costs
+    if (credits === SMS_THRESHOLD) {
       const targetPhone = updatedUser.phone || email;
       sendChamp.sendSMS({
         to: [targetPhone],
-        message: `SHARERS GYM: You have ${credits} credit${credits !== 1 ? 's' : ''} left. Top up at sharersgym.com/products to keep your access.`
+        message: `SHARERS GYM: You have ${credits} credits left. Top up at sharersgym.com/products to keep your access.`
       }).catch(() => {})
     }
 
