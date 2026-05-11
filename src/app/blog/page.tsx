@@ -5,6 +5,8 @@ import { Calendar, User, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import { Metadata } from 'next'
 
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "The Playbook | Journal",
   description: "Explore the SHARERS GYM Playbook. Insights, techniques, and elite recovery protocols designed for high-performance living.",
