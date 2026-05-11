@@ -2,6 +2,8 @@ import ShopSection from '@/components/ShopSection'
 import { getProducts, getBrands, getCategories } from '@/lib/services/product'
 import { Metadata } from 'next'
 
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Shop The Arsenal",
   description: "Explore the SHARERS GYM Arsenal. Performance training gear, recovery tools, and premium athletic apparel.",

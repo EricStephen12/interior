@@ -12,7 +12,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         promoCode: true
       }
     })
-    return NextResponse.json({ product })
+    return NextResponse.json(
+      { product }, 
+      { headers: { 'Cache-Control': 'no-store, max-age=0' } }
+    )
   } catch (error) {
     console.error('Fetch product error:', error)
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 })
