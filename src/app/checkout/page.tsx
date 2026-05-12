@@ -134,7 +134,7 @@ function CheckoutContent() {
         creditAmount: isCreditTopup ? (creditPack?.amount || 0) : (hasMembership ? 30 : 0),
         hasMembership: hasMembership || isCreditTopup,
         items: isCreditTopup 
-          ? [{ name: `${creditPack?.amount} Credits (${creditPack?.label})`, quantity: 1, price: creditPack?.price }]
+          ? [{ name: `${creditPack?.amount} Days (${creditPack?.label})`, quantity: 1, price: creditPack?.price }]
           : state.items.map(i => ({ name: i.product?.name, quantity: i.quantity, price: i.variant?.price })),
         custom_fields: [
           {
@@ -155,7 +155,7 @@ function CheckoutContent() {
               phone: formData.phone,
               totalAmount: total,
               items: isCreditTopup 
-                ? [{ name: `${creditPack?.amount} Credits (${creditPack?.label})`, quantity: 1, price: creditPack?.price }]
+                ? [{ name: `${creditPack?.amount} Days (${creditPack?.label})`, quantity: 1, price: creditPack?.price }]
                 : state.items.map(i => ({ name: i.product?.name, quantity: i.quantity, price: i.variant?.price })),
               hasMembership: hasMembership || isCreditTopup,
               creditAmount: isCreditTopup ? (creditPack?.amount || 0) : (hasMembership ? 30 : 0),
@@ -307,9 +307,9 @@ function CheckoutContent() {
                 {isCreditTopup ? (
                     <div className="flex justify-between items-start gap-6 pb-6 border-b border-white/5">
                       <div className="flex-1">
-                        <p className="font-bold text-sm tracking-tight mb-2">SHARERS CREDIT TOP-UP</p>
+                        <p className="font-bold text-sm tracking-tight mb-2">SHARERS ACCESS PROTOCOL</p>
                         <p className="text-accent text-[10px] font-black uppercase tracking-widest leading-none opacity-80">
-                          {creditPack?.amount} CREDITS • {creditPack?.label}
+                          {creditPack?.amount} DAYS • {creditPack?.label}
                         </p>
                       </div>
                       <p className="font-light tabular-nums text-lg">₦{creditPack?.price.toLocaleString()}</p>
@@ -383,10 +383,15 @@ function CheckoutContent() {
               <button
                 type="submit"
                 disabled={!isCreditTopup && state.items.length === 0}
-                className="w-full mt-12 btn-primary !bg-white !text-primary hover:!bg-accent hover:!text-white disabled:opacity-20 py-7 relative z-10"
+                className="w-full mt-12 group relative h-20 bg-white text-primary overflow-hidden transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
               >
-                <MessageCircle className="w-5 h-5" />
-                COMPLETE ORDER
+                {/* Button Shine Effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                
+                <div className="relative z-10 flex items-center justify-center gap-4">
+                  <Shield className="w-5 h-5 text-accent" />
+                  <span className="text-[11px] font-black uppercase tracking-[0.4em]">SECURE TRANSACTION • ₦{total.toLocaleString()}</span>
+                </div>
               </button>
 
               <div className="text-center mt-8 relative z-10">

@@ -88,7 +88,7 @@ export default function MemberPass() {
                     <div className="space-y-4 sm:space-y-6">
                         <div className="flex justify-between items-end border-t border-white/10 pt-4 sm:pt-6">
                             <div>
-                                <p className="text-[8px] sm:text-[9px] font-black tracking-widest text-accent uppercase mb-1">AVAILABILITY</p>
+                                <p className="text-[8px] sm:text-[9px] font-black tracking-widest text-accent uppercase mb-1">SUBSCRIPTION DAYS</p>
                                 <div className="flex items-baseline gap-1.5 sm:gap-2">
                                     <span className="text-2xl sm:text-4xl font-black">{state.remainingCredits}</span>
                                     <span className="text-xs sm:text-lg font-bold text-white/50 lowercase">/ {state.totalCredits} days</span>

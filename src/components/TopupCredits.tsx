@@ -41,7 +41,7 @@ export default function TopupCredits() {
                 className="flex items-center gap-3 bg-accent text-white px-8 py-4 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-primary transition-all shadow-2xl active:scale-95"
             >
                 <Plus className="w-4 h-4" />
-                Top Up Credits
+                Purchase Days
             </button>
 
             <AnimatePresence>
@@ -70,7 +70,7 @@ export default function TopupCredits() {
 
                             <div className="text-center mb-12">
                                 <Zap className="w-10 h-10 text-accent mx-auto mb-6" />
-                                <h2 className="text-3xl font-black text-primary uppercase tracking-tight">Purchase <span className="text-accent italic font-light lowercase">Credits.</span></h2>
+                                <h2 className="text-3xl font-black text-primary uppercase tracking-tight">Purchase <span className="text-accent italic font-light lowercase">Access Days.</span></h2>
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Fuel your membership protocol</p>
                             </div>
 
@@ -96,7 +96,7 @@ export default function TopupCredits() {
                                                     <span className="text-[9px] font-black text-primary uppercase tracking-widest">{pack.name}</span>
                                                     {pack.isPopular && <span className="text-[7px] font-black bg-accent text-white px-2 py-0.5 uppercase">Featured</span>}
                                                 </div>
-                                                <h3 className="text-2xl font-black text-primary tabular-nums mt-1">{pack.credits} Credits</h3>
+                                                <h3 className="text-2xl font-black text-primary tabular-nums mt-1">{pack.credits} Days</h3>
                                                 <p className="text-[9px] font-medium text-slate-400 uppercase tracking-widest mt-1">{pack.description || 'Verified Performance Access'}</p>
                                             </div>
                                             <div className="text-right relative z-10">

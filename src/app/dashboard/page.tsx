@@ -76,9 +76,9 @@ export default function DashboardPage() {
                             {/* Performance Meters */}
                             <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 <StatCard
-                                    label="CREDIT STATUS"
-                                    value={`${state.remainingCredits} / ${state.totalCredits}`}
-                                    desc="Total sessions active"
+                                    label="SUBSCRIPTION STATUS"
+                                    value={`${state.remainingCredits} / ${state.totalCredits} Days`}
+                                    desc="Active days remaining"
                                     icon={Clock}
                                 />
                                 <StatCard
@@ -129,7 +129,7 @@ export default function DashboardPage() {
                                                     </div>
                                                 </div>
                                                 <div className="mt-6 sm:mt-0 flex items-center gap-4">
-                                                    <span className="px-5 py-2 bg-secondary text-[9px] font-black tracking-widest text-primary uppercase">-1 CREDIT</span>
+                                                    <span className="px-5 py-2 bg-secondary text-[9px] font-black tracking-widest text-primary uppercase">-1 DAY</span>
                                                     <ChevronRight className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-2" />
                                                 </div>
                                             </motion.div>
