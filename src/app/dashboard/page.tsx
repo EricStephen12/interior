@@ -77,7 +77,7 @@ export default function DashboardPage() {
                             <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 <StatCard
                                     label="SUBSCRIPTION STATUS"
-                                    value={`${state.remainingCredits} / ${state.totalCredits} Days`}
+                                    value={`${state.remainingCredits} / ${state.totalCredits}`}
                                     desc="Active days remaining"
                                     icon={Clock}
                                 />
