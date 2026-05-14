@@ -19,7 +19,6 @@ model User {
   name      String?
   email     String   @unique
   phone     String?
-  kingschatId String? @unique
   role      Role     @default(CUSTOMER)
   credits   Int      @default(0)
   tier      String   @default("NONE")

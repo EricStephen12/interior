@@ -104,8 +104,11 @@ const initialState: CartState = {
   isOpen: false
 }
 
+import { useUser } from '@clerk/nextjs'
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, initialState)
+  const { isLoaded } = useUser()
 
   // Load cart from localStorage
   useEffect(() => {
@@ -124,6 +127,37 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem('sharers-cart', JSON.stringify(state.items))
   }, [state.items])
+
+  // Validate cart items against database
+  const validateCartItems = async () => {
+    if (state.items.length === 0) return
+
+    try {
+      const response = await fetch('/api/products/validate-cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemIds: state.items.map(i => i.product?.id).filter(Boolean) })
+      })
+      
+      const { validIds } = await response.json()
+      
+      if (validIds) {
+        const filteredItems = state.items.filter(item => item.product?.id && validIds.includes(item.product.id))
+        if (filteredItems.length !== state.items.length) {
+          dispatch({ type: 'SET_CART', items: filteredItems })
+        }
+      }
+    } catch (e) {
+      console.error('Failed to validate cart items', e)
+    }
+  }
+
+  // Auto-validate on mount
+  useEffect(() => {
+    if (isLoaded && state.items.length > 0) {
+      validateCartItems()
+    }
+  }, [isLoaded])
 
   const addToCart = (product: Product, variant: ProductVariant, quantity = 1) => {
     dispatch({ type: 'ADD_ITEM', product, variant, quantity })

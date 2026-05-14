@@ -18,30 +18,10 @@ export default function Page() {
             formFieldInput: "rounded-none border-primary/10 focus:border-accent transition-all",
             footerActionLink: "text-accent hover:text-primary transition-colors font-bold uppercase text-[10px] tracking-widest",
             identityPreviewText: "text-primary font-bold",
-            formFieldLabel: "text-[10px] font-black text-text-muted uppercase tracking-widest mb-2",
-            footer: "hidden" // We'll move the footer link out to make room for our custom button
+            formFieldLabel: "text-[10px] font-black text-text-muted uppercase tracking-widest mb-2"
           }
         }} />
-
-        {/* Custom KingsChat Button */}
-        <div className="mt-4 px-8">
-           <Link 
-             href="/api/auth/kingschat"
-             className="w-full h-12 bg-white border border-primary/10 flex items-center justify-center gap-3 group hover:bg-secondary/50 transition-all duration-500"
-           >
-             <img src="https://kingsch.at/favicon.ico" alt="" className="w-5 h-5 opacity-80 group-hover:opacity-100" />
-             <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Continue with KingsChat</span>
-           </Link>
-        </div>
-
-        <div className="mt-8 text-center">
-          <Link href="/sign-up" className="text-accent hover:text-primary transition-colors font-bold uppercase text-[10px] tracking-widest">
-            Don't have an account? Sign Up
-          </Link>
-        </div>
       </div>
     </div>
   );
 }
-
-import Link from "next/link";
