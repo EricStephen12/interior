@@ -4,23 +4,9 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useUser, useSignIn } from '@clerk/nextjs'
 import { Instagram, MessageCircle, MapPin, Mail, ArrowUpRight, Phone } from 'lucide-react'
-import kingsChatWebSdk from 'kingschat-web-sdk'
-
 export default function Footer() {
   const currentYear = new Date().getFullYear()
   const { isSignedIn, isLoaded } = useUser()
-  const { signIn } = useSignIn()
-
-  const loginWithKingsChat = async () => {
-    const clientId = '4be30fee-f42f-4e1a-ae4e-cb4f192c4219'
-    const redirectUri = encodeURIComponent('https://sharersgym.com/api/auth/kingschat/callback')
-    const scope = encodeURIComponent('profile')
-    
-    // Construct the manual OAuth URL
-    const authUrl = `https://accounts.kingsch.at/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`
-    
-    window.location.href = authUrl
-  }
 
   return (
     <footer className="bg-primary text-white pt-16 sm:pt-32 pb-12 overflow-hidden relative border-t border-accent/10">
@@ -110,17 +96,9 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-8 order-1 md:order-2">
             {!isSignedIn && isLoaded && (
-              <div className="flex gap-4">
-                <button 
-                  onClick={loginWithKingsChat}
-                  className="px-6 py-2 bg-[#1e90ff] text-white text-[10px] font-black tracking-widest uppercase hover:bg-white hover:text-[#1e90ff] transition-all"
-                >
-                  KingsChat Login
-                </button>
-                <Link href="/sign-up" className="px-6 py-2 bg-accent text-primary text-[10px] font-black tracking-widest uppercase hover:bg-white transition-all">
-                  JOIN NOW
-                </Link>
-              </div>
+              <Link href="/sign-up" className="px-6 py-2 bg-accent text-primary text-[10px] font-black tracking-widest uppercase hover:bg-white transition-all">
+                JOIN NOW
+              </Link>
             )}
             <div className="flex gap-6 text-[10px] font-black tracking-widest text-slate-500 uppercase">
               <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
