@@ -17,7 +17,8 @@ export default function Footer() {
     try {
       const loginOptions = {
         clientId: '4be30fee-f42f-4e1a-ae4e-cb4f192c4219',
-        scopes: ["profile"] 
+        redirectUri: 'https://sharersgym.com/api/auth/kingschat/callback',
+        scopes: ["profile"]
       }
 
       const response = await kingsChatWebSdk.login(loginOptions)
