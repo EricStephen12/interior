@@ -12,25 +12,14 @@ export default function Footer() {
   const { signIn } = useSignIn()
 
   const loginWithKingsChat = async () => {
-    if (!signIn) return
-
-    try {
-      const loginOptions = {
-        clientId: '4be30fee-f42f-4e1a-ae4e-cb4f192c4219',
-        redirectUri: 'https://sharersgym.com/api/auth/kingschat/callback',
-        scopes: ["profile"]
-      }
-
-      const response = await kingsChatWebSdk.login(loginOptions)
-      console.log('KingsChat SDK Response:', response)
-      
-      // Here we will handle the response and tell Clerk to sign in
-      alert('KingsChat Login Successful! Check console for data.')
-      
-    } catch (err: any) {
-      console.error('KingsChat SDK Error:', err)
-      alert('KingsChat SDK Error: ' + (err.message || 'Unknown error'))
-    }
+    const clientId = '4be30fee-f42f-4e1a-ae4e-cb4f192c4219'
+    const redirectUri = encodeURIComponent('https://sharersgym.com/api/auth/kingschat/callback')
+    const scope = encodeURIComponent('profile')
+    
+    // Construct the manual OAuth URL
+    const authUrl = `https://connect.kingsch.at/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`
+    
+    window.location.href = authUrl
   }
 
   return (
