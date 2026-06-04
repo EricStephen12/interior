@@ -257,17 +257,9 @@ export default function AdminSupportPage() {
               <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-primary text-white">
                 <div>
                    <h3 className="text-xl font-bold tracking-tight">Chat Transcript</h3>
-                   <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mt-1">Context Review Protocol</p>
+                   <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mt-1">Chat History</p>
                 </div>
                 <div className="flex items-center gap-6">
-                  {selectedTicket.email && (
-                    <a 
-                      href={`mailto:${selectedTicket.email}?subject=SHARERS GYM Support: Re: Your Inquiry&body=Hi ${selectedTicket.name || 'Member'},%0D%0A%0D%0ARegarding your message: "${selectedTicket.message}"%0D%0A%0D%0A`}
-                      className="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-white flex items-center gap-2 border border-white/20 px-3 py-1.5 transition-colors"
-                    >
-                      <Mail className="w-3 h-3" /> Emergency Email
-                    </a>
-                  )}
                   <button onClick={() => setSelectedTicket(null)} className="text-white/40 hover:text-white transition-colors">
                     <X className="w-6 h-6" />
                   </button>
@@ -342,7 +334,7 @@ export default function AdminSupportPage() {
                     onClick={() => setSelectedTicket(null)}
                     className="px-8 py-2 bg-primary text-white text-[10px] font-black uppercase tracking-widest hover:bg-accent transition-colors"
                   >
-                    CLOSE VAULT
+                    CLOSE
                   </button>
               </div>
             </motion.div>
