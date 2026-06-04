@@ -49,8 +49,8 @@ export default function StorySection() {
               <div className="space-y-4">
                 <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase block">Chapter I</span>
                 <h3 className="text-4xl sm:text-6xl md:text-8xl text-luxury text-primary">
-                  The Forge of <br />
-                  <span className="text-accent italic font-light">Performance.</span>
+                  Why We're <br />
+                  <span className="text-accent italic font-light">Here.</span>
                 </h3>
               </div>
 
@@ -83,8 +83,8 @@ export default function StorySection() {
               <div className="space-y-6">
                 <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase block">Chapter II</span>
                 <h3 className="text-4xl sm:text-6xl md:text-7xl text-luxury text-primary flex flex-col">
-                  <span>Mastering the</span>
-                  <span className="text-primary/10 -mt-1 sm:-mt-2">Human Machine.</span>
+                  <span>Built Around</span>
+                  <span className="text-primary/10 -mt-1 sm:-mt-2">You.</span>
                 </h3>
               </div>
 

@@ -14,13 +14,12 @@ export default function DeliveryPage() {
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-24"
         >
-          <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-6 block">Global Logistics</span>
+          <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-6 block">SHIPPING & DELIVERY</span>
           <h1 className="text-6xl md:text-8xl text-luxury text-primary mb-8">
-            Secure <span className="text-accent italic">Transit.</span>
+            Getting Your <span className="text-accent italic">Gear.</span>
           </h1>
           <p className="text-xl text-text-muted max-w-2xl mx-auto font-light leading-relaxed">
-            We ensure your investment arrives in pristine condition.
-            Our white-glove logistics team manages every essence with laboratory precision.
+            We ship our apparel, nutrition, and training gear nationwide. Every order is packed carefully and sent fast so you can get back to training.
           </p>
         </motion.div>
 
@@ -37,7 +36,7 @@ export default function DeliveryPage() {
               <div className="flex items-center mb-10">
                 <TruckIcon className="h-10 w-10 text-accent mr-6" />
                 <h2 className="text-3xl font-bold text-primary tracking-tight uppercase">
-                  Logistics Protocol
+                  Shipping Options
                 </h2>
               </div>
 
@@ -45,24 +44,24 @@ export default function DeliveryPage() {
                 <div className="flex items-start space-x-6">
                   <CheckCircleIcon className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                   <div>
-                    <h3 className="font-bold text-primary uppercase text-sm mb-3 tracking-widest">Global Express Vaulting</h3>
-                    <p className="text-text-muted font-medium text-sm leading-relaxed">Complimentary on investments over $5,000. Estimated delivery within 7 business days worldwide.</p>
+                    <h3 className="font-bold text-primary uppercase text-sm mb-3 tracking-widest">Standard Shipping</h3>
+                    <p className="text-text-muted font-medium text-sm leading-relaxed">Complimentary on orders over ₦50,000. Delivered to your doorstep within 3-5 business days nationwide.</p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-6">
                   <CheckCircleIcon className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                   <div>
-                    <h3 className="font-bold text-primary uppercase text-sm mb-3 tracking-widest">Molecular Packaging</h3>
-                    <p className="text-text-muted font-medium text-sm leading-relaxed">$50 flat fee. Includes temperature-controlled fragrance sealing and jewelry pressure-locking.</p>
+                    <h3 className="font-bold text-primary uppercase text-sm mb-3 tracking-widest">Express Delivery</h3>
+                    <p className="text-text-muted font-medium text-sm leading-relaxed">₦5,000 flat rate. Next-day delivery for Lagos orders placed before 12 PM.</p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-6">
                   <CheckCircleIcon className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                   <div>
-                    <h3 className="font-bold text-primary uppercase text-sm mb-3 tracking-widest">White-Glove Handover</h3>
-                    <p className="text-text-muted font-medium text-sm leading-relaxed">$150 premium. Includes in-person authentication and personalized collection walkthrough.</p>
+                    <h3 className="font-bold text-primary uppercase text-sm mb-3 tracking-widest">In-Gym Pickup</h3>
+                    <p className="text-text-muted font-medium text-sm leading-relaxed">Free. Pick up your order directly at The Arena in Lagos. Ready within 2 hours of purchase.</p>
                   </div>
                 </div>
               </div>
@@ -73,22 +72,22 @@ export default function DeliveryPage() {
               <div className="flex items-center mb-10">
                 <MapPinIcon className="h-10 w-10 text-accent mr-6" />
                 <h2 className="text-3xl font-bold text-primary tracking-tight uppercase">
-                  The Network
+                  Coverage
                 </h2>
               </div>
 
               <div className="space-y-6">
                 <div className="flex items-center space-x-4">
                   <CheckCircleIcon className="h-5 w-5 text-accent" />
-                  <span className="text-primary font-medium tracking-tight">Mainland Europe & United Kingdom</span>
+                  <span className="text-primary font-medium tracking-tight">Lagos & Environs (Same day / Next day)</span>
                 </div>
                 <div className="flex items-center space-x-4">
                   <CheckCircleIcon className="h-5 w-5 text-accent" />
-                  <span className="text-primary font-medium tracking-tight">Middle East & GCC Registry</span>
+                  <span className="text-primary font-medium tracking-tight">Rest of Nigeria (3-5 business days)</span>
                 </div>
                 <div className="flex items-center space-x-4">
                   <CheckCircleIcon className="h-5 w-5 text-accent" />
-                  <span className="text-primary font-medium tracking-tight">North America & Asia-Pacific Labs</span>
+                  <span className="text-primary font-medium tracking-tight">West Africa Shipping (3-5 business days)</span>
                 </div>
               </div>
             </div>
@@ -106,7 +105,7 @@ export default function DeliveryPage() {
               <div className="flex items-center mb-10">
                 <ClockIcon className="h-10 w-10 text-accent mr-6" />
                 <h2 className="text-3xl font-bold text-primary tracking-tight uppercase">
-                  The Methodology
+                  How It Works
                 </h2>
               </div>
 
@@ -116,8 +115,8 @@ export default function DeliveryPage() {
                     01
                   </div>
                   <div>
-                    <h3 className="font-bold text-primary uppercase text-sm mb-2 tracking-widest">Vault Allocation</h3>
-                    <p className="text-text-muted text-sm leading-relaxed">Your piece is moved from our high-security inventory to the clean-room packing facility.</p>
+                    <h3 className="font-bold text-primary uppercase text-sm mb-2 tracking-widest">Order Processing</h3>
+                    <p className="text-text-muted text-sm leading-relaxed">Once your order is confirmed, our team picks and packs your gear from our inventory.</p>
                   </div>
                 </div>
 
@@ -126,8 +125,8 @@ export default function DeliveryPage() {
                     02
                   </div>
                   <div>
-                    <h3 className="font-bold text-primary uppercase text-sm mb-2 tracking-widest">Lab Authentication</h3>
-                    <p className="text-text-muted text-sm leading-relaxed">Final molecular and structural verification by our resident gemologists and perfumers.</p>
+                    <h3 className="font-bold text-primary uppercase text-sm mb-2 tracking-widest">Quality Check</h3>
+                    <p className="text-text-muted text-sm leading-relaxed">We inspect every piece of apparel and check every seal to make sure it's correct.</p>
                   </div>
                 </div>
 
@@ -136,8 +135,8 @@ export default function DeliveryPage() {
                     03
                   </div>
                   <div>
-                    <h3 className="font-bold text-primary uppercase text-sm mb-2 tracking-widest">Encrypted Seal</h3>
-                    <p className="text-text-muted text-sm leading-relaxed">Atmospheric sealing for fragrances and tamper-evident locking for jewelry boxes.</p>
+                    <h3 className="font-bold text-primary uppercase text-sm mb-2 tracking-widest">Secure Packaging</h3>
+                    <p className="text-text-muted text-sm leading-relaxed">Everything is packed securely in tamper-evident packaging so it arrives in perfect shape.</p>
                   </div>
                 </div>
 
@@ -146,8 +145,8 @@ export default function DeliveryPage() {
                     04
                   </div>
                   <div>
-                    <h3 className="font-bold text-primary uppercase text-sm mb-2 tracking-widest">Concierge Dispatch</h3>
-                    <p className="text-text-muted text-sm leading-relaxed">Courier collection on a secure, private logistics channel for immediate tracking.</p>
+                    <h3 className="font-bold text-primary uppercase text-sm mb-2 tracking-widest">Fast Dispatch</h3>
+                    <p className="text-text-muted text-sm leading-relaxed">We hand over to our trusted courier partners and send you a tracking link right away.</p>
                   </div>
                 </div>
               </div>
@@ -159,14 +158,14 @@ export default function DeliveryPage() {
               <div className="flex items-center mb-10 relative z-10">
                 <PhoneIcon className="h-10 w-10 text-accent mr-6" />
                 <h2 className="text-3xl font-bold uppercase tracking-tight">
-                  Concierge Live
+                  Need Help?
                 </h2>
               </div>
 
               <div className="space-y-6 relative z-10">
                 <div className="flex items-center space-x-4">
                   <PhoneIcon className="h-5 w-5 text-accent" />
-                  <span className="text-white/80 font-medium tracking-wide">+44 (0) 20 SHARERS LUX</span>
+                  <a href="tel:+2348089062085" className="text-white/80 font-medium tracking-wide hover:text-accent transition-colors">+234 808 906 2085</a>
                 </div>
                 <div className="flex items-center space-x-4">
                   <ShieldCheckIcon className="h-5 w-5 text-accent" />
@@ -175,9 +174,9 @@ export default function DeliveryPage() {
               </div>
 
               <div className="mt-10 p-6 bg-white/5 border border-white/10 rounded-none relative z-10">
-                <p className="text-[11px] text-accent font-black uppercase tracking-[0.2em] mb-2 leading-none">Confidential Note</p>
+                <p className="text-[11px] text-accent font-black uppercase tracking-[0.2em] mb-2 leading-none">Important Note</p>
                 <p className="text-xs text-white/60 leading-relaxed font-light italic">
-                  For high-value vault transfers exceeding $50k, we require a 24-hour verification window before dispatch protocol.
+                  For bulk orders or gym equipment delivery, contact us directly so we can coordinate setup and dropoff.
                 </p>
               </div>
             </div>
@@ -193,28 +192,28 @@ export default function DeliveryPage() {
         >
           <div className="bg-white p-10 sm:p-20 rounded-none border border-primary/5 editorial-shadow">
             <h2 className="text-4xl text-luxury text-primary mb-16 text-center">
-              Logistics <span className="text-accent italic">Inquiries.</span>
+              Delivery <span className="text-accent italic">Questions.</span>
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
               <div>
-                <h3 className="font-bold text-primary uppercase text-sm mb-4 tracking-[0.2em]">Is the packaging discreet?</h3>
-                <p className="text-text-muted text-sm leading-relaxed">Absolutely. All SHARERS piece shipments use unmarked security outer-casing to ensure privacy and protection.</p>
+                <h3 className="font-bold text-primary uppercase text-sm mb-4 tracking-[0.2em]">Can I track my order?</h3>
+                <p className="text-text-muted text-sm leading-relaxed">Yes. As soon as your order is dispatched, you'll receive a tracking number via email or SMS.</p>
               </div>
 
               <div>
-                <h3 className="font-bold text-primary uppercase text-sm mb-4 tracking-[0.2em]">What about lab-to-lab handling?</h3>
-                <p className="text-text-muted text-sm leading-relaxed">Fragrances are kept in temperature-optimized environments through the entire transit chain to preserve the essence profile.</p>
+                <h3 className="font-bold text-primary uppercase text-sm mb-4 tracking-[0.2em]">Do you ship outside Lagos?</h3>
+                <p className="text-text-muted text-sm leading-relaxed">Yes, we ship to all states across Nigeria, as well as select international locations.</p>
               </div>
 
               <div>
-                <h3 className="font-bold text-primary uppercase text-sm mb-4 tracking-[0.2em]">Can I redirect a dispatch?</h3>
-                <p className="text-text-muted text-sm leading-relaxed">Due to security protocols, address redirection is only available within 2 laboratory hours of the initial order verification.</p>
+                <h3 className="font-bold text-primary uppercase text-sm mb-4 tracking-[0.2em]">Can I change my delivery address?</h3>
+                <p className="text-text-muted text-sm leading-relaxed">You can update your address if you contact us before the package leaves our warehouse (usually within 2 hours of ordering).</p>
               </div>
 
               <div>
-                <h3 className="font-bold text-primary uppercase text-sm mb-4 tracking-[0.2em]">Do you service private addresses?</h3>
-                <p className="text-text-muted text-sm leading-relaxed">We deliver to all residential, corporate, and private lab destinations globally, including secure apartment complexes.</p>
+                <h3 className="font-bold text-primary uppercase text-sm mb-4 tracking-[0.2em]">What if my apparel doesn't fit?</h3>
+                <p className="text-text-muted text-sm leading-relaxed">No worries. We offer free exchanges within 7 days for unworn apparel with tags still on.</p>
               </div>
             </div>
           </div>
@@ -223,4 +222,3 @@ export default function DeliveryPage() {
     </div>
   )
 }
-

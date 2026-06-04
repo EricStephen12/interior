@@ -138,8 +138,8 @@ export default function ShopSection({
               transition={{ delay: 0.2 }}
               className="text-4xl sm:text-6xl md:text-7xl font-black text-primary tracking-[-0.04em] leading-[0.9] font-display"
             >
-              Precision in <br />
-              <span className="text-accent font-display">Every Detail.</span>
+              The Good <br />
+              <span className="text-accent font-display">Stuff.</span>
             </motion.h3>
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -240,7 +240,7 @@ export default function ShopSection({
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-slate-400">
                       <Layers className="w-3 h-3" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Essence</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">Category</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {categories.map((cat) => (
@@ -284,7 +284,7 @@ export default function ShopSection({
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-slate-400">
                       <DollarSign className="w-3 h-3" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Investment</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">Price</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {PRICE_RANGES.map((range) => (
@@ -337,8 +337,8 @@ export default function ShopSection({
             <div className="w-20 h-20 sm:w-24 sm:h-24 bg-secondary/50 rounded-none flex items-center justify-center text-slate-200 mx-auto mb-6 sm:mb-8">
               <Search className="w-8 h-8 sm:w-10 sm:h-10" />
             </div>
-            <h3 className="text-xl sm:text-2xl font-black text-primary mb-2">The Vault is Empty</h3>
-            <p className="text-slate-400 font-medium">Try adjusting your filters to find your essence.</p>
+            <h3 className="text-xl sm:text-2xl font-black text-primary mb-2">Nothing here yet</h3>
+            <p className="text-slate-400 font-medium">Try changing your filters or search for something else.</p>
             <button
               onClick={clearFilters}
               className="mt-6 sm:mt-8 text-accent font-black text-[10px] uppercase tracking-widest hover:text-primary transition-colors"

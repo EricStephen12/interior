@@ -71,7 +71,7 @@ export default function TopupCredits() {
                             <div className="text-center mb-12">
                                 <Zap className="w-10 h-10 text-accent mx-auto mb-6" />
                                 <h2 className="text-3xl font-black text-primary uppercase tracking-tight">Purchase <span className="text-accent italic font-light lowercase">Access Days.</span></h2>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Fuel your membership protocol</p>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Fuel your training</p>
                             </div>
 
                             <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
@@ -97,7 +97,7 @@ export default function TopupCredits() {
                                                     {pack.isPopular && <span className="text-[7px] font-black bg-accent text-white px-2 py-0.5 uppercase">Featured</span>}
                                                 </div>
                                                 <h3 className="text-2xl font-black text-primary tabular-nums mt-1">{pack.credits} Days</h3>
-                                                <p className="text-[9px] font-medium text-slate-400 uppercase tracking-widest mt-1">{pack.description || 'Verified Performance Access'}</p>
+                                                <p className="text-[9px] font-medium text-slate-400 uppercase tracking-widest mt-1">{pack.description || 'All Arena Access'}</p>
                                             </div>
                                             <div className="text-right relative z-10">
                                                 <p className="text-xl font-bold text-primary tabular-nums">₦{pack.price.toLocaleString()}</p>
@@ -111,7 +111,7 @@ export default function TopupCredits() {
                             </div>
 
                             <p className="mt-12 text-center text-[9px] font-black text-slate-300 uppercase tracking-widest">
-                                Protocol verified transactions only
+                                Secure payment processing
                             </p>
                         </motion.div>
                     </div>

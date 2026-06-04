@@ -58,7 +58,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                       <div className="flex items-start justify-between">
                         <Dialog.Title className="text-xl font-black text-primary tracking-tight uppercase">
-                          The Vault
+                          Your Cart
                         </Dialog.Title>
                         <div className="ml-3 flex h-7 items-center">
                           <button
@@ -77,7 +77,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                           {cartItems.length === 0 ? (
                             <div className="text-center py-12">
                               <ShoppingCartIcon className="mx-auto h-12 w-12 text-secondary" />
-                              <h3 className="mt-2 text-sm font-black text-primary uppercase">Your vault is empty</h3>
+                              <h3 className="mt-2 text-sm font-black text-primary uppercase">Your cart is empty</h3>
                               <p className="mt-1 text-sm text-text-muted">Explore the collection to add items.</p>
                             </div>
                           ) : (

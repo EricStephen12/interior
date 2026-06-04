@@ -48,7 +48,7 @@ export default function HeroSection() {
                 transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                 className="block text-4xl sm:text-7xl md:text-9xl xl:text-[11rem] leading-[0.85] text-luxury text-primary"
               >
-                UNLEASH
+                TRAIN
               </motion.span>
             </span>
             <span className="block overflow-hidden">
@@ -58,7 +58,7 @@ export default function HeroSection() {
                 transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                 className="block text-4xl sm:text-7xl md:text-9xl xl:text-[11rem] leading-[0.85] text-luxury text-accent lg:-ml-12 italic"
               >
-                POWER.
+                DIFFERENT.
               </motion.span>
             </span>
           </h1>
@@ -71,7 +71,7 @@ export default function HeroSection() {
           >
             <Link href="/dashboard">
               <button className="btn-elite group text-white">
-                START THE PROTOCOL
+                GET STARTED
                 <motion.span
                   className="inline-block ml-3"
                   animate={{ x: [0, 5, 0] }}

@@ -33,9 +33,9 @@ export default function FAQPage() {
         <div className="pt-24 sm:pt-40 pb-16 sm:pb-32 bg-secondary/20 min-h-screen selection:bg-accent/20">
             <div className="max-w-4xl mx-auto px-4">
                 <div className="text-center mb-16 sm:mb-24">
-                    <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-6 block">The Knowledge Base</span>
-                    <h1 className="text-5xl md:text-7xl text-luxury text-primary mb-6">Common <br /><span className="text-accent italic">Inquiries.</span></h1>
-                    <p className="text-lg text-text-muted font-light uppercase tracking-widest">Protocol Information for SHARERS LUXURY.</p>
+                    <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-6 block">FAQ</span>
+                    <h1 className="text-5xl md:text-7xl text-luxury text-primary mb-6">Common <br /><span className="text-accent italic">Questions.</span></h1>
+                    <p className="text-lg text-text-muted font-light uppercase tracking-widest">Everything you need to know about our training and memberships.</p>
                 </div>
 
                 <div className="space-y-6">
@@ -66,10 +66,10 @@ export default function FAQPage() {
 
                 <div className="mt-24 sm:mt-32 p-10 sm:p-20 bg-primary rounded-none text-center text-white relative overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.3)]">
                     <div className="relative z-10">
-                        <h2 className="text-4xl text-luxury mb-8">Unresolved <br /><span className="text-accent italic">Curiosity?</span></h2>
-                        <p className="text-white/60 mb-12 max-w-sm mx-auto font-light text-lg">Our Global Concierge is available for deeper laboratory and investment inquiries.</p>
+                        <h2 className="text-4xl text-luxury mb-8">Still Have <br /><span className="text-accent italic">Questions?</span></h2>
+                        <p className="text-white/60 mb-12 max-w-sm mx-auto font-light text-lg">Our team is here to help. Send us a message and we'll get back to you quickly.</p>
                         <a href="/contact" className="btn-primary !bg-white !text-primary hover:!bg-accent hover:!text-white py-6">
-                            Initiate Protocol
+                            Get In Touch
                         </a>
                     </div>
                     {/* Decorative elements */}

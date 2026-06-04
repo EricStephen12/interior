@@ -41,7 +41,7 @@ export default function DashboardPage() {
                 {/* Editorial Header */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-24 sm:mb-32">
                         <div>
-                            <p className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-6">THE MEMBER PROTOCOL</p>
+                            <p className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-6">MEMBER DASHBOARD</p>
                             <h1 className="text-4xl sm:text-6xl lg:text-7xl text-luxury text-primary leading-none tracking-tighter">
                                 WELCOME <br />
                                 <span className="text-2xl sm:text-4xl lg:text-5xl text-accent italic font-light">{user?.firstName || 'MEMBER'}.</span>
@@ -59,7 +59,7 @@ export default function DashboardPage() {
                         <MemberPass />
                         <div className="flex flex-col items-center gap-4 mt-8">
                             <p className="text-[10px] font-black text-text-muted tracking-[0.4em] uppercase text-center border-t border-primary/5 pt-8 w-full">
-                                ACCESS SECURED • DIGITAL PROTOCOL
+                                ACCESS SECURED • DIGITAL PASS
                             </p>
                         </div>
                     </div>
@@ -88,9 +88,9 @@ export default function DashboardPage() {
                                     icon={Award}
                                 />
                                 <StatCard
-                                    label="PROTOCOLS"
+                                    label="SESSIONS"
                                     value={state.checkInHistory.length.toString()}
-                                    desc="Total completed sessions"
+                                    desc="Sessions attended"
                                     icon={Activity}
                                 />
                             </motion.div>
@@ -98,7 +98,7 @@ export default function DashboardPage() {
                             {/* Activity Log - Editorial List */}
                             <motion.div variants={item} className="space-y-12">
                                 <div className="flex items-end justify-between border-b border-primary/10 pb-8">
-                                    <h3 className="text-3xl sm:text-4xl text-luxury text-primary">Protocol <span className="text-accent italic">History.</span></h3>
+                                    <h3 className="text-3xl sm:text-4xl text-luxury text-primary">Session <span className="text-accent italic">History.</span></h3>
                                     <span className="text-[10px] font-black tracking-widest text-text-muted hidden sm:block">LATEST UPDATES</span>
                                 </div>
 
@@ -106,7 +106,7 @@ export default function DashboardPage() {
                                     <div className="py-20 text-center border border-dashed border-primary/10">
                                         <p className="text-text-muted font-medium mb-8">You haven't stepped in yet. Time to get to work.</p>
                                         <Link href="/products">
-                                            <button className="text-[10px] font-black text-accent tracking-[0.4em] uppercase border-b border-accent pb-2">START THE PROTOCOL &rarr;</button>
+                                            <button className="text-[10px] font-black text-accent tracking-[0.4em] uppercase border-b border-accent pb-2">GET STARTED &rarr;</button>
                                         </Link>
                                     </div>
                                 ) : (

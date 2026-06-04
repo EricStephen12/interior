@@ -300,14 +300,14 @@ function CheckoutContent() {
 
               <h2 className="text-3xl text-luxury mb-12 flex items-center gap-4 relative z-10">
                 <ShoppingBag className="w-8 h-8 text-accent" />
-                The Essence List
+                Order Summary
               </h2>
 
               <div className="space-y-8 mb-12 max-h-[400px] overflow-auto pr-4 custom-scrollbar relative z-10">
                 {isCreditTopup ? (
                     <div className="flex justify-between items-start gap-6 pb-6 border-b border-white/5">
                       <div className="flex-1">
-                        <p className="font-bold text-sm tracking-tight mb-2">SHARERS ACCESS PROTOCOL</p>
+                        <p className="font-bold text-sm tracking-tight mb-2">SHARERS MEMBERSHIP PASS</p>
                         <p className="text-accent text-[10px] font-black uppercase tracking-widest leading-none opacity-80">
                           {creditPack?.amount} DAYS • {creditPack?.label}
                         </p>
@@ -329,7 +329,7 @@ function CheckoutContent() {
                     </div>
                   )
                 }) : (
-                  <p className="text-slate-500 text-sm italic">The list is currently void.</p>
+                  <p className="text-slate-500 text-sm italic">Your cart is empty.</p>
                 )}
               </div>
 

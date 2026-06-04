@@ -15,7 +15,7 @@ export default function NotFound() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
         >
-          <span className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-8 block">Error Protocol 404</span>
+          <span className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-8 block">Page Not Found</span>
           
           <h1 className="text-8xl sm:text-[12rem] font-black text-primary leading-none tracking-tighter mb-8 opacity-5">
             404
@@ -23,24 +23,24 @@ export default function NotFound() {
           
           <div className="-mt-24 sm:-mt-40 relative z-10">
             <h2 className="text-4xl sm:text-6xl font-black text-primary tracking-tight leading-tight mb-8">
-              Vault Access <br />
-              <span className="text-accent italic font-light">Denied.</span>
+              Lost your <br />
+              <span className="text-accent italic font-light">way?</span>
             </h2>
             
             <p className="text-slate-500 font-medium text-lg leading-relaxed mb-12 max-w-md mx-auto">
-              The coordinate you are looking for doesn't exist in our protocol. It may have been moved, deleted, or never existed in this timeline.
+              The page you are looking for doesn't exist. It might have been moved, or maybe the link is broken.
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
               <Link href="/">
                 <button className="px-10 py-5 bg-primary text-white text-[10px] font-black uppercase tracking-[0.3em] hover:bg-accent transition-all duration-500 flex items-center gap-3">
-                  <ArrowLeft className="w-4 h-4" /> Back to Base
+                  <ArrowLeft className="w-4 h-4" /> Go Home
                 </button>
               </Link>
               
               <Link href="/products">
                 <button className="px-10 py-5 bg-white border border-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.3em] hover:border-accent transition-all duration-500 flex items-center gap-3">
-                   Shop Protocol <Search className="w-4 h-4" />
+                   Shop Gear <Search className="w-4 h-4" />
                 </button>
               </Link>
             </div>

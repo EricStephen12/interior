@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: "Contact Us",
-  description: "Connect with the SHARERS GYM performance lab. Inquire about memberships, personal training, and recovery lab bookings.",
+  description: "Want to know more, book a session, or just come see the place? Hit us up — we'll get back to you fast.",
 };
 
 export default function ContactPage() {
@@ -65,7 +65,7 @@ export default function ContactPage() {
                 title="WhatsApp Direct"
                 value="Instant Chat"
                 subtitle="Fastest response • Usually within minutes"
-                link="https://wa.me/234XXXXXXXXXX"
+                link="https://wa.me/2348089062085"
                 accent
               />
               <ContactCard
@@ -77,8 +77,9 @@ export default function ContactPage() {
               <ContactCard
                 icon={Phone}
                 title="Call Direct"
-                value="+234 (0) 900 SHARERS"
+                value="+234 808 906 2085"
                 subtitle="Available Mon–Sat • 6AM – 10PM"
+                link="tel:+2348089062085"
               />
               <ContactCard
                 icon={MapPin}

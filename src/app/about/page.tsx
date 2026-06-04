@@ -104,8 +104,8 @@ export default function AboutPage() {
                             description="Not someone watching you from across the room. Coaches who build your program around your body, track your progress, and adjust on the fly."
                         />
                         <DifferenceRow
-                            title="Performance Precision"
-                            description="Every movement, every set, and every rep is tracked and optimized. We don't guess—we use data and top-tier coaching to drive your athletic mastery."
+                            title="No Guesswork"
+                            description="Every set, rep, and movement is designed with purpose. We track your progress and adjust details so you don't waste time on empty effort."
                         />
                         <DifferenceRow
                             title="Equipment That Makes Sense"
@@ -134,7 +134,7 @@ export default function AboutPage() {
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
                         <Link href="/dashboard" className="w-full sm:w-auto bg-primary text-white px-8 sm:px-12 py-4 sm:py-5 text-center hover:bg-accent transition-all duration-500">
-                            <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em]">Start The Protocol</span>
+                            <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em]">Get Started</span>
                         </Link>
                         <Link href="/contact" className="w-full sm:w-auto border-2 border-primary text-primary px-8 sm:px-12 py-4 sm:py-5 text-center hover:bg-primary hover:text-white transition-all duration-500">
                             <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em]">Talk To Us</span>

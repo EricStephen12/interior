@@ -20,11 +20,11 @@ export default function Footer() {
                 SHARERS
               </span>
               <span className="text-[10px] tracking-[0.6em] font-black text-accent uppercase mt-2">
-                GYM • PRECISION
+                GYM • EST. 2026
               </span>
             </Link>
             <p className="text-base sm:text-xl text-slate-400 font-medium leading-relaxed max-w-md">
-              Where the body catches up to the will. Trained here. Built for life.
+              Show up. Put in the work. Leave better than you came.
             </p>
           </div>
 
@@ -55,7 +55,7 @@ export default function Footer() {
             ]}
           />
           <FooterSection
-            title="Protocol"
+            title="Company"
             links={[
               { label: 'About', href: '/about' },
               { label: 'Support', href: '/contact' }
@@ -73,8 +73,8 @@ export default function Footer() {
             <h4 className="text-[10px] font-black tracking-[0.4em] text-accent uppercase">Connect</h4>
             <div className="flex gap-6">
               <SocialLink icon={Instagram} href="#" />
-              <SocialLink icon={MessageCircle} href="#" />
-              <SocialLink icon={Phone} href="#" />
+              <SocialLink icon={MessageCircle} href="https://wa.me/2348089062085" />
+              <SocialLink icon={Phone} href="tel:+2348089062085" />
             </div>
             <div className="space-y-4 pt-4">
               <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">

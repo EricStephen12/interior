@@ -9,7 +9,7 @@ export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "The Playbook | Journal",
-  description: "Explore the SHARERS GYM Playbook. Insights, techniques, and elite recovery protocols designed for high-performance living.",
+  description: "What we're learning, what's working, and what we think you should try. No fluff — just the stuff that actually helps.",
 };
 
 export default async function BlogPage() {

@@ -111,7 +111,7 @@ export default function ProductDetailsPage() {
   const handleWhatsApp = () => {
     const price = displayPrice?.toLocaleString() || '0';
     const text = `Hi SHARERS GYM, I'm interested in "${product.name}" (₦${price}). ${window.location.href}`;
-    window.open(`https://wa.me/2349033333333?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(`https://wa.me/2348089062085?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   const nextImage = () => setActiveIndex(i => (i + 1) % images.length);
