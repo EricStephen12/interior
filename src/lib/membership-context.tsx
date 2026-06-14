@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import { useUser } from '@clerk/nextjs'
 
 interface CheckIn {
     id: string
@@ -50,6 +51,7 @@ const INITIAL_STATE: MembershipState = {
 
 export function MembershipProvider({ children }: { children: React.ReactNode }) {
     const [state, setState] = useState<MembershipState>(INITIAL_STATE)
+    const { isSignedIn, user, isLoaded } = useUser()
 
     const fetchMembership = async () => {
         try {
@@ -82,11 +84,19 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
     }
 
     useEffect(() => {
-        fetchMembership()
-    }, [])
+        if (isLoaded) {
+            if (isSignedIn) {
+                fetchMembership()
+            } else {
+                setState(INITIAL_STATE)
+            }
+        }
+    }, [isSignedIn, user, isLoaded])
 
     const refreshMembership = async () => {
-        await fetchMembership()
+        if (isSignedIn) {
+            await fetchMembership()
+        }
     }
 
     const subscribe = (credits: number) => {

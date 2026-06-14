@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useReducer, ReactNode, useEffect } from 'react'
+import { createContext, useContext, useReducer, ReactNode, useEffect, useRef } from 'react'
 import { Product, CartItem, ProductVariant } from '@/lib/supabase'
 
 interface CartState {
@@ -109,6 +109,7 @@ import { useUser } from '@clerk/nextjs'
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, initialState)
   const { isLoaded } = useUser()
+  const didLoad = useRef(false)
 
   // Load cart from localStorage
   useEffect(() => {
@@ -121,11 +122,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
         console.error('Failed to load cart', e)
       }
     }
+    didLoad.current = true
   }, [])
 
   // Save cart to localStorage
   useEffect(() => {
-    localStorage.setItem('sharers-cart', JSON.stringify(state.items))
+    if (didLoad.current) {
+      localStorage.setItem('sharers-cart', JSON.stringify(state.items))
+    }
   }, [state.items])
 
   // Validate cart items against database

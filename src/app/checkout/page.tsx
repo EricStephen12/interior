@@ -6,13 +6,6 @@ import { useCart } from '@/lib/cart-context';
 import { useMembership } from '@/lib/membership-context';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
-import Script from 'next/script';
-
-declare global {
-  interface Window {
-    PaystackPop: any;
-  }
-}
 
 function CheckoutContent() {
   const { state, clearCart } = useCart();
@@ -29,13 +22,15 @@ function CheckoutContent() {
   const router = useRouter();
   const [deliveryZones, setDeliveryZones] = useState<any[]>([]);
   const [selectedZone, setSelectedZone] = useState<any>(null);
-  const [paymentMethod, setPaymentMethod] = useState('bank_transfer');
+  const [paymentMethod, setPaymentMethod] = useState('kingspay');
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     email: '',
     address: ''
   });
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -107,90 +102,60 @@ function CheckoutContent() {
 
   const handleCompleteOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsProcessing(true);
+    setError('');
 
     const hasMembership = state.items.some(
       item => item.product?.category === 'Memberships'
         || item.product?.name?.toLowerCase().includes('membership')
     );
 
-    if (isCreditTopup) {
-      subscribe(creditPack?.amount || 0);
-    } else if (hasMembership) {
-      subscribe(30); // Standard membership is 30 credits
-    }
+    try {
+      const res = await fetch('/api/checkout/initialize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userEmail: user?.primaryEmailAddress?.emailAddress || formData.email,
+          phone: formData.phone,
+          totalAmount: total,
+          items: isCreditTopup 
+            ? [{ name: `${creditPack?.amount} Days (${creditPack?.label})`, quantity: 1, price: creditPack?.price }]
+            : state.items.map(i => ({ name: i.product?.name, quantity: i.quantity, price: i.variant?.price })),
+          hasMembership: hasMembership || isCreditTopup,
+          creditAmount: isCreditTopup ? (creditPack?.amount || 0) : (hasMembership ? 30 : 0),
+          name: formData.name
+        })
+      });
 
-    if (isCreditTopup) {
-      // Logic handled after successful payment
-    }
-
-    const paystack = new window.PaystackPop();
-    paystack.newTransaction({
-      key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || 'pk_test_placeholder', 
-      email: user?.primaryEmailAddress?.emailAddress || formData.email,
-      amount: Math.round(total * 100), // Paystack works in kobo
-      currency: 'NGN',
-      channels: ['bank_transfer'],
-      metadata: {
-        creditAmount: isCreditTopup ? (creditPack?.amount || 0) : (hasMembership ? 30 : 0),
-        hasMembership: hasMembership || isCreditTopup,
-        items: isCreditTopup 
-          ? [{ name: `${creditPack?.amount} Days (${creditPack?.label})`, quantity: 1, price: creditPack?.price }]
-          : state.items.map(i => ({ name: i.product?.name, quantity: i.quantity, price: i.variant?.price })),
-        custom_fields: [
-          {
-            display_name: "Customer Name",
-            variable_name: "customer_name",
-            value: formData.name
-          }
-        ]
-      },
-      onSuccess: async (transaction: any) => {
-        // Record order in DB
-        try {
-          await fetch('/api/checkout', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              userEmail: user?.primaryEmailAddress?.emailAddress || formData.email,
-              phone: formData.phone,
-              totalAmount: total,
-              items: isCreditTopup 
-                ? [{ name: `${creditPack?.amount} Days (${creditPack?.label})`, quantity: 1, price: creditPack?.price }]
-                : state.items.map(i => ({ name: i.product?.name, quantity: i.quantity, price: i.variant?.price })),
-              hasMembership: hasMembership || isCreditTopup,
-              creditAmount: isCreditTopup ? (creditPack?.amount || 0) : (hasMembership ? 30 : 0),
-              promoUsed: activePromo?.code || null,
-              paystackRef: transaction.reference
-            })
-          });
-
-          if (isCreditTopup) {
-            subscribe(creditPack?.amount || 0);
-          } else if (hasMembership) {
-            subscribe(30);
-          }
-
-          clearCart();
-          router.push('/dashboard?payment=success');
-        } catch (err) {
-          console.error('Failed to record order', err);
-          router.push('/dashboard?payment=manual_review');
-        }
-      },
-      onCancel: () => {
-        alert('Payment cancelled. Please try again to secure your gear.');
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to initialize payment');
       }
-    });
+
+      // Redirect the user to the KingsPay secure checkout interface
+      window.location.href = data.redirectUrl;
+    } catch (err: any) {
+      console.error('Payment initialization failed:', err);
+      setError(err.message || 'Payment initialization failed. Please try again.');
+      setIsProcessing(false);
+    }
   };
+
+  const paymentError = searchParams.get('error');
 
   return (
     <div className="pt-24 sm:pt-40 pb-24 bg-secondary/20 min-h-screen selection:bg-accent/20">
-      <Script src="https://js.paystack.co/v2/inline.js" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-20">
           <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-6 block">Order Details</span>
           <h1 className="text-5xl sm:text-6xl md:text-8xl text-luxury text-primary">Secure <span className="text-accent italic">Checkout.</span></h1>
         </div>
+
+        {(error || paymentError) && (
+          <div className="mb-8 p-6 bg-red-500/10 border border-red-500 text-red-500 text-xs font-black uppercase tracking-[0.2em] text-center">
+            {error || (paymentError === 'payment_failed' ? 'Payment was cancelled or failed.' : 'Payment verification failed.')}
+          </div>
+        )}
 
         <form onSubmit={handleCompleteOrder} className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-12 sm:gap-20">
 
@@ -282,11 +247,11 @@ function CheckoutContent() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <PaymentOption
-                  active={paymentMethod === 'bank_transfer'}
-                  onClick={() => setPaymentMethod('bank_transfer')}
+                  active={paymentMethod === 'kingspay'}
+                  onClick={() => setPaymentMethod('kingspay')}
                   icon={CreditCard}
-                  title="Direct Bank Transfer"
-                  description="Secure transfer via Paystack Titan virtual account."
+                  title="KingsPay Checkout"
+                  description="Pay securely using KingsPay Goods & Services."
                 />
               </div>
             </div>
@@ -382,15 +347,21 @@ function CheckoutContent() {
 
               <button
                 type="submit"
-                disabled={!isCreditTopup && state.items.length === 0}
+                disabled={isProcessing || (!isCreditTopup && state.items.length === 0)}
                 className="w-full mt-12 group relative h-20 bg-white text-primary overflow-hidden transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
               >
                 {/* Button Shine Effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                 
                 <div className="relative z-10 flex items-center justify-center gap-4">
-                  <Shield className="w-5 h-5 text-accent" />
-                  <span className="text-[11px] font-black uppercase tracking-[0.4em]">SECURE TRANSACTION • ₦{total.toLocaleString()}</span>
+                  {isProcessing ? (
+                    <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Shield className="w-5 h-5 text-accent" />
+                  )}
+                  <span className="text-[11px] font-black uppercase tracking-[0.4em]">
+                    {isProcessing ? 'INITIALIZING TRANSACTION...' : `SECURE TRANSACTION • ₦${total.toLocaleString()}`}
+                  </span>
                 </div>
               </button>
 

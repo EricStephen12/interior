@@ -1,8 +1,9 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useMembership } from '@/lib/membership-context'
+import { useCart } from '@/lib/cart-context'
 import MemberPass from '@/components/MemberPass'
 import { Activity, Clock, Award, ChevronRight, ShoppingBag } from 'lucide-react'
 import Link from 'next/link'
@@ -12,6 +13,13 @@ import { useUser } from '@clerk/nextjs'
 export default function DashboardPage() {
     const { state } = useMembership()
     const { isLoaded, isSignedIn, user } = useUser()
+    const { clearCart } = useCart()
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.location.search.includes('payment=success')) {
+            clearCart()
+        }
+    }, [clearCart])
 
     if (!isLoaded) return (
         <div className="min-h-screen bg-secondary flex items-center justify-center">
