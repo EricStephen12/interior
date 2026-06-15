@@ -32,6 +32,18 @@ export default function SupportChat() {
     }
   }, [messages])
 
+  // Global listener for Esc to close chat
+  useEffect(() => {
+    if (!isOpen) return
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false)
+      }
+    }
+    window.addEventListener('keydown', handleGlobalKeyDown)
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown)
+  }, [isOpen])
+
   // Polling for admin replies
   useEffect(() => {
     if (!activeTicketId || !isOpen) return
@@ -96,7 +108,10 @@ export default function SupportChat() {
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    const isEnter = e.key === 'Enter'
+    const isCtrlEnter = isEnter && (e.ctrlKey || e.metaKey)
+    const isNormalEnter = isEnter && !e.shiftKey
+    if (isNormalEnter || isCtrlEnter) {
       e.preventDefault()
       sendMessage()
     }

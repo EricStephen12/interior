@@ -13,6 +13,7 @@ export default function AdminSupportPage() {
   const [replyText, setReplyText] = useState('')
   const [sendingReply, setSendingReply] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [focusedTicketIndex, setFocusedTicketIndex] = useState<number>(-1)
 
   const sendReply = async () => {
     if (!replyText.trim() || sendingReply) return
@@ -69,6 +70,41 @@ export default function AdminSupportPage() {
   useEffect(() => {
     fetchTickets()
   }, [])
+
+  // Keyboard navigation & Shortcuts for Admin Support Desk
+  useEffect(() => {
+    // Esc closes modal if open
+    if (selectedTicket) {
+      const handleModalKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          setSelectedTicket(null)
+        }
+      }
+      window.addEventListener('keydown', handleModalKeyDown)
+      return () => window.removeEventListener('keydown', handleModalKeyDown)
+    }
+
+    // List navigation when modal is closed
+    if (tickets.length === 0) return
+
+    const handleListKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        setFocusedTicketIndex(prev => (prev + 1) % tickets.length)
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        setFocusedTicketIndex(prev => (prev - 1 + tickets.length) % tickets.length)
+      } else if (e.key === 'Enter') {
+        if (focusedTicketIndex >= 0 && focusedTicketIndex < tickets.length) {
+          e.preventDefault()
+          setSelectedTicket(tickets[focusedTicketIndex])
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleListKeyDown)
+    return () => window.removeEventListener('keydown', handleListKeyDown)
+  }, [tickets, selectedTicket, focusedTicketIndex])
 
   const updateStatus = async (id: string, status: string) => {
     try {
@@ -147,8 +183,15 @@ export default function AdminSupportPage() {
                     </td>
                   </tr>
                 ) : (
-                  tickets.map((ticket) => (
-                    <tr key={ticket.id} className="hover:bg-gray-50/50 transition-colors">
+                  tickets.map((ticket, index) => (
+                    <tr 
+                      key={ticket.id} 
+                      className={`transition-colors border-l-2 ${
+                        index === focusedTicketIndex 
+                          ? 'bg-accent/5 hover:bg-accent/5 border-l-accent' 
+                          : 'hover:bg-gray-50/50 border-l-transparent'
+                      }`}
+                    >
                       <td className="px-8 py-6 align-top">
                         <div className="space-y-1">
                           <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${
@@ -316,6 +359,12 @@ export default function AdminSupportPage() {
                   <textarea 
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                        e.preventDefault()
+                        sendReply()
+                      }
+                    }}
                     placeholder="Type your official reply..."
                     className="flex-1 px-4 py-3 bg-secondary/20 border-none focus:ring-1 focus:ring-accent text-sm min-h-[80px] resize-none font-medium"
                   />

@@ -6,6 +6,7 @@ import { useCart } from '@/lib/cart-context';
 import { useMembership } from '@/lib/membership-context';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function CheckoutContent() {
   const { state, clearCart } = useCart();
@@ -31,6 +32,43 @@ function CheckoutContent() {
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [pendingOrderId, setPendingOrderId] = useState<string | null>(null);
+
+  // Poll for status checks in the background
+  useEffect(() => {
+    if (!isVerifying || !pendingOrderId) return;
+
+    let intervalId: any;
+
+    const checkPaymentStatus = async () => {
+      try {
+        const res = await fetch(`/api/checkout/status?orderId=${pendingOrderId}`);
+        const data = await res.json();
+        if (data.success && data.status === 'COMPLETED') {
+          clearInterval(intervalId);
+          clearCart();
+          router.push('/dashboard?payment=success');
+        } else if (data.success && data.status === 'FAILED') {
+          clearInterval(intervalId);
+          setIsVerifying(false);
+          setPendingOrderId(null);
+          setError(data.message || 'Payment was cancelled or failed.');
+        }
+      } catch (err) {
+        console.error('Error polling order status:', err);
+      }
+    };
+
+    // Poll every 3 seconds
+    intervalId = setInterval(checkPaymentStatus, 3000);
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [isVerifying, pendingOrderId, clearCart, router]);
+
+
 
   useEffect(() => {
     if (user) {
@@ -105,6 +143,9 @@ function CheckoutContent() {
     setIsProcessing(true);
     setError('');
 
+    // Open a blank tab immediately so the browser does not trigger its popup blocker
+    const newWindow = typeof window !== 'undefined' ? window.open('about:blank', '_blank') : null;
+
     const hasMembership = state.items.some(
       item => item.product?.category === 'Memberships'
         || item.product?.name?.toLowerCase().includes('membership')
@@ -129,14 +170,22 @@ function CheckoutContent() {
 
       const data = await res.json();
       if (!res.ok || !data.success) {
+        if (newWindow) newWindow.close();
         throw new Error(data.error || 'Failed to initialize payment');
       }
 
-      // Redirect the user to the KingsPay secure checkout interface
-      window.location.href = data.redirectUrl;
+      // Re-route the blank tab to KingsPay secure gateway
+      if (newWindow) {
+        newWindow.location.href = data.redirectUrl;
+      }
+
+      setPendingOrderId(data.orderId);
+      setIsVerifying(true);
     } catch (err: any) {
       console.error('Payment initialization failed:', err);
+      if (newWindow) newWindow.close();
       setError(err.message || 'Payment initialization failed. Please try again.');
+    } finally {
       setIsProcessing(false);
     }
   };
@@ -145,6 +194,57 @@ function CheckoutContent() {
 
   return (
     <div className="pt-24 sm:pt-40 pb-24 bg-secondary/20 min-h-screen selection:bg-accent/20">
+      <AnimatePresence>
+        {(isProcessing || isVerifying) && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-primary/95 backdrop-blur-md z-[9999] flex flex-col items-center justify-center p-6 text-center select-none"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+              className="max-w-xs space-y-6 flex flex-col items-center"
+            >
+              {/* Custom glowing spinner */}
+              <div className="relative w-16 h-16 flex items-center justify-center">
+                <span className="absolute inset-0 rounded-full border-[3px] border-accent/20 border-t-accent animate-spin" />
+                <Shield className="w-5 h-5 text-accent animate-pulse" />
+              </div>
+              
+              {isProcessing ? (
+                <div className="space-y-2">
+                  <h3 className="text-sm font-black text-white tracking-widest uppercase">Connecting</h3>
+                  <p className="text-[8px] font-black text-accent uppercase tracking-[0.3em] animate-pulse">Initializing Gateway...</p>
+                </div>
+              ) : (
+                <div className="space-y-6 w-full">
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-black text-white tracking-tight uppercase">Awaiting Confirmation</h3>
+                    <p className="text-[8px] font-black text-accent uppercase tracking-[0.3em] animate-pulse">Verifying payment...</p>
+                  </div>
+                  
+                  <div className="pt-2 flex flex-col items-center w-full">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsVerifying(false);
+                        setPendingOrderId(null);
+                      }}
+                      className="text-[9px] font-black text-white/40 hover:text-white uppercase tracking-widest transition-colors py-2 px-6 border border-white/10 hover:border-white/20"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-20">
           <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-6 block">Order Details</span>
@@ -354,10 +454,8 @@ function CheckoutContent() {
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                 
                 <div className="relative z-10 flex items-center justify-center gap-4">
-                  {isProcessing ? (
+                  {isProcessing && (
                     <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Shield className="w-5 h-5 text-accent" />
                   )}
                   <span className="text-[11px] font-black uppercase tracking-[0.4em]">
                     {isProcessing ? 'INITIALIZING TRANSACTION...' : `SECURE TRANSACTION • ₦${total.toLocaleString()}`}

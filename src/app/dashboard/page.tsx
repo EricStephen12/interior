@@ -15,6 +15,13 @@ export default function DashboardPage() {
     const { isLoaded, isSignedIn, user } = useUser()
     const { clearCart } = useCart()
 
+    const getGreeting = () => {
+        const hour = new Date().getHours()
+        if (hour < 12) return 'GOOD MORNING'
+        if (hour < 17) return 'GOOD AFTERNOON'
+        return 'GOOD EVENING'
+    }
+
     useEffect(() => {
         if (typeof window !== 'undefined' && window.location.search.includes('payment=success')) {
             clearCart()
@@ -51,7 +58,7 @@ export default function DashboardPage() {
                         <div>
                             <p className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-6">MEMBER DASHBOARD</p>
                             <h1 className="text-4xl sm:text-6xl lg:text-7xl text-luxury text-primary leading-none tracking-tighter">
-                                WELCOME <br />
+                                {getGreeting()} <br />
                                 <span className="text-2xl sm:text-4xl lg:text-5xl text-accent italic font-light">{user?.firstName || 'MEMBER'}.</span>
                             </h1>
                         </div>

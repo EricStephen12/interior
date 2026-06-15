@@ -38,7 +38,7 @@ export default function TopupCredits() {
         <>
             <button 
                 onClick={() => setIsOpen(true)}
-                className="flex items-center gap-3 bg-accent text-white px-8 py-4 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-primary transition-all shadow-2xl active:scale-95"
+                className="flex items-center gap-3 bg-accent text-white px-8 py-4 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-primary transition-all shadow-2xl active:scale-95 shimmer-btn"
             >
                 <Plus className="w-4 h-4" />
                 Purchase Days

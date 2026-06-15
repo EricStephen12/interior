@@ -40,7 +40,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Malformed webhook payload' }, { status: 400 })
       }
 
-      const paymentId = payment.id
+      const paymentId = payment.payment_id || payment.id
       const email = payment.email || payment.metadata?.userEmail
       const metadata = payment.metadata || {}
 
@@ -62,17 +62,31 @@ export async function POST(req: Request) {
 
 async function fulfillPayment(paymentId: string, metadata: any, userEmail: string) {
   await prisma.$transaction(async (tx) => {
-    const order = await tx.order.findUnique({
-      where: { id: paymentId }
+    // Look up the order using kingspayId
+    let order = await tx.order.findUnique({
+      where: { kingspayId: paymentId } as any
     })
 
+    // Fallback: search pending orders in memory to avoid query engine type issues
     if (!order) {
-      console.error(`Order with ID ${paymentId} not found in database.`)
+      const pendingOrders = await tx.order.findMany({
+        where: { status: 'PENDING' }
+      })
+      order = pendingOrders.find(o => {
+        const itemsObj = o.items as any
+        return itemsObj?.kingspayId === paymentId
+      }) || null
+    }
+
+    if (!order) {
+      console.error(`Order with KingsPay ID ${paymentId} not found in database.`)
       throw new Error(`Order ${paymentId} not found`)
     }
 
+    const dbOrderId = order.id
+
     if (order.status === 'COMPLETED') {
-      console.log(`Order ${paymentId} is already COMPLETED. Skipping webhook fulfillment.`)
+      console.log(`Order ${dbOrderId} is already COMPLETED. Skipping webhook fulfillment.`)
       return
     }
 
@@ -82,7 +96,7 @@ async function fulfillPayment(paymentId: string, metadata: any, userEmail: strin
     const name = metadata?.name || 'Member'
     const clerkId = metadata?.clerkId
 
-    console.log(`Webhook fulfilling payment for ${userEmail}: order=${paymentId}, credits=${creditAmount}, membership=${hasMembership}`)
+    console.log(`Webhook fulfilling payment for ${userEmail}: order=${dbOrderId}, credits=${creditAmount}, membership=${hasMembership}`)
 
     // Update or create user
     await tx.user.upsert({
@@ -105,7 +119,7 @@ async function fulfillPayment(paymentId: string, metadata: any, userEmail: strin
 
     // Update order status
     await tx.order.update({
-      where: { id: paymentId },
+      where: { id: dbOrderId },
       data: { status: 'COMPLETED' }
     })
   }).catch((err) => {

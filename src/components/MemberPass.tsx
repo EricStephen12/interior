@@ -17,7 +17,7 @@ export default function MemberPass() {
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative bg-primary overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/10"
+                className="relative bg-primary overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/10 premium-glow-card"
             >
                 {/* Animated Background Gradients */}
                 <div className="absolute inset-0 opacity-20">
@@ -116,8 +116,19 @@ export default function MemberPass() {
                 <div className="absolute inset-0 grain-overlay opacity-30 pointer-events-none" />
             </motion.div>
 
-            {/* Glow */}
-            <div className="absolute -inset-4 bg-accent/20 blur-[60px] -z-10 group-hover:bg-accent/30 transition-all duration-700 opacity-20" />
+            {/* Pulsing Background Glow */}
+            <motion.div
+                animate={{
+                    scale: [0.95, 1.05, 0.95],
+                    opacity: [0.15, 0.35, 0.15],
+                }}
+                transition={{
+                    duration: 5,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                }}
+                className="absolute -inset-4 bg-accent/25 blur-[60px] -z-10 rounded-full"
+            />
         </div>
     )
 }

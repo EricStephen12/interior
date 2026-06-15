@@ -7,11 +7,39 @@ export async function GET(req: Request) {
   const host = req.headers.get('x-forwarded-host') || reqUrl.host
   const origin = `${proto}://${host}`
 
-  // Retrieve payment ID from query parameters
-  const paymentId = reqUrl.searchParams.get('id') || 
+  // Retrieve payment ID using merchantOrderId or fallbacks
+  const merchantOrderId = reqUrl.searchParams.get('merchantOrderId') || reqUrl.searchParams.get('orderId')
+  let paymentId = reqUrl.searchParams.get('id') || 
                     reqUrl.searchParams.get('payment_id') || 
                     reqUrl.searchParams.get('paymentId') || 
                     reqUrl.searchParams.get('reference')
+
+  let dbOrderId = merchantOrderId
+
+  if (merchantOrderId) {
+    try {
+      const order = await prisma.order.findUnique({
+        where: { id: merchantOrderId }
+      })
+      if (order && (order as any).kingspayId) {
+        paymentId = (order as any).kingspayId
+      }
+    } catch (err) {
+      console.error('Error fetching order by merchantOrderId:', err)
+    }
+  } else if (paymentId) {
+    // If we only have paymentId, find the order by kingspayId column
+    try {
+      const order = await prisma.order.findFirst({
+        where: { kingspayId: paymentId } as any
+      })
+      if (order) {
+        dbOrderId = order.id
+      }
+    } catch (err) {
+      console.error('Error fetching order by kingspayId:', err)
+    }
+  }
 
   if (!paymentId) {
     console.error('Callback received without a valid payment ID')
@@ -54,8 +82,8 @@ export async function GET(req: Request) {
         return NextResponse.redirect(`${origin}/checkout?error=no_email_in_payment`)
       }
 
-      // Perform order completion and credit update
-      await fulfillPayment(paymentId, metadata, email)
+      // Perform order completion and credit update using our database order ID
+      await fulfillPayment(dbOrderId || paymentId, metadata, email)
 
       return NextResponse.redirect(`${origin}/dashboard?payment=success`)
     } else {
@@ -68,20 +96,29 @@ export async function GET(req: Request) {
   }
 }
 
-async function fulfillPayment(paymentId: string, metadata: any, userEmail: string) {
+async function fulfillPayment(orderId: string, metadata: any, userEmail: string) {
   // Use a transaction or findFirst to prevent double crediting
   await prisma.$transaction(async (tx) => {
-    const order = await tx.order.findUnique({
-      where: { id: paymentId }
+    // Try lookup by primary key ID or kingspayId
+    let order = await tx.order.findUnique({
+      where: { id: orderId }
     })
 
     if (!order) {
-      console.error(`Order with ID ${paymentId} not found in database.`)
-      throw new Error(`Order ${paymentId} not found`)
+      order = await tx.order.findFirst({
+        where: { kingspayId: orderId } as any
+      })
     }
 
+    if (!order) {
+      console.error(`Order with ID ${orderId} not found in database.`)
+      throw new Error(`Order ${orderId} not found`)
+    }
+
+    const dbOrderId = order.id
+
     if (order.status === 'COMPLETED') {
-      console.log(`Order ${paymentId} is already COMPLETED. Skipping fulfillment.`)
+      console.log(`Order ${dbOrderId} is already COMPLETED. Skipping fulfillment.`)
       return
     }
 
@@ -91,7 +128,7 @@ async function fulfillPayment(paymentId: string, metadata: any, userEmail: strin
     const name = metadata?.name || 'Member'
     const clerkId = metadata?.clerkId
 
-    console.log(`Fulfilling payment for ${userEmail}: order=${paymentId}, credits=${creditAmount}, membership=${hasMembership}`)
+    console.log(`Fulfilling payment for ${userEmail}: order=${dbOrderId}, credits=${creditAmount}, membership=${hasMembership}`)
 
     // Update or create user
     await tx.user.upsert({
@@ -114,7 +151,7 @@ async function fulfillPayment(paymentId: string, metadata: any, userEmail: strin
 
     // Update order status
     await tx.order.update({
-      where: { id: paymentId },
+      where: { id: dbOrderId },
       data: { status: 'COMPLETED' }
     })
   }).catch((err) => {

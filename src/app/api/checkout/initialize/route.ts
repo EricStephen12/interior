@@ -42,12 +42,14 @@ export async function POST(req: Request) {
       description = description.substring(0, 252) + '...'
     }
 
+    const orderId = crypto.randomUUID()
+
     const kingsPayPayload = {
       amount: amountInCents,
       currency: 'NGN',
       description,
       environment: process.env.KINGSPAY_ENVIRONMENT || 'test',
-      merchant_callback_url: `${origin}/api/checkout/callback`,
+      merchant_callback_url: `${origin}/api/checkout/callback?merchantOrderId=${orderId}`,
       merchant_webhook_url: `${origin}/api/webhooks/kingspay`,
       payment_type: 'african',
       email: email,
@@ -90,15 +92,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid response from payment gateway' }, { status: 500 })
     }
 
-    // Create order as 'PENDING' using the KingsPay payment ID
+    // Create order as 'PENDING' using the generated local order ID and storing the KingsPay payment ID
     const order = await prisma.order.create({
       data: {
-        id: paymentId,
+        id: orderId,
+        kingspayId: paymentId,
         userEmail: email,
         totalAmount,
         items: items,
         status: 'PENDING'
-      }
+      } as any
     })
 
     // Construct the redirect URL for KingsPay checkout interface

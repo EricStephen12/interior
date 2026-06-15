@@ -161,7 +161,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             onClick={() => {
                               window.location.href = '/checkout'
                             }}
-                            className="w-full bg-primary hover:bg-black text-white font-black py-5 rounded-none tracking-widest uppercase text-xs transition-all shadow-xl"
+                            className="w-full bg-primary hover:bg-black text-white font-black py-5 rounded-none tracking-widest uppercase text-xs transition-all shadow-xl shimmer-btn"
                           >
                             Secure Checkout
                           </motion.button>

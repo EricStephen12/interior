@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 
 import prisma from '@/lib/prisma'
+import AdminCharts from '@/components/AdminCharts'
 
 export default async function AdminDashboard({ searchParams }: { searchParams: Promise<{ filter?: string }> }) {
   const params = await searchParams;
@@ -38,8 +39,8 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
   const productCount = await prisma.product.count({ where: dateQuery })
   const blogCount = await prisma.blogPost.count({ where: dateQuery })
   const userCount = await prisma.user.count({ where: dateQuery })
-  const orderCount = await prisma.order.count({ where: dateQuery })
-  const totalRevenue = await prisma.order.aggregate({ where: dateQuery, _sum: { totalAmount: true } })
+  const orderCount = await prisma.order.count({ where: { ...dateQuery, status: 'COMPLETED' } })
+  const totalRevenue = await prisma.order.aggregate({ where: { ...dateQuery, status: 'COMPLETED' }, _sum: { totalAmount: true } })
   const totalCheckIns = await prisma.checkIn.count({ where: checkInQuery })
   
   const recentOrders = await prisma.order.findMany({
@@ -53,6 +54,67 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
     select: { name: true, email: true, tier: true, credits: true, createdAt: true },
     where: dateQuery
   })
+
+  // Fetch data for the last 7 days
+  const sevenDaysAgo = new Date()
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6) // Include today
+  sevenDaysAgo.setHours(0, 0, 0, 0)
+
+  const weeklyOrders = await prisma.order.findMany({
+    where: {
+      createdAt: { gte: sevenDaysAgo },
+      status: 'COMPLETED'
+    },
+    select: {
+      totalAmount: true,
+      createdAt: true
+    }
+  })
+
+  const weeklyCheckIns = await prisma.checkIn.findMany({
+    where: {
+      date: { gte: sevenDaysAgo }
+    },
+    select: {
+      date: true
+    }
+  })
+
+  // Format charts data (last 7 days, Mon, Tue, etc.)
+  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  const chartData = Array.from({ length: 7 }).map((_, i) => {
+    const d = new Date()
+    d.setDate(d.getDate() - (6 - i))
+    
+    const label = daysOfWeek[d.getDay()]
+    const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    
+    // Day boundaries in local timezone
+    const dayStart = new Date(d)
+    dayStart.setHours(0, 0, 0, 0)
+    const dayEnd = new Date(d)
+    dayEnd.setHours(23, 59, 59, 999)
+
+    // filter orders on this calendar day
+    const dayRevenue = weeklyOrders
+      .filter(o => o.createdAt >= dayStart && o.createdAt <= dayEnd)
+      .reduce((sum, o) => sum + o.totalAmount, 0)
+
+    // filter check-ins on this calendar day
+    const dayCheckIns = weeklyCheckIns
+      .filter(c => c.date >= dayStart && c.date <= dayEnd)
+      .length
+
+    return {
+      label,
+      date: dateStr,
+      revenue: dayRevenue,
+      checkIns: dayCheckIns
+    }
+  })
+
+  const revenueChartData = chartData.map(d => ({ date: d.date, label: d.label, value: d.revenue }))
+  const checkInChartData = chartData.map(d => ({ date: d.date, label: d.label, value: d.checkIns }))
 
   // @ts-ignore
   const ticketCount = prisma.supportTicket ? await prisma.supportTicket.count({ where: { status: 'OPEN', ...dateQuery } }) : 0
@@ -139,6 +201,12 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
             </Link>
           ))}
         </div>
+      </div>
+
+      {/* Registry Pulse Charts */}
+      <div>
+        <h3 className="admin-section-title">Registry Pulse</h3>
+        <AdminCharts revenueData={revenueChartData} checkInData={checkInChartData} />
       </div>
 
       {/* Recent Activity Grid */}

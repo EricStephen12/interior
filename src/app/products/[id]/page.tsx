@@ -108,12 +108,6 @@ export default function ProductDetailsPage() {
     }
   };
 
-  const handleWhatsApp = () => {
-    const price = displayPrice?.toLocaleString() || '0';
-    const text = `Hi SHARERS GYM, I'm interested in "${product.name}" (₦${price}). ${window.location.href}`;
-    window.open(`https://wa.me/2348089062085?text=${encodeURIComponent(text)}`, '_blank');
-  };
-
   const nextImage = () => setActiveIndex(i => (i + 1) % images.length);
   const prevImage = () => setActiveIndex(i => (i - 1 + images.length) % images.length);
 
@@ -333,7 +327,7 @@ export default function ProductDetailsPage() {
                     whileTap={{ scale: 0.97 }}
                     onClick={handleAddToCart}
                     disabled={added}
-                    className={`flex-1 h-[54px] rounded-lg flex items-center justify-center gap-3 text-[13px] font-bold tracking-wide transition-all duration-500 shadow-lg ${
+                    className={`flex-1 h-[54px] rounded-lg flex items-center justify-center gap-3 text-[13px] font-bold tracking-wide transition-all duration-500 shadow-lg shimmer-btn ${
                       added
                         ? 'bg-green-500 text-white shadow-green-200/50'
                         : 'bg-primary text-white hover:shadow-xl hover:shadow-primary/20 active:shadow-md'
@@ -342,7 +336,7 @@ export default function ProductDetailsPage() {
                     <AnimatePresence mode="wait">
                       {added ? (
                         <motion.span key="added" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex items-center gap-2">
-                          <Check className="w-5 h-5" />
+                           <Check className="w-5 h-5" />
                           Added to Cart
                         </motion.span>
                       ) : (
@@ -354,16 +348,6 @@ export default function ProductDetailsPage() {
                     </AnimatePresence>
                   </motion.button>
                 </div>
-
-                {/* WhatsApp */}
-                <motion.button
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleWhatsApp}
-                  className="w-full h-[50px] border border-gray-200 rounded-lg flex items-center justify-center gap-3 text-[13px] font-semibold text-gray-600 hover:bg-[#f8f7f5] hover:border-gray-300 transition-all"
-                >
-                  <MessageCircle className="w-4.5 h-4.5 text-green-500" />
-                  Order via WhatsApp
-                </motion.button>
               </div>
 
               {/* Trust bar */}

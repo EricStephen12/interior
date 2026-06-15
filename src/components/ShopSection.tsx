@@ -379,7 +379,7 @@ function ProductCard({ product, index, isLarge }: { product: any, index: number,
       transition={{ duration: 0.8, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative"
+      className="group relative hover-card-tactile"
     >
       <Link href={product.category === 'Memberships' ? '#' : `/products/${product.id}`} onClick={product.category === 'Memberships' ? handleAction : undefined}>
         <div className={`relative ${isLarge ? 'aspect-[16/10]' : 'aspect-[4/5]'} overflow-hidden mb-10 cursor-pointer bg-secondary/50 shadow-sm transition-all duration-700`}>
