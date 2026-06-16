@@ -171,7 +171,7 @@ function CheckoutContent() {
       const data = await res.json();
       if (!res.ok || !data.success) {
         if (newWindow) newWindow.close();
-        throw new Error(data.error || 'Failed to initialize payment');
+        throw new Error(data.details ? `${data.error} Details: ${data.details}` : (data.error || 'Failed to initialize payment'));
       }
 
       // Re-route the blank tab to KingsPay secure gateway

@@ -113,8 +113,11 @@ export async function POST(req: Request) {
       redirectUrl,
       orderId: order.id
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Checkout initialization error:', error)
-    return NextResponse.json({ error: 'Failed to process checkout initialization' }, { status: 500 })
+    return NextResponse.json({ 
+      error: 'Failed to process checkout initialization',
+      details: error?.message || String(error)
+    }, { status: 500 })
   }
 }
