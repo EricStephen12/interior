@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { currentUser } from '@clerk/nextjs/server'
+import { currentUser, auth } from '@clerk/nextjs/server'
 
 export async function POST(req: Request) {
   try {
@@ -11,8 +11,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    const clerkUser = await currentUser()
-    const email = clerkUser?.emailAddresses[0]?.emailAddress || userEmail
+    const { userId } = await auth()
+    const email = userEmail
 
     if (!email) {
       return NextResponse.json({ error: 'Missing customer email' }, { status: 400 })
@@ -56,12 +56,12 @@ export async function POST(req: Request) {
       metadata: {
         userEmail: email,
         phone: phone || '',
-        name: name || clerkUser?.fullName || 'Guest Member',
+        name: name || 'Guest Member',
         totalAmount,
         items,
         hasMembership: !!hasMembership,
         creditAmount: creditAmount || 0,
-        clerkId: clerkUser?.id || null
+        clerkId: userId || null
       }
     }
 
