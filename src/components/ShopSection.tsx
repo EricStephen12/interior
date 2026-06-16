@@ -357,6 +357,7 @@ import { useRouter } from 'next/navigation'
 
 function ProductCard({ product, index, isLarge }: { product: any, index: number, isLarge?: boolean }) {
   const [isHovered, setIsHovered] = useState(false)
+  const [loaded, setLoaded] = useState(false)
   const { subscribe } = useMembership()
   const router = useRouter()
 
@@ -381,16 +382,44 @@ function ProductCard({ product, index, isLarge }: { product: any, index: number,
       onMouseLeave={() => setIsHovered(false)}
       className="group relative hover-card-tactile"
     >
-      <Link href={product.category === 'Memberships' ? '#' : `/products/${product.id}`} onClick={product.category === 'Memberships' ? handleAction : undefined}>
-        <div className={`relative ${isLarge ? 'aspect-[16/10]' : 'aspect-[4/5]'} overflow-hidden mb-10 cursor-pointer bg-secondary/50 shadow-sm transition-all duration-700`}>
+      <Link 
+        href={product.category === 'Memberships' ? '#' : `/products/${product.id}`} 
+        onClick={(e) => {
+          if (product.category === 'Memberships') {
+            handleAction(e)
+          } else {
+            if (typeof window !== 'undefined') {
+              const detailsPageSchema = {
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                promoPrice: product.promo_price,
+                description: product.description,
+                images: product.images,
+                brand: { name: product.brand },
+                size: { label: product.size },
+                type: product.category,
+                isActive: product.in_stock
+              };
+              sessionStorage.setItem(`product_${product.id}`, JSON.stringify(detailsPageSchema));
+            }
+          }
+        }}
+      >
+        <div className={`relative ${isLarge ? 'aspect-[16/10]' : 'aspect-[4/5]'} overflow-hidden mb-10 cursor-pointer bg-[#f8f7f5] shadow-sm transition-all duration-700`}>
+          {/* Shimmer Placeholder */}
+          {!loaded && (
+            <div className="absolute inset-0 bg-gray-100 animate-pulse" />
+          )}
           {/* Primary Image */}
           <Image
             src={product.images[0]}
             alt={product.name}
             fill
             className={`object-cover transition-all duration-[1.5s] ease-out 
-            ${isHovered ? 'scale-110' : 'scale-100'}`}
+            ${isHovered ? 'scale-110' : 'scale-100'} ${loaded ? 'opacity-100 blur-0' : 'opacity-0 blur-sm'}`}
             sizes="(max-width: 768px) 100vw, 50vw"
+            onLoad={() => setLoaded(true)}
           />
 
           {/* Glass Overlay Tag - Editorial Signature */}
