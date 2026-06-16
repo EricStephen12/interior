@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { currentUser } from '@clerk/nextjs/server'
+import { currentUser, auth } from '@clerk/nextjs/server'
 
 export async function GET() {
   try {
-    const clerkUser = await currentUser()
-    if (!clerkUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const { userId } = await auth()
+    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     // Verify requesting user is an ADMIN
     const adminUser = await prisma.user.findUnique({
-      where: { clerkId: clerkUser.id }
+      where: { clerkId: userId }
     })
 
     if (adminUser?.role !== 'ADMIN') {

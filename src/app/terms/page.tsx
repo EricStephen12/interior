@@ -21,7 +21,7 @@ export default function TermsPage() {
                 <p className="text-text-muted font-light leading-relaxed">We maintain a high-performance environment. Any behavior that disrupts the training experience of other members may result in immediate suspension of membership.</p>
 
                 <div className="mt-20 pt-12 border-t border-primary/5">
-                    <p className="text-[10px] font-black text-accent uppercase tracking-[0.5em]">SHARERS GYM • EST. 2026</p>
+                    <p className="text-[10px] font-black text-accent uppercase tracking-[0.5em]">SHARERS GYM • EST. 2024</p>
                 </div>
             </div>
         </div>

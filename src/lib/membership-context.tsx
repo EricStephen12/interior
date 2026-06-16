@@ -55,9 +55,6 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
 
     const fetchMembership = async () => {
         try {
-            // First sync with Clerk to ensure user exists in DB
-            await fetch('/api/auth/sync')
-            
             const res = await fetch('/api/membership')
             if (res.ok) {
                 const data = await res.json()

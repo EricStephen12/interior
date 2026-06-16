@@ -55,7 +55,7 @@ export default function StorySection() {
               </div>
 
               <div className="text-lg text-text-muted font-medium leading-[2] max-w-lg space-y-4">
-                <p>Sharers wasn't built around a machine or a programme.</p>
+                <p>SHARERS wasn't built around a machine or a program.</p>
                 <p>It was built around the person walking through the door.</p>
                 <p>Every piece of equipment, every session, every corner of this space exists because someone decided they were ready to change — and we decided to be ready for them.</p>
               </div>

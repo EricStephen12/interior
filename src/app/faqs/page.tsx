@@ -19,10 +19,6 @@ const faqs = [
     {
         question: "Can I pause my membership?",
         answer: "Yes. We believe in results, not contracts. If you need to step away, you can pause your membership directly from your dashboard or send us a message."
-    },
-    {
-        question: "Where are the facilities?",
-        answer: "We currently have flagship locations in Lagos and London. Both facilities are equipped with top-tier training gear and advanced recovery labs."
     }
 ];
 

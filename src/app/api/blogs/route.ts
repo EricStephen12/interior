@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { currentUser } from '@clerk/nextjs/server'
+import { currentUser, auth } from '@clerk/nextjs/server'
 
 export async function POST(req: Request) {
   try {
     const data = await req.json()
-    const clerkUser = await currentUser()
-    const authorId = clerkUser?.id || 'admin'
+    const { userId } = await auth()
+    const authorId = userId || 'admin'
 
     const blog = await prisma.blogPost.create({
       data: {

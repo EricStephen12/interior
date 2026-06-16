@@ -18,7 +18,7 @@ export default function RefundPage() {
                 <p className="text-text-muted font-light leading-relaxed">Single training or recovery sessions can be rescheduled or refunded if cancelled at least 24 hours in advance. No-shows will be charged the full session rate.</p>
 
                 <div className="mt-20 pt-12 border-t border-primary/5">
-                    <p className="text-[10px] font-black text-accent uppercase tracking-[0.5em]">SHARERS GYM • EST. 2026</p>
+                    <p className="text-[10px] font-black text-accent uppercase tracking-[0.5em]">SHARERS GYM • EST. 2024</p>
                 </div>
             </div>
         </div>

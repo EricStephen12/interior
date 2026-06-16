@@ -20,7 +20,7 @@ export default function Footer() {
                 SHARERS
               </span>
               <span className="text-[10px] tracking-[0.6em] font-black text-accent uppercase mt-2">
-                GYM • EST. 2026
+                GYM • EST. 2024
               </span>
             </Link>
             <p className="text-base sm:text-xl text-slate-400 font-medium leading-relaxed max-w-md">
@@ -72,7 +72,7 @@ export default function Footer() {
           <div className="space-y-8">
             <h4 className="text-[10px] font-black tracking-[0.4em] text-accent uppercase">Connect</h4>
             <div className="flex gap-6">
-              <SocialLink icon={Instagram} href="#" />
+              <SocialLink icon={Instagram} href="https://www.instagram.com/sharersgym/" />
               <SocialLink icon={MessageCircle} href="https://wa.me/2348089062085" />
               <SocialLink icon={Phone} href="tel:+2348089062085" />
             </div>
@@ -92,7 +92,7 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
           <p className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase order-2 md:order-1">
-            © {currentYear} SHARERS GYM. All Rights Reserved.
+            © 2024 - {currentYear} SHARERS GYM. All Rights Reserved.
           </p>
           <div className="flex items-center gap-8 order-1 md:order-2">
             {!isSignedIn && isLoaded && (
@@ -140,6 +140,8 @@ function SocialLink({ icon: Icon, href }: { icon: React.ElementType, href: strin
     <motion.a
       whileHover={{ y: -5 }}
       href={href}
+      target="_blank"
+      rel="noopener noreferrer"
       className="w-12 h-12 glass-dark rounded-none border border-white/5 flex items-center justify-center text-white hover:text-accent transition-colors"
     >
       <Icon className="w-5 h-5" />

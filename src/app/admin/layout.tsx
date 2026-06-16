@@ -22,31 +22,45 @@ export default async function AdminLayout({
   children: React.ReactNode
 }) {
   const { userId } = await auth()
-  let email = undefined
-  
-  try {
-    const clerkUser = await currentUser()
-    email = clerkUser?.emailAddresses[0]?.emailAddress
-  } catch (error) {
-    console.error("Clerk API Error fetching user details:", error)
+  if (!userId) {
+    redirect('/')
   }
 
-  // Find user by clerkId or email
-  const user = await prisma.user.findFirst({
-    where: {
-      OR: [
-        { clerkId: userId || 'undefined' },
-        { email: email || 'undefined' }
-      ]
-    }
+  // Look up user by clerkId in DB first (extremely fast local check)
+  let user = await prisma.user.findUnique({
+    where: { clerkId: userId }
   })
+
+  let email = user?.email || undefined
+
+  // Fallback: If not in DB yet, query Clerk API and sync
+  if (!user) {
+    try {
+      const clerkUser = await currentUser()
+      email = clerkUser?.emailAddresses[0]?.emailAddress
+      if (clerkUser) {
+        user = await prisma.user.findUnique({
+          where: { email: email || 'undefined' }
+        })
+        if (user) {
+          // Sync clerkId
+          user = await prisma.user.update({
+            where: { id: user.id },
+            data: { clerkId: userId }
+          })
+        }
+      }
+    } catch (error) {
+      console.error("Clerk API Error fetching user details:", error)
+    }
+  }
 
   // HARD OVERRIDE FOR THE OWNER
   const isOwner = email === 'sharersgymtest@gmail.com'
   const isAdmin = user?.role === 'ADMIN' || isOwner
 
   if (!isAdmin) {
-    console.log(`ACCESS DENIED for ${email}. Role in DB: ${user?.role}`)
+    console.log(`ACCESS DENIED for ${email || 'unknown'}. Role in DB: ${user?.role}`)
     redirect('/')
   }
   const navItems = [

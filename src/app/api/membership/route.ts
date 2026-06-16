@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { currentUser } from '@clerk/nextjs/server'
+import { currentUser, auth } from '@clerk/nextjs/server'
+import { syncUserWithClerk } from '@/lib/services/user'
 
 import { emailService } from '@/lib/services/email'
 
@@ -27,17 +28,35 @@ function lowCreditEmail(name: string, credits: number) {
 
 export async function GET() {
   try {
-    const clerkUser = await currentUser()
-    const email = clerkUser?.emailAddresses[0]?.emailAddress
-    if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const { userId } = await auth()
+    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const user = await prisma.user.findUnique({
-      where: { email },
+    let user = await prisma.user.findUnique({
+      where: { clerkId: userId },
       include: { 
         checkIns: { orderBy: { date: 'desc' } }
       }
     })
+
+    // Fallback: If user is not synced in DB yet, sync now (occurs once on first login)
+    if (!user) {
+      const clerkUser = await currentUser()
+      if (clerkUser) {
+        const synced = await syncUserWithClerk(clerkUser)
+        if (synced) {
+          user = await prisma.user.findUnique({
+            where: { id: synced.id },
+            include: { 
+              checkIns: { orderBy: { date: 'desc' } }
+            }
+          })
+        }
+      }
+    }
+
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
+
+    const email = user.email
 
     const orders = await prisma.order.findMany({
       where: { userEmail: email },
@@ -55,15 +74,14 @@ export async function POST(req: Request) {
     const { action, protocol, memberId } = await req.json()
     if (action !== 'CHECK_IN') return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
 
-    const clerkUser = await currentUser()
-    const email = clerkUser?.emailAddresses[0]?.emailAddress
-    if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const { userId } = await auth()
+    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     let user;
     
     if (memberId) {
       // Admin scanning someone else's pass
-      const callerUser = await prisma.user.findUnique({ where: { email } })
+      const callerUser = await prisma.user.findUnique({ where: { clerkId: userId } })
       if (callerUser?.role !== 'ADMIN') return NextResponse.json({ error: 'Unauthorized Admin' }, { status: 403 })
       
       user = await prisma.user.findUnique({
@@ -73,13 +91,15 @@ export async function POST(req: Request) {
     } else {
       // User scanning their own pass
       user = await prisma.user.findUnique({
-        where: { email },
+        where: { clerkId: userId },
         include: { checkIns: { orderBy: { date: 'desc' }, take: 1 } }
       })
     }
 
     if (!user) return NextResponse.json({ error: 'User/Pass not found' }, { status: 404 })
     if (user.credits <= 0) return NextResponse.json({ error: 'No credits remaining. Please top up your pass.' }, { status: 400 })
+
+    const email = user.email
 
     // Double-tap guard: same member scanned twice within 2 minutes
     const lastCheckIn = user.checkIns[0]
