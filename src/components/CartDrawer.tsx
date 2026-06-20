@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { XMarkIcon, ShoppingCartIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outline'
 import { useCart } from '@/lib/cart-context'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 interface CartDrawerProps {
   isOpen: boolean
@@ -15,6 +16,7 @@ interface CartDrawerProps {
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { state, updateQuantity, removeFromCart } = useCart()
   const { items: cartItems } = state
+  const router = useRouter()
 
   const subtotal = cartItems.reduce((sum, item) => {
     const price = item.variant?.promo_price || item.variant?.price || 0
@@ -159,7 +161,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => {
-                              window.location.href = '/checkout'
+                              onClose()
+                              router.push('/checkout')
                             }}
                             className="w-full bg-primary hover:bg-black text-white font-black py-5 rounded-none tracking-widest uppercase text-xs transition-all shadow-xl shimmer-btn"
                           >

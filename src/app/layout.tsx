@@ -75,7 +75,6 @@ export const metadata: Metadata = {
 
 import { MembershipProvider } from "@/lib/membership-context";
 import { ClerkProvider } from "@clerk/nextjs";
-import CustomCursor from "@/components/CustomCursor";
 import ScrollToTop from "@/components/ScrollToTop";
 
 export default function RootLayout({
@@ -90,7 +89,6 @@ export default function RootLayout({
           className={`${playfair.variable} ${inter.variable} ${crimson.variable} ${montserrat.variable} font-sans antialiased`}
         >
           <ScrollToTop />
-          <CustomCursor />
           <MembershipProvider>
             <CartProvider>
               <Layout>

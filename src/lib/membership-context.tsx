@@ -50,7 +50,19 @@ const INITIAL_STATE: MembershipState = {
 }
 
 export function MembershipProvider({ children }: { children: React.ReactNode }) {
-    const [state, setState] = useState<MembershipState>(INITIAL_STATE)
+    const [state, setState] = useState<MembershipState>(() => {
+        if (typeof window !== 'undefined') {
+            const cached = sessionStorage.getItem('membership_state')
+            if (cached) {
+                try {
+                    return JSON.parse(cached)
+                } catch (e) {
+                    // ignore
+                }
+            }
+        }
+        return INITIAL_STATE
+    })
     const { isSignedIn, user, isLoaded } = useUser()
 
     const fetchMembership = async () => {
@@ -59,7 +71,7 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
             if (res.ok) {
                 const data = await res.json()
                 if (data.user) {
-                    setState({
+                    const newState: MembershipState = {
                         hasActiveMembership: data.user.tier !== 'NONE',
                         totalCredits: data.user.credits + data.user.checkIns.length,
                         remainingCredits: data.user.credits,
@@ -72,7 +84,11 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
                             protocol: c.protocol
                         })),
                         orderHistory: data.orders || []
-                    })
+                    }
+                    setState(newState)
+                    if (typeof window !== 'undefined') {
+                        sessionStorage.setItem('membership_state', JSON.stringify(newState))
+                    }
                 }
             }
         } catch {
@@ -86,6 +102,9 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
                 fetchMembership()
             } else {
                 setState(INITIAL_STATE)
+                if (typeof window !== 'undefined') {
+                    sessionStorage.removeItem('membership_state')
+                }
             }
         }
     }, [isSignedIn, user, isLoaded])
@@ -116,7 +135,7 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
             if (res.ok) {
                 const data = await res.json()
                 if (data.user) {
-                        setState({
+                        const newState: MembershipState = {
                             hasActiveMembership: data.user.tier !== 'NONE',
                             totalCredits: data.user.credits + data.user.checkIns.length,
                             remainingCredits: data.user.credits,
@@ -129,7 +148,11 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
                                 protocol: c.protocol
                             })),
                             orderHistory: data.orders || []
-                        })
+                        }
+                        setState(newState)
+                        if (typeof window !== 'undefined') {
+                            sessionStorage.setItem('membership_state', JSON.stringify(newState))
+                        }
                 }
             }
         } catch {
@@ -139,6 +162,9 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
 
     const resetMembership = () => {
         setState(INITIAL_STATE)
+        if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('membership_state')
+        }
     }
 
     return (
