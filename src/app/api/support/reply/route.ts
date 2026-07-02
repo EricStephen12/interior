@@ -1,8 +1,33 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { emailService } from '@/lib/services/email'
+import { currentUser, auth } from '@clerk/nextjs/server'
+
+// Helper: verify the caller is an ADMIN using the same fail-closed guard as the layout
+async function requireAdmin() {
+  try {
+    const { userId } = await auth()
+    if (!userId) return null
+
+    const clerkUser = await currentUser()
+    const email = clerkUser?.emailAddresses[0]?.emailAddress
+
+    const user = await prisma.user.findUnique({ where: { clerkId: userId } })
+    const isOwner = email === (process.env.ADMIN_EMAIL || 'sharersgymtest@gmail.com')
+
+    if (user?.role !== 'ADMIN' && !isOwner) return null
+
+    return user || { id: 'owner', email, role: 'ADMIN' }
+  } catch (error) {
+    console.error('Admin guard error:', error)
+    return null // Fail closed on any error
+  }
+}
 
 export async function POST(req: Request) {
+  const admin = await requireAdmin()
+  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
   try {
     const data = await req.json()
     const { ticketId, message } = data
@@ -61,3 +86,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }
+

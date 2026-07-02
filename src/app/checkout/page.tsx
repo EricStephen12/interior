@@ -164,7 +164,8 @@ function CheckoutContent() {
             : state.items.map(i => ({ name: i.product?.name, quantity: i.quantity, price: i.variant?.price })),
           hasMembership: hasMembership || isCreditTopup,
           creditAmount: isCreditTopup ? (creditPack?.amount || 0) : (hasMembership ? 30 : 0),
-          name: formData.name
+          name: formData.name,
+          paymentMethod: paymentMethod // Pass the selected payment method to the backend
         })
       });
 
@@ -350,8 +351,15 @@ function CheckoutContent() {
                   active={paymentMethod === 'kingspay'}
                   onClick={() => setPaymentMethod('kingspay')}
                   icon={CreditCard}
-                  title="KingsPay Checkout"
+                  title="Card Checkout"
                   description="Pay securely using KingsPay Goods & Services."
+                />
+                <PaymentOption
+                  active={paymentMethod === 'espees'}
+                  onClick={() => setPaymentMethod('espees')}
+                  icon={CreditCard}
+                  title="Espees Checkout"
+                  description="Pay securely using your Espees."
                 />
               </div>
             </div>

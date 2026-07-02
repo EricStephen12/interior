@@ -6,8 +6,41 @@ import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
+import { Metadata } from 'next'
+
+// Generates unique SEO metadata for every blog post
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const post = await getBlogBySlug(slug)
+
+  if (!post || !post.published) {
+    return {
+      title: 'Post Not Found | SHARERS GYM',
+      description: 'This blog post could not be found.'
+    }
+  }
+
+  return {
+    title: `${post.title} | SHARERS GYM`,
+    description: post.excerpt || post.content.substring(0, 155).replace(/[#*_]/g, '') + '...',
+    openGraph: {
+      title: `${post.title} | SHARERS GYM`,
+      description: post.excerpt || post.content.substring(0, 155).replace(/[#*_]/g, '') + '...',
+      type: 'article',
+      url: `https://sharersgym.com/blog/${post.slug}`,
+      images: post.coverImg ? [{ url: post.coverImg, width: 1200, height: 630, alt: post.title }] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${post.title} | SHARERS GYM`,
+      description: post.excerpt || post.content.substring(0, 155).replace(/[#*_]/g, '') + '...',
+      images: post.coverImg ? [post.coverImg] : [],
+    }
+  }
+}
 
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+
   const { slug } = await params
   const post = await getBlogBySlug(slug)
 

@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: 'llama-3.1-8b-instant',
         messages: [
           { role: 'system', content: SYSTEM_PROMPTS[type] || SYSTEM_PROMPTS.general },
           { role: 'user', content: `Enhance this text:\n\n"${text}"` }

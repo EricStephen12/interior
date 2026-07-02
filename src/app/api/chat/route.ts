@@ -7,6 +7,26 @@ export async function POST(req: Request) {
   try {
     const { message, history } = await req.json()
     if (!message) return NextResponse.json({ error: 'No message' }, { status: 400 })
+    if (typeof message !== 'string' || message.length > 500) return NextResponse.json({ error: 'Message too long' }, { status: 400 })
+
+    // Cap and validate history to prevent unbounded payloads being forwarded to Groq
+    const MAX_HISTORY = 8
+    const MAX_HISTORY_MSG_LENGTH = 500
+    const safeHistory = Array.isArray(history)
+      ? history
+          .slice(-MAX_HISTORY) // Keep only the last N messages
+          .filter((h: any) =>
+            h &&
+            typeof h === 'object' &&
+            ['user', 'assistant'].includes(h.role) &&
+            typeof h.content === 'string'
+          )
+          .map((h: any) => ({
+            role: h.role,
+            content: String(h.content).substring(0, MAX_HISTORY_MSG_LENGTH) // Truncate each message
+          }))
+      : []
+
 
     const apiKey = process.env.GROQ_API_KEY
     if (!apiKey) return NextResponse.json({ reply: FALLBACK })
@@ -44,7 +64,7 @@ RULES:
       method: 'POST',
       headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: 'llama-3.1-8b-instant',
         messages: [
           { role: 'system', content: systemPrompt },
           ...(history || []).slice(-8),

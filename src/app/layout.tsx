@@ -82,9 +82,42 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'HealthClub',
+    name: 'SHARERS GYM',
+    url: 'https://sharersgym.com',
+    logo: 'https://sharersgym.com/icon.png',
+    description: 'Premium fitness gym in Lagos, Nigeria. Better coaches, better equipment, better energy.',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Lagos',
+      addressCountry: 'NG',
+    },
+    openingHoursSpecification: [
+      { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday'], opens: '05:00', closes: '23:00' },
+      { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Saturday'], opens: '06:00', closes: '22:00' },
+      { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Sunday'], opens: '07:00', closes: '20:00' },
+    ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: 'support@sharersgym.com',
+      contactType: 'customer support',
+    },
+    sameAs: [
+      'https://twitter.com/sharersgym',
+    ]
+  }
+
   return (
     <ClerkProvider>
       <html lang="en">
+        <head>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
+        </head>
         <body
           className={`${playfair.variable} ${inter.variable} ${crimson.variable} ${montserrat.variable} font-sans antialiased`}
         >
@@ -101,3 +134,4 @@ export default function RootLayout({
     </ClerkProvider>
   );
 }
+

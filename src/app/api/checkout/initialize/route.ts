@@ -2,13 +2,32 @@ import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { currentUser, auth } from '@clerk/nextjs/server'
 
+// Explicitly define the supported payment types
+const SUPPORTED_PAYMENT_METHODS = ['kingspay', 'espees'] as const
+type SupportedPaymentMethod = typeof SUPPORTED_PAYMENT_METHODS[number]
+
+// Map our frontend payment method names to KingsPay payment_type values
+const PAYMENT_TYPE_MAP: Record<SupportedPaymentMethod, string> = {
+  kingspay: 'african',
+  espees: 'espees',
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { userEmail, phone, totalAmount, items, hasMembership, creditAmount, name } = body
+    const { userEmail, phone, totalAmount, items, hasMembership, creditAmount, name, paymentMethod } = body
 
     if (!items || totalAmount === undefined) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    }
+
+    // Fix 1: Reject unsupported payment methods explicitly instead of silently falling back
+    if (!paymentMethod || !SUPPORTED_PAYMENT_METHODS.includes(paymentMethod as SupportedPaymentMethod)) {
+      console.error(`Unsupported payment method received: "${paymentMethod}"`)
+      return NextResponse.json(
+        { error: `Unsupported payment method: "${paymentMethod}". Supported methods are: ${SUPPORTED_PAYMENT_METHODS.join(', ')}` },
+        { status: 400 }
+      )
     }
 
     const { userId } = await auth()
@@ -24,13 +43,33 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Payment gateway configuration error' }, { status: 500 })
     }
 
-    const reqUrl = new URL(req.url)
-    const proto = req.headers.get('x-forwarded-proto') || reqUrl.protocol.replace(':', '')
-    const host = req.headers.get('x-forwarded-host') || reqUrl.host
-    const origin = `${proto}://${host}`
+    // Require KINGSPAY_ENVIRONMENT to be explicitly configured — validate against known allowed values
+    const ALLOWED_ENVIRONMENTS = ['production', 'test'] as const
+    const kingsPayEnvironment = process.env.KINGSPAY_ENVIRONMENT
+    if (!kingsPayEnvironment) {
+      console.error('KINGSPAY_ENVIRONMENT is not defined in environment variables')
+      return NextResponse.json({ error: 'Payment gateway environment is not configured' }, { status: 500 })
+    }
+    if (!ALLOWED_ENVIRONMENTS.includes(kingsPayEnvironment as typeof ALLOWED_ENVIRONMENTS[number])) {
+      console.error(`Invalid KINGSPAY_ENVIRONMENT value: "${kingsPayEnvironment}". Must be one of: ${ALLOWED_ENVIRONMENTS.join(', ')}`)
+      return NextResponse.json({ error: 'Payment gateway environment is misconfigured' }, { status: 500 })
+    }
+
+    // Use APP_URL env var and parse via URL constructor so we always get a clean origin
+    // (strips any path, query string, or trailing slash — safe for callback URLs)
+    const appUrlRaw = process.env.APP_URL
+    if (!appUrlRaw) {
+      console.error('APP_URL is not defined in environment variables')
+      return NextResponse.json({ error: 'Application URL is not configured' }, { status: 500 })
+    }
+    const origin = new URL(appUrlRaw).origin
 
     // Convert amount to cents/kobo string (e.g. 1000 = ₦10.00)
     const amountInCents = Math.round(totalAmount * 100).toString()
+
+    if (parseInt(amountInCents) < 200) {
+      return NextResponse.json({ error: 'Minimum transaction amount is ₦2.00' }, { status: 400 })
+    }
 
     // Construct dynamic description with item names
     let description = 'SHARERS GYM Order'
@@ -48,10 +87,10 @@ export async function POST(req: Request) {
       amount: amountInCents,
       currency: 'NGN',
       description,
-      environment: process.env.KINGSPAY_ENVIRONMENT || 'test',
+      environment: kingsPayEnvironment,
       merchant_callback_url: `${origin}/api/checkout/callback?merchantOrderId=${orderId}`,
       merchant_webhook_url: `${origin}/api/webhooks/kingspay`,
-      payment_type: 'african',
+      payment_type: PAYMENT_TYPE_MAP[paymentMethod as SupportedPaymentMethod],
       email: email,
       metadata: {
         userEmail: email,
@@ -121,3 +160,4 @@ export async function POST(req: Request) {
     }, { status: 500 })
   }
 }
+

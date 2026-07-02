@@ -56,7 +56,7 @@ export default async function AdminLayout({
   }
 
   // HARD OVERRIDE FOR THE OWNER
-  const isOwner = email === 'sharersgymtest@gmail.com'
+  const isOwner = email === (process.env.ADMIN_EMAIL || 'sharersgymtest@gmail.com')
   const isAdmin = user?.role === 'ADMIN' || isOwner
 
   if (!isAdmin) {
