@@ -85,7 +85,7 @@ export async function POST(req: Request) {
 
     const kingsPayPayload = {
       amount: amountInCents,
-      currency: 'NGN',
+      currency: paymentMethod === 'espees' ? 'ESP' : 'NGN',
       description,
       environment: kingsPayEnvironment,
       merchant_callback_url: `${origin}/api/checkout/callback?merchantOrderId=${orderId}`,
