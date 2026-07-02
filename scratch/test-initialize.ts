@@ -19,10 +19,9 @@ async function run() {
     const orderId = crypto.randomUUID();
 
     const kingsPayPayload = {
-      amount: "200",
-      currency: 'ESPEES',
+      amount: 1000,
+      currency: 'ESP',
       description,
-      environment: 'production',
       merchant_callback_url: `${origin}/api/checkout/callback?merchantOrderId=${orderId}`,
       merchant_webhook_url: `${origin}/api/webhooks/kingspay`,
       payment_type: 'espees',

@@ -86,6 +86,17 @@ export async function GET(req: Request) {
       await fulfillPayment(dbOrderId || paymentId, metadata, email)
 
       return NextResponse.redirect(`${origin}/dashboard?payment=success`)
+    } else if (status && ['FAILED', 'CANCELLED', 'EXPIRED'].includes(status.toUpperCase())) {
+      console.log(`Payment check returned status: ${status}, marking order as FAILED in DB`)
+      try {
+        await prisma.order.update({
+          where: { id: dbOrderId || paymentId },
+          data: { status: 'FAILED' }
+        })
+      } catch (err) {
+        console.error('Failed to update DB for failed order:', err)
+      }
+      return NextResponse.redirect(`${origin}/checkout?error=payment_${status.toLowerCase()}`)
     } else {
       console.log(`Payment check returned status: ${status}`)
       return NextResponse.redirect(`${origin}/checkout?error=payment_${status ? status.toLowerCase() : 'failed'}`)

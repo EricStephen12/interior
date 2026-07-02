@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, Trash2, ArrowLeft, Loader2, Tag, Zap, Star, Layers, Ruler } from 'lucide-react'
+import { Plus, Trash2, ArrowLeft, Loader2, Tag, Zap, Star, Layers, Ruler, DollarSign } from 'lucide-react'
 import Link from 'next/link'
 
 export default function AttributesPage() {
@@ -10,7 +10,7 @@ export default function AttributesPage() {
   const [promos, setPromos] = useState<any[]>([])
   const [packs, setPacks] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'brands' | 'sizes' | 'promos' | 'packs'>('brands')
+  const [activeTab, setActiveTab] = useState<'brands' | 'sizes' | 'promos' | 'packs' | 'payments'>('brands')
 
   // Form states
   const [newBrand, setNewBrand] = useState('')
@@ -19,24 +19,47 @@ export default function AttributesPage() {
   const [newPack, setNewPack] = useState({ name: '', credits: '', price: '', description: '', isPopular: false })
   const [submitting, setSubmitting] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [espeesRate, setEspeesRate] = useState('2050')
+  const [savingSettings, setSavingSettings] = useState(false)
 
   useEffect(() => { refreshData() }, [])
 
   const refreshData = async () => {
     setLoading(true)
     try {
-      const [b, s, p, c] = await Promise.all([
+      const [b, s, p, c, st] = await Promise.all([
         fetch('/api/brands').then(r => r.json()),
         fetch('/api/sizes').then(r => r.json()),
         fetch('/api/promo').then(r => r.json()),
-        fetch('/api/credit-packs').then(r => r.json())
+        fetch('/api/credit-packs').then(r => r.json()),
+        fetch('/api/admin/settings').then(r => r.json())
       ])
       setBrands(b.brands || [])
       setSizes(s.sizes || [])
       setPromos(p.promos || [])
       setPacks(c.packs || [])
+      if (st.settings?.espees_exchange_rate) {
+        setEspeesRate(st.settings.espees_exchange_rate)
+      }
     } catch {}
     setLoading(false)
+  }
+
+  const saveEspeesRate = async () => {
+    setSavingSettings(true)
+    try {
+      const res = await fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'espees_exchange_rate', value: espeesRate })
+      })
+      if (res.ok) alert('Exchange rate updated successfully!')
+      else alert('Failed to update exchange rate')
+    } catch (err) {
+      alert('Network error')
+    } finally {
+      setSavingSettings(false)
+    }
   }
 
   const addBrand = async () => {
@@ -139,6 +162,7 @@ export default function AttributesPage() {
     { key: 'sizes' as const, label: 'Sizes', icon: Ruler, count: sizes.length },
     { key: 'promos' as const, label: 'Promo Codes', icon: Tag, count: promos.length },
     { key: 'packs' as const, label: 'Credit Packs', icon: Zap, count: packs.length },
+    { key: 'payments' as const, label: 'Payments', icon: DollarSign, count: 1 },
   ]
 
   return (
@@ -423,6 +447,37 @@ export default function AttributesPage() {
 
           </div>
         </div>
+
+        {/* ──── PAYMENTS SETTINGS ──── */}
+        {activeTab === 'payments' && (
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden mt-8">
+            <div className="px-8 py-6 border-b border-gray-50">
+              <h2 className="text-lg font-bold text-gray-900">Payment Settings</h2>
+              <p className="text-sm text-gray-400 mt-0.5">Configure global rates and payment gateways.</p>
+            </div>
+            <div className="px-8 py-8 space-y-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Espees Exchange Rate</label>
+                <p className="text-xs text-gray-400 mb-3">How much of your base currency equals 1 Espee?</p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="relative w-full sm:w-64">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₦</span>
+                    <input
+                      type="number"
+                      value={espeesRate}
+                      onChange={e => setEspeesRate(e.target.value)}
+                      className="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
+                    />
+                  </div>
+                  <button onClick={saveEspeesRate} disabled={savingSettings} className="flex items-center justify-center gap-1.5 bg-gray-900 text-white px-6 py-3 rounded-lg text-xs font-bold hover:bg-accent transition-colors disabled:opacity-40">
+                    {savingSettings ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+                    Save Rate
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
