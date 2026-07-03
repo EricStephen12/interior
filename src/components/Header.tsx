@@ -14,6 +14,7 @@ import { useMembership } from '@/lib/membership-context'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
   const { state: cartState, toggleCart } = useCart()
   const { wishlist } = useWishlist()
   const membership = useMembership()
@@ -85,15 +86,22 @@ export default function Header() {
 
                 
                 {/* Custom Profile Dropdown */}
-                <div className="relative group/user">
-                  <button className="flex items-center gap-3 p-1 hover:bg-secondary transition-colors">
+                <div 
+                  className="relative"
+                  onMouseEnter={() => setIsProfileOpen(true)}
+                  onMouseLeave={() => setIsProfileOpen(false)}
+                >
+                  <button 
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                    className="flex items-center gap-3 p-2 hover:bg-secondary transition-colors"
+                  >
                     <div className="w-8 h-8 bg-primary flex items-center justify-center text-[10px] font-black text-white">
                       {user?.firstName?.[0] || user?.emailAddresses[0].emailAddress[0].toUpperCase()}
                     </div>
-                    <ChevronDown className="w-3 h-3 text-primary group-hover/user:rotate-180 transition-transform duration-500" />
+                    <ChevronDown className={`w-3 h-3 text-primary transition-transform duration-500 ${isProfileOpen ? 'rotate-180' : ''}`} />
                   </button>
 
-                  <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-primary/5 editorial-shadow opacity-0 invisible group-hover/user:opacity-100 group-hover/user:visible transition-all duration-300 z-50">
+                  <div className={`absolute right-0 top-full mt-2 w-56 bg-white border border-primary/5 editorial-shadow transition-all duration-300 z-50 ${isProfileOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
                     <div className="p-4 border-b border-primary/5">
                       <p className="text-[10px] font-black text-primary uppercase truncate">{user?.fullName || 'Member'}</p>
                       <p className="text-[8px] text-slate-400 uppercase tracking-widest truncate">{user?.primaryEmailAddress?.emailAddress}</p>
@@ -116,7 +124,10 @@ export default function Header() {
                       )}
                       <div className="h-[1px] bg-primary/5 my-2" />
                       <SignOutButton>
-                        <button className="flex w-full items-center gap-3 px-3 py-2 text-[10px] font-black text-red-500 hover:bg-red-50 transition-colors uppercase tracking-widest">
+                        <button 
+                          onClick={() => setIsProfileOpen(false)}
+                          className="flex w-full items-center gap-3 px-3 py-2 text-[10px] font-black text-red-500 hover:bg-red-50 transition-colors uppercase tracking-widest"
+                        >
                           <LogOut className="w-3.5 h-3.5" /> Logout
                         </button>
                       </SignOutButton>
@@ -135,7 +146,7 @@ export default function Header() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={toggleCart}
-              className={`p-2 transition-colors relative ${isScrolled ? 'text-primary hover:text-accent' : 'text-primary hover:text-accent'
+              className={`p-3 -m-3 transition-colors relative ${isScrolled ? 'text-primary hover:text-accent' : 'text-primary hover:text-accent'
                 }`}
             >
               <ShoppingCartIcon className="h-6 w-6" />
@@ -151,7 +162,7 @@ export default function Header() {
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className={`p-2 transition-colors ${isScrolled ? 'text-primary' : 'text-primary'
+                className={`p-3 -m-3 transition-colors ${isScrolled ? 'text-primary' : 'text-primary'
                   }`}
               >
                 {isMenuOpen ? (
