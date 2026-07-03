@@ -4,16 +4,18 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ShoppingCartIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { Shield, ChevronDown, LogOut, Users } from 'lucide-react'
+import { Shield, ChevronDown, LogOut, Users, Heart } from 'lucide-react'
 import dynamic from 'next/dynamic'
 const CartDrawer = dynamic(() => import('./CartDrawer'), { ssr: false })
 import { useCart } from '@/lib/cart-context'
+import { useWishlist } from '@/lib/wishlist-context'
 import { UserButton, useUser, SignOutButton } from '@clerk/nextjs'
 import { useMembership } from '@/lib/membership-context'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { state: cartState, toggleCart } = useCart()
+  const { wishlist } = useWishlist()
   const membership = useMembership()
   const { isLoaded, isSignedIn, user } = useUser()
   const [isScrolled, setIsScrolled] = useState(false)
@@ -99,6 +101,13 @@ export default function Header() {
                     <div className="p-2">
                       <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 text-[10px] font-black text-primary hover:bg-secondary transition-colors uppercase tracking-widest">
                         <Users className="w-3.5 h-3.5" /> My Pass
+                      </Link>
+                      <Link href="/wishlist" className="flex items-center gap-3 px-3 py-2 text-[10px] font-black text-primary hover:bg-secondary transition-colors uppercase tracking-widest">
+                        <Heart className="w-3.5 h-3.5" /> 
+                        Wishlist
+                        {wishlist.length > 0 && (
+                          <span className="ml-auto bg-accent text-white text-[8px] font-black rounded-none px-1.5 py-0.5">{wishlist.length}</span>
+                        )}
                       </Link>
                       {membership.state.role === 'ADMIN' && (
                         <Link href="/admin" className="flex items-center gap-3 px-3 py-2 text-[10px] font-black text-accent hover:bg-secondary transition-colors uppercase tracking-widest">

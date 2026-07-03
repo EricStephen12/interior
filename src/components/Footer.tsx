@@ -1,12 +1,41 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useUser, useSignIn } from '@clerk/nextjs'
-import { Instagram, MessageCircle, MapPin, Mail, ArrowUpRight, Phone } from 'lucide-react'
+import { Instagram, MessageCircle, MapPin, Mail, ArrowUpRight, Phone, Check, Loader2 } from 'lucide-react'
+
 export default function Footer() {
   const currentYear = new Date().getFullYear()
   const { isSignedIn, isLoaded } = useUser()
+  const [email, setEmail] = useState('')
+  const [newsletterState, setNewsletterState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+
+  const handleNewsletterSubmit = async () => {
+    if (!email.trim() || !email.includes('@')) return
+    setNewsletterState('loading')
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'Newsletter Subscriber',
+          email,
+          subject: 'Newsletter Signup',
+          message: `New newsletter signup from: ${email}`
+        })
+      })
+      if (res.ok) {
+        setNewsletterState('success')
+        setEmail('')
+      } else {
+        setNewsletterState('error')
+      }
+    } catch {
+      setNewsletterState('error')
+    }
+  }
 
   return (
     <footer className="bg-primary text-white pt-16 sm:pt-32 pb-12 overflow-hidden relative border-t border-accent/10">
@@ -31,16 +60,37 @@ export default function Footer() {
           <div className="glass-dark p-8 sm:p-12 rounded-none border border-white/5 space-y-8 self-center">
             <h4 className="text-[10px] font-black tracking-[0.4em] text-accent uppercase">Newsletter</h4>
             <h3 className="text-xl sm:text-3xl font-bold tracking-tight">Stay updated.</h3>
-            <div className="relative">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full bg-transparent border-b border-white/10 pb-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-accent transition-colors"
-              />
-              <button className="absolute right-0 bottom-4 text-accent hover:text-white transition-colors">
-                <ArrowUpRight className="w-5 h-5" />
-              </button>
-            </div>
+            {newsletterState === 'success' ? (
+              <div className="flex items-center gap-3 text-green-400">
+                <Check className="w-5 h-5" />
+                <p className="text-sm font-bold">You're on the list! We'll keep you posted.</p>
+              </div>
+            ) : (
+              <div className="relative">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={e => { setEmail(e.target.value); setNewsletterState('idle') }}
+                  onKeyDown={e => e.key === 'Enter' && handleNewsletterSubmit()}
+                  disabled={newsletterState === 'loading'}
+                  className="w-full bg-transparent border-b border-white/10 pb-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-accent transition-colors disabled:opacity-50"
+                />
+                <button
+                  onClick={handleNewsletterSubmit}
+                  disabled={newsletterState === 'loading' || !email.trim()}
+                  className="absolute right-0 bottom-4 text-accent hover:text-white transition-colors disabled:opacity-40"
+                >
+                  {newsletterState === 'loading'
+                    ? <Loader2 className="w-5 h-5 animate-spin" />
+                    : <ArrowUpRight className="w-5 h-5" />
+                  }
+                </button>
+                {newsletterState === 'error' && (
+                  <p className="text-xs text-red-400 mt-2">Something went wrong. Try again.</p>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

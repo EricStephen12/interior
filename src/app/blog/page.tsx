@@ -5,7 +5,7 @@ import { Calendar, User, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import { Metadata } from 'next'
 
-export const revalidate = 0;
+export const revalidate = 30;
 
 export const metadata: Metadata = {
   title: "The Playbook | Journal",

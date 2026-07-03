@@ -80,7 +80,7 @@ export default function TopupCredits() {
                                         <Loader2 className="w-8 h-8 text-accent animate-spin" />
                                     </div>
                                 ) : packs.length === 0 ? (
-                                    <p className="text-center py-20 text-[10px] font-black text-slate-400 uppercase tracking-widest">No credit packs configured.</p>
+                                    <p className="text-center py-20 text-[10px] font-black text-slate-400 uppercase tracking-widest">No day passes configured.</p>
                                 ) : (
                                     packs.map((pack) => (
                                         <button

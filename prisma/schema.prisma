@@ -172,3 +172,15 @@ model StoreSetting {
   value     String
   updatedAt DateTime @updatedAt
 }
+
+model Review {
+  id        String   @id @default(uuid())
+  productId String
+  userEmail String
+  userName  String
+  rating    Int      // 1-5
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}

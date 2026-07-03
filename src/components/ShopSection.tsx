@@ -353,13 +353,21 @@ export default function ShopSection({
 }
 
 import { useMembership } from '@/lib/membership-context'
+import { useCart } from '@/lib/cart-context'
+import { useWishlist } from '@/lib/wishlist-context'
 import { useRouter } from 'next/navigation'
+import { ShoppingCart, Heart } from 'lucide-react'
+import { useToast } from '@/components/ToastProvider'
 
 function ProductCard({ product, index, isLarge }: { product: any, index: number, isLarge?: boolean }) {
   const [isHovered, setIsHovered] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const { subscribe } = useMembership()
+  const { addToCart, toggleCart } = useCart()
+  const { showToast } = useToast()
+  const { toggleWishlist, isWishlisted } = useWishlist()
   const router = useRouter()
+  const wishlisted = isWishlisted(product.id)
 
   const handleAction = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -369,6 +377,24 @@ function ProductCard({ product, index, isLarge }: { product: any, index: number,
       subscribe(30)
       router.push('/dashboard')
     }
+  }
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    // Pass structured data matching what CartDrawer expects
+    const productData = { id: product.id, name: product.name, images: product.images }
+    const variantData = { 
+      id: product.id, 
+      price: product.price, 
+      promo_price: product.promo_price, 
+      size: { name: product.size } 
+    }
+    
+    addToCart(productData as any, variantData as any, 1)
+    showToast('Added to Cart', 'success', product.name)
+    toggleCart() // Open drawer immediately
   }
 
   return (
@@ -384,6 +410,7 @@ function ProductCard({ product, index, isLarge }: { product: any, index: number,
     >
       <Link 
         href={product.category === 'Memberships' ? '#' : `/products/${product.id}`} 
+        className="block w-full h-full"
         onClick={(e) => {
           if (product.category === 'Memberships') {
             handleAction(e)
@@ -429,16 +456,52 @@ function ProductCard({ product, index, isLarge }: { product: any, index: number,
             </span>
           </div>
 
+          {/* Wishlist Heart Button */}
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              toggleWishlist(product.id)
+              showToast(
+                wishlisted ? 'Removed from Wishlist' : 'Saved to Wishlist',
+                wishlisted ? 'info' : 'success',
+                product.name
+              )
+            }}
+            className="absolute top-8 right-8 z-20 w-9 h-9 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-md hover:scale-110 transition-all duration-200"
+          >
+            <Heart
+              className={`w-4 h-4 transition-colors ${wishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
+            />
+          </button>
+
           {/* Quick Reveal Overlay */}
-          <div className={`absolute inset-0 bg-primary/20 backdrop-blur-[2px] transition-opacity duration-700 flex items-center justify-center
+          <div className={`absolute inset-0 bg-primary/40 backdrop-blur-[2px] transition-all duration-700 flex flex-col items-center justify-center gap-4
           ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-            <div className="h-40 w-[1px] bg-white opacity-50 absolute"></div>
-            <button
-              onClick={handleAction}
-              className="bg-white text-primary px-8 py-4 rounded-none tracking-[0.4em] uppercase text-[9px] font-black hover:bg-accent hover:text-white transition-all duration-500 transform scale-95 group-hover:scale-100 shadow-2xl z-10"
-            >
-              {product.category === 'Memberships' ? 'JOIN NOW' : 'VIEW MORE'}
-            </button>
+            <div className="h-full w-[1px] bg-white opacity-20 absolute top-0 bottom-0 pointer-events-none"></div>
+            
+            {product.category === 'Memberships' ? (
+              <button
+                onClick={handleAction}
+                className="bg-white text-primary px-8 py-4 w-48 text-center rounded-none tracking-[0.4em] uppercase text-[9px] font-black hover:bg-accent hover:text-white transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 shadow-2xl z-10"
+              >
+                JOIN NOW
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={handleAddToCart}
+                  className="bg-accent text-white px-8 py-4 w-48 text-center rounded-none tracking-[0.4em] uppercase text-[9px] font-black hover:bg-primary transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 shadow-2xl z-10 flex items-center justify-center gap-2"
+                >
+                  <ShoppingCart className="w-3 h-3" /> ADD TO CART
+                </button>
+                <div
+                  className="bg-white text-primary px-8 py-4 w-48 text-center rounded-none tracking-[0.4em] uppercase text-[9px] font-black hover:bg-slate-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 shadow-2xl z-10"
+                >
+                  VIEW DETAILS
+                </div>
+              </>
+            )}
           </div>
 
           {/* Subtle Grain Overlay */}

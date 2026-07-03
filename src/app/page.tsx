@@ -3,7 +3,7 @@ import StorySection from '@/components/StorySection'
 import ShopSection from '@/components/ShopSection'
 import { getProducts, getBrands, getCategories } from '@/lib/services/product'
 
-export const revalidate = 0;
+export const revalidate = 30;
 
 export default async function Home() {
   const [products, brands, categories] = await Promise.all([

@@ -76,6 +76,8 @@ export const metadata: Metadata = {
 import { MembershipProvider } from "@/lib/membership-context";
 import { ClerkProvider } from "@clerk/nextjs";
 import ScrollToTop from "@/components/ScrollToTop";
+import { ToastProvider } from "@/components/ToastProvider";
+import { WishlistProvider } from "@/lib/wishlist-context";
 
 export default function RootLayout({
   children,
@@ -124,9 +126,13 @@ export default function RootLayout({
           <ScrollToTop />
           <MembershipProvider>
             <CartProvider>
-              <Layout>
-                {children}
-              </Layout>
+              <WishlistProvider>
+                <ToastProvider>
+                  <Layout>
+                    {children}
+                  </Layout>
+                </ToastProvider>
+              </WishlistProvider>
             </CartProvider>
           </MembershipProvider>
         </body>

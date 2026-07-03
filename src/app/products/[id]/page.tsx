@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma';
 import ProductDetailsClient from '@/components/ProductDetailsClient';
 import { Metadata } from 'next';
 
-export const revalidate = 0;
+export const revalidate = 30;
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;

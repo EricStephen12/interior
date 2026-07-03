@@ -2,7 +2,7 @@ import ShopSection from '@/components/ShopSection'
 import { getProducts, getBrands, getCategories } from '@/lib/services/product'
 import { Metadata } from 'next'
 
-export const revalidate = 0;
+export const revalidate = 30;
 
 export const metadata: Metadata = {
   title: "Shop The Arsenal",

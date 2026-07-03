@@ -1,12 +1,14 @@
 'use client'
 
-import { Fragment } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { XMarkIcon, ShoppingCartIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outline'
 import { useCart } from '@/lib/cart-context'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { Plus } from 'lucide-react'
+import { useToast } from '@/components/ToastProvider'
 
 interface CartDrawerProps {
   isOpen: boolean
@@ -14,9 +16,26 @@ interface CartDrawerProps {
 }
 
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
-  const { state, updateQuantity, removeFromCart } = useCart()
+  const { state, updateQuantity, removeFromCart, addToCart } = useCart()
   const { items: cartItems } = state
   const router = useRouter()
+  const { showToast } = useToast()
+  const [upsellProducts, setUpsellProducts] = useState<any[]>([])
+
+  // Fetch a few products for upsells
+  useEffect(() => {
+    fetch('/api/products/list?limit=6')
+      .then(r => r.json())
+      .then(data => {
+        const products = data.products || data || []
+        // Pick 3 random ones not already in cart
+        const cartIds = new Set(cartItems.map((i: any) => i.product?.id))
+        const available = products.filter((p: any) => !cartIds.has(p.id))
+        const shuffled = available.sort(() => 0.5 - Math.random()).slice(0, 3)
+        setUpsellProducts(shuffled)
+      })
+      .catch(() => {})
+  }, [isOpen])
 
   const subtotal = cartItems.reduce((sum, item) => {
     const price = item.variant?.promo_price || item.variant?.price || 0
@@ -145,6 +164,49 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         </div>
                       </div>
                     </div>
+
+                    {/* Upsell Section */}
+                    {upsellProducts.length > 0 && (
+                      <div className="px-4 pt-6 pb-2 sm:px-6 border-t border-gray-100">
+                        <p className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 mb-4">You Might Also Like</p>
+                        <div className="flex flex-col gap-3">
+                          {upsellProducts.map((p: any) => {
+                            const imgs = Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images || '[]') : [])
+                            const img = imgs[0] || p.imageUrl || ''
+                            const price = Number(p.promoPrice || p.price || 0)
+                            return (
+                              <motion.div
+                                key={p.id}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="flex items-center gap-3 p-2 hover:bg-secondary/30 transition-colors rounded-none group"
+                              >
+                                <div className="relative w-16 h-16 flex-shrink-0 bg-secondary/50 overflow-hidden">
+                                  {img && <Image src={img} alt={p.name} fill className="object-cover" />}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-[10px] font-black text-primary truncate uppercase tracking-wide">{p.name}</p>
+                                  <p className="text-[10px] text-text-muted font-medium">₦{price.toLocaleString()}</p>
+                                </div>
+                                <button
+                                  onClick={() => {
+                                    addToCart(
+                                      { id: p.id, name: p.name, images: imgs } as any,
+                                      { id: p.id, price: price, promo_price: p.promoPrice ? Number(p.promoPrice) : undefined, size: { name: p.size?.label || 'Standard' } } as any,
+                                      1
+                                    )
+                                    showToast('Added to Cart', 'success', p.name)
+                                  }}
+                                  className="w-8 h-8 flex-shrink-0 flex items-center justify-center bg-primary text-white hover:bg-accent transition-colors"
+                                >
+                                  <Plus className="w-4 h-4" />
+                                </button>
+                              </motion.div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Footer */}
                     {cartItems.length > 0 && (

@@ -21,6 +21,10 @@ export default function AttributesPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [espeesRate, setEspeesRate] = useState('2050')
   const [savingSettings, setSavingSettings] = useState(false)
+  const [bannerEnabled, setBannerEnabled] = useState(false)
+  const [bannerMessage, setBannerMessage] = useState('Limited Time — Free Delivery on Orders Above ₦50,000')
+  const [bannerCode, setBannerCode] = useState('FREESHIP')
+  const [savingBanner, setSavingBanner] = useState(false)
 
   useEffect(() => { refreshData() }, [])
 
@@ -41,6 +45,15 @@ export default function AttributesPage() {
       if (st.settings?.espees_exchange_rate) {
         setEspeesRate(st.settings.espees_exchange_rate)
       }
+      if (st.settings?.banner_enabled !== undefined) {
+        setBannerEnabled(st.settings.banner_enabled === 'true')
+      }
+      if (st.settings?.banner_message) {
+        setBannerMessage(st.settings.banner_message)
+      }
+      if (st.settings?.banner_code !== undefined) {
+        setBannerCode(st.settings.banner_code)
+      }
     } catch {}
     setLoading(false)
   }
@@ -59,6 +72,22 @@ export default function AttributesPage() {
       alert('Network error')
     } finally {
       setSavingSettings(false)
+    }
+  }
+
+  const saveBanner = async () => {
+    setSavingBanner(true)
+    try {
+      await Promise.all([
+        fetch('/api/admin/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: 'banner_enabled', value: String(bannerEnabled) }) }),
+        fetch('/api/admin/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: 'banner_message', value: bannerMessage }) }),
+        fetch('/api/admin/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: 'banner_code', value: bannerCode }) }),
+      ])
+      alert('Banner settings saved!')
+    } catch {
+      alert('Failed to save banner settings')
+    } finally {
+      setSavingBanner(false)
     }
   }
 
@@ -354,12 +383,12 @@ export default function AttributesPage() {
               </div>
             )}
 
-            {/* ──── CREDIT PACKS ──── */}
+            {/* ──── DAY PASSES ──── */}
             {activeTab === 'packs' && (
               <div>
                 <div className="px-8 py-6 border-b border-gray-50">
-                  <h2 className="text-lg font-bold text-gray-900">Credit Packs</h2>
-                  <p className="text-sm text-gray-400 mt-0.5">Define the credit packages members can purchase from the dashboard.</p>
+                  <h2 className="text-lg font-bold text-gray-900">Day Passes</h2>
+                  <p className="text-sm text-gray-400 mt-0.5">Define the day passes members can purchase from the dashboard.</p>
                 </div>
                 {/* Add Pack Form */}
                 <div className="px-8 py-6 bg-gray-50/50 border-b border-gray-100 space-y-4">
@@ -375,7 +404,7 @@ export default function AttributesPage() {
                       type="number"
                       value={newPack.credits}
                       onChange={e => setNewPack({ ...newPack, credits: e.target.value })}
-                      placeholder="Credits (e.g. 1)"
+                      placeholder="Days (e.g. 1)"
                       className="px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-800 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
                     />
                     <input
@@ -412,7 +441,7 @@ export default function AttributesPage() {
                 {/* Pack List */}
                 <div className="divide-y divide-gray-50">
                   {packs.length === 0 ? (
-                    <p className="px-8 py-16 text-center text-gray-300 text-sm">No credit packs yet. Create one above.</p>
+                    <p className="px-8 py-16 text-center text-gray-300 text-sm">No day passes yet. Create one above.</p>
                   ) : packs.map(pack => (
                     <div key={pack.id} className={`flex items-center justify-between px-8 py-5 hover:bg-gray-50/50 transition-all group relative ${deletingId === pack.id ? 'bg-gray-50/80' : ''}`}>
                       <div className="flex items-center gap-4">
@@ -424,13 +453,13 @@ export default function AttributesPage() {
                             <p className="text-sm font-bold text-gray-900">{pack.name}</p>
                             {pack.isPopular && <span className="text-[9px] font-bold bg-accent text-white px-1.5 py-0.5 rounded uppercase">Featured</span>}
                           </div>
-                          <p className="text-xs text-gray-400">{pack.description || `${pack.credits} credit${pack.credits !== 1 ? 's' : ''}`}</p>
+                          <p className="text-xs text-gray-400">{pack.description || `${pack.credits} day${pack.credits !== 1 ? 's' : ''}`}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-6">
                         <div className={`text-right ${deletingId === pack.id ? 'opacity-40' : ''}`}>
                           <p className="text-sm font-bold text-gray-900 tabular-nums">₦{pack.price.toLocaleString()}</p>
-                          <p className="text-xs text-gray-400">{pack.credits} credit{pack.credits !== 1 ? 's' : ''}</p>
+                          <p className="text-xs text-gray-400">{pack.credits} day{pack.credits !== 1 ? 's' : ''}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           {deletingId === pack.id && <span className="text-[10px] font-bold text-gray-400 animate-pulse uppercase">Deleting</span>}
@@ -455,7 +484,9 @@ export default function AttributesPage() {
               <h2 className="text-lg font-bold text-gray-900">Payment Settings</h2>
               <p className="text-sm text-gray-400 mt-0.5">Configure global rates and payment gateways.</p>
             </div>
-            <div className="px-8 py-8 space-y-6">
+            <div className="px-8 py-8 space-y-10">
+
+              {/* Espees Rate */}
               <div>
                 <label className="block text-sm font-bold text-gray-900 mb-2">Espees Exchange Rate</label>
                 <p className="text-xs text-gray-400 mb-3">How much of your base currency equals 1 Espee?</p>
@@ -475,6 +506,60 @@ export default function AttributesPage() {
                   </button>
                 </div>
               </div>
+
+              {/* Divider */}
+              <div className="border-t border-gray-100" />
+
+              {/* Promo Banner Controls */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-900">Promo Banner</label>
+                    <p className="text-xs text-gray-400 mt-0.5">The announcement bar shown at the top of the site.</p>
+                  </div>
+                  {/* Toggle Switch */}
+                  <button
+                    onClick={() => setBannerEnabled(v => !v)}
+                    className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${bannerEnabled ? 'bg-accent' : 'bg-gray-200'}`}
+                  >
+                    <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${bannerEnabled ? 'translate-x-6' : 'translate-x-0'}`} />
+                  </button>
+                </div>
+
+                <div className={`space-y-3 transition-opacity ${bannerEnabled ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1.5">Banner Message</label>
+                    <input
+                      type="text"
+                      value={bannerMessage}
+                      onChange={e => setBannerMessage(e.target.value)}
+                      placeholder="e.g. Free Delivery on Orders Above ₦50,000"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold text-gray-800 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1.5">Promo Code (optional)</label>
+                    <input
+                      type="text"
+                      value={bannerCode}
+                      onChange={e => setBannerCode(e.target.value.toUpperCase())}
+                      placeholder="e.g. FREESHIP"
+                      className="w-full sm:w-64 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-800 uppercase tracking-wider placeholder:text-gray-300 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
+                    />
+                    <p className="text-[10px] text-gray-400 mt-1.5">Customers can click to copy this code directly from the banner.</p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={saveBanner}
+                  disabled={savingBanner}
+                  className="mt-6 flex items-center justify-center gap-1.5 bg-gray-900 text-white px-6 py-3 rounded-lg text-xs font-bold hover:bg-accent transition-colors disabled:opacity-40"
+                >
+                  {savingBanner ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+                  Save Banner
+                </button>
+              </div>
+
             </div>
           </div>
         )}
