@@ -148,6 +148,7 @@ model Order {
   userEmail     String
   totalAmount   Float
   items         Json
+  shippingDetails Json?
   status        String   @default("COMPLETED")
   createdAt     DateTime @default(now())
 }

@@ -7,7 +7,8 @@ import {
   LogOut,
   ArrowLeft,
   MessageSquare,
-  Truck
+  Truck,
+  Package
 } from 'lucide-react'
 import Link from 'next/link'
 import { UserButton } from "@clerk/nextjs"
@@ -66,6 +67,7 @@ export default async function AdminLayout({
   const navItems = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Products', href: '/admin/products', icon: ShoppingBag },
+    { name: 'Orders', href: '/admin/orders', icon: Package },
     { name: 'Blogs', href: '/admin/blogs', icon: FileText },
     { name: 'Members', href: '/admin/users', icon: Users },
     { name: 'Support', href: '/admin/support', icon: MessageSquare },

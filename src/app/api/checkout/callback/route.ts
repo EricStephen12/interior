@@ -128,8 +128,8 @@ async function fulfillPayment(orderId: string, metadata: any, userEmail: string)
 
     const dbOrderId = order.id
 
-    if (order.status === 'COMPLETED') {
-      console.log(`Order ${dbOrderId} is already COMPLETED. Skipping fulfillment.`)
+    if (order.status === 'COMPLETED' || order.status === 'PAID') {
+      console.log(`Order ${dbOrderId} is already ${order.status}. Skipping fulfillment.`)
       return
     }
 
@@ -161,9 +161,10 @@ async function fulfillPayment(orderId: string, metadata: any, userEmail: string)
     })
 
     // Update order status
+    const finalStatus = 'PAID'
     await tx.order.update({
       where: { id: dbOrderId },
-      data: { status: 'COMPLETED' }
+      data: { status: finalStatus }
     })
   }).catch((err) => {
     console.error('Fulfillment transaction failed:', err)

@@ -39,8 +39,8 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
   const productCount = await prisma.product.count({ where: dateQuery })
   const blogCount = await prisma.blogPost.count({ where: dateQuery })
   const userCount = await prisma.user.count({ where: dateQuery })
-  const orderCount = await prisma.order.count({ where: { ...dateQuery, status: 'COMPLETED' } })
-  const totalRevenue = await prisma.order.aggregate({ where: { ...dateQuery, status: 'COMPLETED' }, _sum: { totalAmount: true } })
+  const orderCount = await prisma.order.count({ where: { ...dateQuery, status: { in: ['COMPLETED', 'PAID', 'DELIVERED', 'SHIPPED'] } } })
+  const totalRevenue = await prisma.order.aggregate({ where: { ...dateQuery, status: { in: ['COMPLETED', 'PAID', 'DELIVERED', 'SHIPPED'] } }, _sum: { totalAmount: true } })
   const totalCheckIns = await prisma.checkIn.count({ where: checkInQuery })
   
   const recentOrders = await prisma.order.findMany({
@@ -63,7 +63,7 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
   const weeklyOrders = await prisma.order.findMany({
     where: {
       createdAt: { gte: sevenDaysAgo },
-      status: 'COMPLETED'
+      status: { in: ['COMPLETED', 'PAID', 'DELIVERED', 'SHIPPED'] }
     },
     select: {
       totalAmount: true,

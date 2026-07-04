@@ -195,7 +195,12 @@ export default function DashboardPage() {
                                                     <span className="px-5 py-2 bg-secondary text-[9px] font-black tracking-widest text-primary uppercase">
                                                         ₦{order.totalAmount.toLocaleString()}
                                                     </span>
-                                                    <div className={`px-4 py-2 text-[8px] font-black tracking-widest uppercase ${order.status === 'COMPLETED' ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-600'}`}>
+                                                    <div className={`px-4 py-2 text-[8px] font-black tracking-widest uppercase ${
+                                                        ['COMPLETED', 'PAID', 'DELIVERED'].includes(order.status) ? 'bg-green-50 text-green-600' :
+                                                        order.status === 'SHIPPED' ? 'bg-blue-50 text-blue-600' :
+                                                        order.status === 'FAILED' ? 'bg-red-50 text-red-600' :
+                                                        'bg-orange-50 text-orange-600'
+                                                    }`}>
                                                         {order.status}
                                                     </div>
                                                 </div>

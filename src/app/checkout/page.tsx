@@ -165,7 +165,9 @@ function CheckoutContent() {
           hasMembership: hasMembership || isCreditTopup,
           creditAmount: isCreditTopup ? (creditPack?.amount || 0) : (hasMembership ? 30 : 0),
           name: formData.name,
-          paymentMethod: paymentMethod // Pass the selected payment method to the backend
+          paymentMethod: paymentMethod, // Pass the selected payment method to the backend
+          shippingAddress: !isCreditTopup ? formData.address : undefined,
+          deliveryZone: !isCreditTopup ? selectedZone?.name : undefined,
         })
       });
 

@@ -15,7 +15,7 @@ const PAYMENT_TYPE_MAP: Record<SupportedPaymentMethod, string> = {
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { userEmail, phone, totalAmount, items, hasMembership, creditAmount, name, paymentMethod } = body
+    const { userEmail, phone, totalAmount, items, hasMembership, creditAmount, name, paymentMethod, shippingAddress, deliveryZone } = body
 
     if (!items || totalAmount === undefined) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -154,7 +154,13 @@ export async function POST(req: Request) {
         userEmail: email,
         totalAmount,
         items: items,
-        status: 'PENDING'
+        status: 'PENDING',
+        shippingDetails: shippingAddress ? {
+          name: name,
+          phone: phone,
+          address: shippingAddress,
+          zone: deliveryZone
+        } : null
       } as any
     })
 
