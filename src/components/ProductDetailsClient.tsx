@@ -214,7 +214,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="flex items-center gap-2 text-[11px] text-gray-400 font-medium"
+          className="flex items-center gap-2 text-sm text-gray-400 font-medium"
         >
           <Link href="/" className="hover:text-primary transition-colors">Home</Link>
           <span className="text-gray-200">/</span>
@@ -308,7 +308,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
             <div className="space-y-6">
 
               {/* Breadcrumbs inside Right Column */}
-              <div className="text-[11px] text-gray-500 mb-6 flex gap-1">
+              <div className="text-sm text-gray-500 mb-6 flex gap-1">
                 <span>Home /</span>
                 <span>{product.brand?.name || 'Shop'} /</span>
                 <span className="text-gray-800">{product.name}</span>
@@ -317,12 +317,12 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
               {/* Labels */}
               <div className="flex flex-wrap gap-2 mb-4">
                 {hasDiscount && (
-                  <span className="bg-[#f0f0f0] text-gray-800 text-[10px] font-bold px-3 py-1.5 uppercase tracking-wider">
+                  <span className="bg-[#f0f0f0] text-gray-800 text-xs font-bold px-3 py-1.5 uppercase tracking-wider">
                     {discountPercent}% OFF
                   </span>
                 )}
                 {product.isBestseller && (
-                  <span className="bg-[#f0f0f0] text-gray-800 text-[10px] font-bold px-3 py-1.5 uppercase tracking-wider">
+                  <span className="bg-[#f0f0f0] text-gray-800 text-xs font-bold px-3 py-1.5 uppercase tracking-wider">
                     BESTSELLER
                   </span>
                 )}
@@ -347,7 +347,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                   ₦{displayPrice?.toLocaleString()} NGN
                 </span>
                 {hasDiscount && (
-                  <span className="text-[13px] font-bold text-red-600 line-through">
+                  <span className="text-sm font-bold text-red-600 line-through">
                     ₦{originalPrice?.toLocaleString()} NGN
                   </span>
                 )}
@@ -360,7 +360,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                     <span key={i}>{i < Math.round(avgRating) ? '★' : '☆'}</span>
                   ))}
                 </div>
-                <span className="text-[11px] text-gray-500 underline cursor-pointer hover:text-gray-900">
+                <span className="text-sm text-gray-500 underline cursor-pointer hover:text-gray-900">
                   {reviews.length} Reviews
                 </span>
               </div>
@@ -403,7 +403,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                 <button
                   onClick={handleAddToCart}
                   disabled={added}
-                  className={`flex-1 flex items-center justify-center text-[11px] font-bold uppercase tracking-widest transition-colors ${
+                  className={`flex-1 flex items-center justify-center text-sm font-bold uppercase tracking-widest transition-colors ${
                     added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'
                   }`}
                 >
@@ -418,41 +418,41 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                   <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-sm">
                     <Truck className="w-4 h-4 text-primary" />
                   </div>
-                  <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider leading-tight">Fast<br/>Delivery</span>
+                  <span className="text-xs font-bold text-gray-500 uppercase tracking-wider leading-tight">Fast<br/>Delivery</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 p-4 bg-[#f8f7f5] rounded-xl text-center">
                   <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-sm">
                     <Shield className="w-4 h-4 text-primary" />
                   </div>
-                  <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider leading-tight">Secure<br/>Payment</span>
+                  <span className="text-xs font-bold text-gray-500 uppercase tracking-wider leading-tight">Secure<br/>Payment</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 p-4 bg-[#f8f7f5] rounded-xl text-center">
                   <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-sm">
                     <RotateCcw className="w-4 h-4 text-primary" />
                   </div>
-                  <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider leading-tight">Easy<br/>Returns</span>
+                  <span className="text-xs font-bold text-gray-500 uppercase tracking-wider leading-tight">Easy<br/>Returns</span>
                 </div>
               </div>
 
               {/* Product meta details */}
               <div className="bg-[#f8f7f5] rounded-xl p-6 space-y-4">
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Product Details</p>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Product Details</p>
                 {product.brand?.name && (
                   <div className="flex items-center justify-between py-2 border-b border-white/80">
-                    <span className="text-[13px] text-gray-400 font-medium">Brand</span>
-                    <span className="text-[13px] font-semibold text-primary">{product.brand.name}</span>
+                    <span className="text-sm text-gray-400 font-medium">Brand</span>
+                    <span className="text-sm font-semibold text-primary">{product.brand.name}</span>
                   </div>
                 )}
                 {product.type && (
                   <div className="flex items-center justify-between py-2 border-b border-white/80">
-                    <span className="text-[13px] text-gray-400 font-medium">Category</span>
-                    <span className="text-[13px] font-semibold text-primary">{product.type}</span>
+                    <span className="text-sm text-gray-400 font-medium">Category</span>
+                    <span className="text-sm font-semibold text-primary">{product.type}</span>
                   </div>
                 )}
                 {product.size?.label && (
                   <div className="flex items-center justify-between py-2">
-                    <span className="text-[13px] text-gray-400 font-medium">Size</span>
-                    <span className="text-[13px] font-semibold text-primary">{product.size.label}</span>
+                    <span className="text-sm text-gray-400 font-medium">Size</span>
+                    <span className="text-sm font-semibold text-primary">{product.size.label}</span>
                   </div>
                 )}
               </div>
@@ -466,13 +466,13 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
       {/* Back to products bar */}
       <div className="border-t border-gray-100">
         <div className="max-w-[1440px] mx-auto px-5 sm:px-10 py-8 flex items-center justify-between">
-          <Link href="/products" className="flex items-center gap-3 text-[11px] font-bold text-gray-400 uppercase tracking-[0.2em] hover:text-primary transition-colors group">
+          <Link href="/products" className="flex items-center gap-3 text-sm font-bold text-gray-400 uppercase tracking-[0.2em] hover:text-primary transition-colors group">
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Continue Shopping
           </Link>
           <button
             onClick={() => { toggleWishlist(initialProduct.id); showToast(wishlisted ? 'Removed from Wishlist' : 'Saved to Wishlist', 'success', initialProduct.name) }}
-            className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-red-500 transition-colors"
+            className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-red-500 transition-colors"
           >
             <Heart className={`w-4 h-4 ${wishlisted ? 'fill-red-500 text-red-500' : ''}`} />
             {wishlisted ? 'Wishlisted' : 'Save'}
@@ -485,7 +485,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
         <div className="max-w-[1440px] mx-auto px-5 sm:px-10 py-16">
           <div className="flex items-end gap-6 mb-12">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-accent mb-2">Customer Reviews</p>
+              <p className="text-xs font-black uppercase tracking-[0.4em] text-accent mb-2">Customer Reviews</p>
               <h3 className="text-4xl font-black text-primary">{avgRating > 0 ? avgRating.toFixed(1) : 'No reviews yet'}</h3>
               {avgRating > 0 && (
                 <div className="flex gap-1 mt-2">
@@ -507,7 +507,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                 reviews.map(r => (
                   <motion.div key={r.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="border-b border-gray-100 pb-6 relative group">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[11px] font-black text-primary uppercase tracking-widest">{r.userName}</span>
+                      <span className="text-sm font-black text-primary uppercase tracking-widest">{r.userName}</span>
                       <div className="flex items-center gap-4">
                         {r.userEmail === user?.primaryEmailAddress?.emailAddress && (
                           <button
@@ -519,7 +519,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         )}
-                        <span className="text-[10px] text-text-muted">{new Date(r.createdAt).toLocaleDateString()}</span>
+                        <span className="text-xs text-text-muted">{new Date(r.createdAt).toLocaleDateString()}</span>
                       </div>
                     </div>
                     <div className="flex gap-1 mb-2">
@@ -535,11 +535,11 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
 
             {/* Review Form */}
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary mb-6">Write a Review</p>
+              <p className="text-xs font-black uppercase tracking-[0.4em] text-primary mb-6">Write a Review</p>
               {!isSignedIn ? (
                 <div className="bg-white border border-gray-100 p-6 text-center">
                   <p className="text-sm text-text-muted mb-4">Sign in to leave a review</p>
-                  <Link href="/sign-in" className="text-[10px] font-black uppercase tracking-widest text-accent hover:text-primary transition-colors">
+                  <Link href="/sign-in" className="text-xs font-black uppercase tracking-widest text-accent hover:text-primary transition-colors">
                     Sign In →
                   </Link>
                 </div>
@@ -552,7 +552,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                 <div className="space-y-6">
                   {/* Star Picker */}
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Your Rating</p>
+                    <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Your Rating</p>
                     <div className="flex gap-2">
                       {[1,2,3,4,5].map(s => (
                         <button type="button" key={s} onClick={() => setReviewForm(f => ({ ...f, rating: s }))} className="transition-transform hover:scale-110 focus:outline-none">
@@ -564,7 +564,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
 
                   {/* Comment */}
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Your Review</p>
+                    <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Your Review</p>
                     <textarea
                       value={reviewForm.comment}
                       onChange={e => setReviewForm(f => ({ ...f, comment: e.target.value }))}
@@ -579,7 +579,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                   <button
                     onClick={handleSubmitReview}
                     disabled={submittingReview || !reviewForm.comment.trim()}
-                    className="w-full bg-primary text-white py-4 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-primary text-white py-4 text-xs font-black uppercase tracking-[0.3em] hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {submittingReview ? 'Submitting...' : 'Submit Review'}
                   </button>
@@ -594,14 +594,14 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
       {recentlyViewed.length > 0 && (
         <div className="border-t border-gray-100">
           <div className="max-w-[1440px] mx-auto px-5 sm:px-10 py-16">
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-accent mb-10">Recently Viewed</p>
+            <p className="text-xs font-black uppercase tracking-[0.4em] text-accent mb-10">Recently Viewed</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {recentlyViewed.map(p => (
                 <Link key={p.id} href={`/products/${p.id}`} className="group">
                   <div className="relative aspect-square bg-secondary/50 overflow-hidden mb-4">
                     {p.image && <Image src={p.image} alt={p.name} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />}
                   </div>
-                  <p className="text-[11px] font-black text-primary uppercase tracking-wide truncate group-hover:text-accent transition-colors">{p.name}</p>
+                  <p className="text-sm font-black text-primary uppercase tracking-wide truncate group-hover:text-accent transition-colors">{p.name}</p>
                   <p className="text-sm text-text-muted font-medium">₦{Number(p.price).toLocaleString()}</p>
                 </Link>
               ))}
@@ -612,4 +612,5 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
     </div>
   );
 }
+
 

@@ -498,47 +498,47 @@ function ProductCard({ product, index }: { product: any, index: number }) {
               ) : (
                 <button
                   onClick={handleAddToCart}
-                  className="w-full bg-black text-white py-3 text-[10px] font-black tracking-widest uppercase hover:bg-gray-800 transition-colors shadow-lg flex items-center justify-center gap-2"
+                  className="w-full bg-black text-white py-3.5 text-xs font-black tracking-widest uppercase hover:bg-gray-800 transition-colors shadow-lg flex items-center justify-center gap-2"
                 >
-                  <ShoppingCart className="w-3.5 h-3.5" /> ADD TO CART
+                  <ShoppingCart className="w-4 h-4" /> ADD TO CART
                 </button>
               )}
             </div>
           </div>
 
-          <div className="flex flex-col gap-1.5 mt-4">
+          <div className="flex flex-col gap-1.5 mt-5">
             <div className="flex items-start justify-between gap-4">
-              <h3 className="font-bold text-sm text-primary uppercase tracking-wide group-hover:text-accent transition-colors">
+              <h3 className="font-bold text-base text-primary uppercase tracking-wide group-hover:text-accent transition-colors">
                 {product.name}
               </h3>
             </div>
             
             {reviewCount > 0 && (
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <div className="flex text-black text-[10px] gap-0.5">
+              <div className="flex items-center gap-1.5 mt-1">
+                <div className="flex text-black text-xs gap-0.5">
                   {[...Array(5)].map((_, i) => (
                     <span key={i}>{i < Math.round(avgRating) ? '★' : '☆'}</span>
                   ))}
                 </div>
-                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">
                   {reviewCount}
                 </span>
               </div>
             )}
             
-            <div className="flex items-center gap-2 text-[10px] uppercase font-bold tracking-widest text-gray-400">
+            <div className="flex items-center gap-2 text-xs uppercase font-bold tracking-widest text-gray-400 mt-1">
               <span>{product.brand}</span>
               <span className="w-1 h-1 rounded-full bg-gray-200" />
               <span>{product.size}</span>
             </div>
 
-            <div className="flex items-center gap-2 mt-1">
-              <span className="font-black text-sm text-primary">
-                ?{product.promo_price ? product.promo_price.toLocaleString() : product.price.toLocaleString()}
+            <div className="flex items-center gap-2 mt-2">
+              <span className="font-black text-base text-primary">
+                ₦{product.promo_price ? product.promo_price.toLocaleString() : product.price.toLocaleString()}
               </span>
               {product.promo_price && (
-                <span className="font-bold text-xs text-gray-300 line-through">
-                  ?{product.price.toLocaleString()}
+                <span className="font-bold text-sm text-gray-300 line-through">
+                  ₦{product.price.toLocaleString()}
                 </span>
               )}
             </div>
