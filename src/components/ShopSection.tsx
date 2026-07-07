@@ -456,12 +456,12 @@ function ProductCard({ product, index }: { product: any, index: number }) {
             {/* White Labels */}
             <div className="absolute top-3 left-3 z-20 flex flex-col gap-1.5">
               {product.promo_price && (
-                <span className="bg-white px-2 py-1 text-[9px] font-bold text-gray-800 uppercase tracking-wider shadow-sm">
+                <span className="bg-white px-2 py-1 text-xs font-bold text-gray-800 uppercase tracking-wider shadow-sm">
                   SALE
                 </span>
               )}
               {product.isBestseller && (
-                <span className="bg-white px-2 py-1 text-[9px] font-bold text-gray-800 uppercase tracking-wider shadow-sm">
+                <span className="bg-white px-2 py-1 text-xs font-bold text-gray-800 uppercase tracking-wider shadow-sm">
                   BESTSELLER
                 </span>
               )}
@@ -508,14 +508,14 @@ function ProductCard({ product, index }: { product: any, index: number }) {
 
           <div className="flex flex-col gap-1.5 mt-5">
             <div className="flex items-start justify-between gap-4">
-              <h3 className="font-bold text-base text-primary uppercase tracking-wide group-hover:text-accent transition-colors">
+              <h3 className="font-bold text-lg text-primary uppercase tracking-wide group-hover:text-accent transition-colors">
                 {product.name}
               </h3>
             </div>
             
             {reviewCount > 0 && (
               <div className="flex items-center gap-1.5 mt-1">
-                <div className="flex text-black text-xs gap-0.5">
+                <div className="flex text-yellow-500 text-sm gap-0.5">
                   {[...Array(5)].map((_, i) => (
                     <span key={i}>{i < Math.round(avgRating) ? '★' : '☆'}</span>
                   ))}
@@ -533,11 +533,11 @@ function ProductCard({ product, index }: { product: any, index: number }) {
             </div>
 
             <div className="flex items-center gap-2 mt-2">
-              <span className="font-black text-base text-primary">
+              <span className="font-black text-lg text-primary">
                 ₦{product.promo_price ? product.promo_price.toLocaleString() : product.price.toLocaleString()}
               </span>
               {product.promo_price && (
-                <span className="font-bold text-sm text-gray-300 line-through">
+                <span className="font-bold text-base text-gray-400 line-through">
                   ₦{product.price.toLocaleString()}
                 </span>
               )}

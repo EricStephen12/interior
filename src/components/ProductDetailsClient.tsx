@@ -355,7 +355,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
 
               {/* Reviews */}
               <div className="flex items-center gap-3">
-                <div className="flex text-black text-sm gap-0.5">
+                <div className="flex text-yellow-500 text-lg gap-0.5">
                   {[...Array(5)].map((_, i) => (
                     <span key={i}>{i < Math.round(avgRating) ? '★' : '☆'}</span>
                   ))}
