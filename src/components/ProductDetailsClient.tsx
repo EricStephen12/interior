@@ -308,7 +308,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
             <div className="space-y-6">
 
               {/* Breadcrumbs inside Right Column */}
-              <div className="text-sm text-gray-500 mb-6 flex gap-1">
+              <div className="text-sm sm:text-base text-gray-500 mb-6 flex gap-1">
                 <span>Home /</span>
                 <span>{product.brand?.name || 'Shop'} /</span>
                 <span className="text-gray-800">{product.name}</span>
@@ -317,12 +317,12 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
               {/* Labels */}
               <div className="flex flex-wrap gap-2 mb-4">
                 {hasDiscount && (
-                  <span className="bg-[#f0f0f0] text-gray-800 text-xs font-bold px-3 py-1.5 uppercase tracking-wider">
+                  <span className="bg-[#f0f0f0] text-gray-800 text-sm font-bold px-4 py-2 uppercase tracking-wider">
                     {discountPercent}% OFF
                   </span>
                 )}
                 {product.isBestseller && (
-                  <span className="bg-[#f0f0f0] text-gray-800 text-xs font-bold px-3 py-1.5 uppercase tracking-wider">
+                  <span className="bg-[#f0f0f0] text-gray-800 text-sm font-bold px-4 py-2 uppercase tracking-wider">
                     BESTSELLER
                   </span>
                 )}
@@ -330,24 +330,24 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
 
               {/* Title & Wishlist */}
               <div className="flex justify-between items-start gap-4">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight uppercase">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 leading-tight uppercase tracking-tight">
                   {product.name}
                 </h1>
                 <button
                   onClick={() => toggleWishlist(product.id)}
-                  className="mt-1 flex-shrink-0"
+                  className="mt-2 flex-shrink-0"
                 >
-                  <Heart className={`w-6 h-6 transition-colors ${wishlisted ? 'fill-red-500 text-red-500' : 'text-gray-900 hover:text-gray-600'}`} />
+                  <Heart className={`w-8 h-8 transition-colors ${wishlisted ? 'fill-red-500 text-red-500' : 'text-gray-900 hover:text-gray-600'}`} />
                 </button>
               </div>
 
               {/* Price */}
-              <div className="flex items-baseline gap-3">
-                <span className="text-lg font-bold text-gray-900">
+              <div className="flex items-baseline gap-4">
+                <span className="text-2xl sm:text-3xl font-black text-gray-900">
                   ₦{displayPrice?.toLocaleString()} NGN
                 </span>
                 {hasDiscount && (
-                  <span className="text-sm font-bold text-red-600 line-through">
+                  <span className="text-lg font-bold text-red-600 line-through">
                     ₦{originalPrice?.toLocaleString()} NGN
                   </span>
                 )}
@@ -355,12 +355,12 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
 
               {/* Reviews */}
               <div className="flex items-center gap-3">
-                <div className="flex text-black text-xs gap-0.5">
+                <div className="flex text-black text-sm gap-0.5">
                   {[...Array(5)].map((_, i) => (
                     <span key={i}>{i < Math.round(avgRating) ? '★' : '☆'}</span>
                   ))}
                 </div>
-                <span className="text-sm text-gray-500 underline cursor-pointer hover:text-gray-900">
+                <span className="text-base text-gray-500 underline cursor-pointer hover:text-gray-900">
                   {reviews.length} Reviews
                 </span>
               </div>
@@ -368,7 +368,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
               {/* Description */}
               {product.description && (
                 <div className="pt-2">
-                  <p className="text-sm text-gray-600 leading-relaxed">
+                  <p className="text-base text-gray-600 leading-relaxed">
                     {product.description}
                   </p>
                 </div>
@@ -387,15 +387,15 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
               {/* Add to Cart Area */}
               <div className="flex gap-4 pt-6">
                 {/* Quantity */}
-                <div className="flex border border-gray-300 w-28 shrink-0">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 flex items-center justify-center text-gray-600 hover:text-black">
-                    <Minus className="w-3 h-3" />
+                <div className="flex border border-gray-300 w-32 shrink-0">
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 flex items-center justify-center text-gray-600 hover:text-black">
+                    <Minus className="w-4 h-4" />
                   </button>
-                  <div className="flex-1 flex items-center justify-center text-sm font-bold">
+                  <div className="flex-1 flex items-center justify-center text-base font-bold">
                     {quantity}
                   </div>
-                  <button onClick={() => setQuantity(quantity + 1)} className="w-8 flex items-center justify-center text-gray-600 hover:text-black">
-                    <Plus className="w-3 h-3" />
+                  <button onClick={() => setQuantity(quantity + 1)} className="w-10 flex items-center justify-center text-gray-600 hover:text-black">
+                    <Plus className="w-4 h-4" />
                   </button>
                 </div>
 
@@ -403,7 +403,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                 <button
                   onClick={handleAddToCart}
                   disabled={added}
-                  className={`flex-1 flex items-center justify-center text-sm font-bold uppercase tracking-widest transition-colors ${
+                  className={`flex-1 py-4 flex items-center justify-center text-base font-black uppercase tracking-widest transition-colors ${
                     added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'
                   }`}
                 >
