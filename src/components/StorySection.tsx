@@ -24,7 +24,7 @@ export default function StorySection() {
           <div className="lg:col-span-8 relative">
             <div className="relative aspect-[16/10] md:aspect-[16/8] overflow-hidden group shadow-2xl">
               <video
-                src="/video/story-main.mp4"
+                src="/video/story-main-v2.mp4"
                 autoPlay
                 muted
                 loop
@@ -116,7 +116,7 @@ export default function StorySection() {
           <div className="lg:col-span-7 relative">
             <div className="relative aspect-[3/4] w-full">
               <video
-                src="/video/built.mp4"
+                src="/video/built-v2.mp4"
                 autoPlay
                 muted
                 loop
@@ -134,7 +134,7 @@ export default function StorySection() {
               >
                 <div className="w-full h-full border-[20px] border-white relative overflow-hidden group shadow-2xl">
                   <video
-                    src="/video/shop-detail.mp4"
+                    src="/video/shop-detail-v2.mp4"
                     autoPlay
                     muted
                     loop

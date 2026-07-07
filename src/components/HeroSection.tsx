@@ -115,7 +115,7 @@ export default function HeroSection() {
             className="absolute -bottom-4 left-4 sm:-bottom-6 sm:left-8 lg:-bottom-12 lg:-left-12 w-24 h-36 sm:w-32 sm:h-48 xl:w-48 xl:h-64 border-[4px] xl:border-[12px] border-white shadow-2xl z-30"
           >
             <video
-              src="/video/hero-main.mp4"
+              src="/video/hero-main-v2.mp4"
               autoPlay
               loop
               muted
