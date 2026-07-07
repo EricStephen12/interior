@@ -116,7 +116,7 @@ export default function StorySection() {
           <div className="lg:col-span-7 relative">
             <div className="relative aspect-[3/4] w-full">
               <video
-                src="/video/built.webm"
+                src="/video/built.mp4"
                 autoPlay
                 muted
                 loop
@@ -134,7 +134,7 @@ export default function StorySection() {
               >
                 <div className="w-full h-full border-[20px] border-white relative overflow-hidden group shadow-2xl">
                   <video
-                    src="/video/shop-detail.webm"
+                    src="/video/shop-detail.mp4"
                     autoPlay
                     muted
                     loop
