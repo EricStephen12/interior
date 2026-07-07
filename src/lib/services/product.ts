@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma'
 export async function getProducts() {
   return prisma.product.findMany({
     orderBy: { createdAt: 'desc' },
-    include: { brand: true, categories: { include: { category: true } } }
+    include: { brand: true, size: true, categories: { include: { category: true } } }
   })
 }
 

@@ -31,6 +31,7 @@ export async function POST(req: Request) {
         brandId: data.brandId,
         sizeId: data.sizeId,
         promoCodeId: data.promoCodeId || null,
+        isBestseller: data.isBestseller || false,
       }
     })
     return NextResponse.json({ success: true, product })

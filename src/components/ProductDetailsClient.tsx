@@ -20,7 +20,8 @@ import {
   RotateCcw,
   Heart,
   Star,
-  Trash2
+  Trash2,
+  ChevronDown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMembership } from '@/lib/membership-context';
@@ -208,7 +209,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
     <div className="bg-white min-h-screen selection:bg-accent/10">
 
       {/* Breadcrumb */}
-      <div className="max-w-[1440px] mx-auto px-5 sm:px-10 pt-28 sm:pt-36 pb-4">
+      <div className="max-w-[1440px] mx-auto px-5 sm:px-10 pt-8 sm:pt-16 pb-4">
         <motion.nav
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -231,108 +232,70 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
 
       {/* Main Product Grid */}
       <div className="max-w-[1440px] mx-auto px-5 sm:px-10 pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 xl:gap-24">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 xl:gap-16">
 
           {/* ═══════════ LEFT: IMAGE GALLERY ═══════════ */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="space-y-4"
+            className="w-full lg:w-[60%] flex flex-col-reverse lg:flex-row gap-4 lg:gap-6"
           >
+            {/* Thumbnails (Vertical on Desktop, Horizontal on Mobile) */}
+            {images.length > 1 && (
+              <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-y-auto lg:w-28 scrollbar-hide shrink-0 pb-2 lg:pb-0">
+                {(images as string[]).map((img: string, idx: number) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveIndex(idx)}
+                    className={`relative w-[80px] h-[100px] lg:w-full lg:h-[120px] flex-shrink-0 transition-all duration-300 ${
+                      activeIndex === idx
+                        ? 'ring-1 ring-black border border-black'
+                        : 'opacity-70 hover:opacity-100'
+                    }`}
+                  >
+                    <Image src={img} alt="" fill className="object-cover mix-blend-multiply bg-[#f5f5f5]" sizes="120px" />
+                  </button>
+                ))}
+              </div>
+            )}
+
             {/* Main Image Container */}
-            <div className="relative aspect-[4/5] bg-[#f8f7f5] rounded-2xl overflow-hidden group cursor-crosshair">
+            <div className="relative aspect-[4/5] lg:aspect-auto lg:min-h-[700px] flex-1 bg-[#ececec] group cursor-crosshair">
               {/* Shimmer Placeholder */}
               {!imageLoaded && activeImage && (
-                <div className="absolute inset-0 bg-gray-100 animate-pulse flex items-center justify-center z-10">
-                  <div className="w-8 h-8 border-2 border-gray-200 border-t-primary rounded-full animate-spin" />
-                </div>
+                <div className="absolute inset-0 bg-gray-100 animate-pulse flex items-center justify-center z-10" />
               )}
               
               <AnimatePresence mode="wait">
                 {activeImage ? (
                   <motion.div
                     key={activeIndex}
-                    initial={{ opacity: 0, scale: 1.02 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
                     className="w-full h-full relative"
                   >
                     <Image
                       src={activeImage}
                       alt={product.name}
                       fill
-                      className={`object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] ${
-                        imageLoaded ? 'opacity-100 blur-0' : 'opacity-0 blur-sm'
+                      className={`object-cover mix-blend-multiply transition-opacity duration-500 ${
+                        imageLoaded ? 'opacity-100' : 'opacity-0'
                       }`}
-                      sizes="(max-width: 768px) 100vw, 50vw"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
                       priority
                       onLoad={() => setImageLoaded(true)}
                     />
                   </motion.div>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-50">
-                    <p className="text-gray-300 text-[10px] font-bold uppercase tracking-widest">No Image Found</p>
+                  <div className="w-full h-full flex items-center justify-center bg-[#ececec]">
+                    <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">No Image Found</p>
                   </div>
                 )}
               </AnimatePresence>
-
-              {/* Subtle gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent pointer-events-none" />
-
-              {/* Nav arrows */}
-              {images.length > 1 && (
-                <>
-                  <button
-                    onClick={prevImage}
-                    className="absolute left-5 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-primary/60 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:text-primary hover:scale-110 shadow-xl shadow-black/5 z-20"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={nextImage}
-                    className="absolute right-5 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-primary/60 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:text-primary hover:scale-110 shadow-xl shadow-black/5 z-20"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </>
-              )}
-
-              {/* Discount badge */}
-              {hasDiscount && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="absolute top-5 left-5 z-20"
-                >
-                  <span className="bg-primary text-white text-[11px] font-bold px-3.5 py-2 rounded-lg shadow-lg shadow-primary/20">
-                    -{discountPercent}% OFF
-                  </span>
-                </motion.div>
-              )}
             </div>
-
-            {/* Thumbnails */}
-            {images.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
-                {(images as string[]).map((img: string, idx: number) => (
-                  <motion.button
-                    key={idx}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setActiveIndex(idx)}
-                    className={`relative w-[88px] h-[88px] flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300 ${
-                      activeIndex === idx
-                        ? 'ring-2 ring-primary ring-offset-2 shadow-lg'
-                        : 'opacity-40 hover:opacity-80 grayscale hover:grayscale-0'
-                    }`}
-                  >
-                    <Image src={img} alt="" fill className="object-cover" sizes="88px" />
-                  </motion.button>
-                ))}
-              </div>
-            )}
           </motion.div>
 
           {/* ═══════════ RIGHT: PRODUCT INFO ═══════════ */}
@@ -340,118 +303,114 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:sticky lg:top-32 lg:self-start py-4"
+            className="w-full lg:w-[40%] lg:sticky lg:top-32 lg:self-start py-4"
           >
-            <div className="space-y-7">
+            <div className="space-y-6">
 
-              {/* Brand + Name */}
-              <div className="space-y-4">
-                {product.brand?.name && (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-[11px] font-bold text-accent uppercase tracking-[0.35em]"
-                  >
-                    {product.brand.name}
-                  </motion.p>
+              {/* Breadcrumbs inside Right Column */}
+              <div className="text-[11px] text-gray-500 mb-6 flex gap-1">
+                <span>Home /</span>
+                <span>{product.brand?.name || 'Shop'} /</span>
+                <span className="text-gray-800">{product.name}</span>
+              </div>
+
+              {/* Labels */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                {hasDiscount && (
+                  <span className="bg-[#f0f0f0] text-gray-800 text-[10px] font-bold px-3 py-1.5 uppercase tracking-wider">
+                    {discountPercent}% OFF
+                  </span>
                 )}
-                <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-primary leading-[1.1] tracking-tight">
-                  {product.name}
-                </h1>
-                {product.type && (
-                  <span className="inline-block text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] border border-gray-100 px-3 py-1.5 rounded-full">
-                    {product.type}
+                {product.isBestseller && (
+                  <span className="bg-[#f0f0f0] text-gray-800 text-[10px] font-bold px-3 py-1.5 uppercase tracking-wider">
+                    BESTSELLER
                   </span>
                 )}
               </div>
 
+              {/* Title & Wishlist */}
+              <div className="flex justify-between items-start gap-4">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight uppercase">
+                  {product.name}
+                </h1>
+                <button
+                  onClick={() => toggleWishlist(product.id)}
+                  className="mt-1 flex-shrink-0"
+                >
+                  <Heart className={`w-6 h-6 transition-colors ${wishlisted ? 'fill-red-500 text-red-500' : 'text-gray-900 hover:text-gray-600'}`} />
+                </button>
+              </div>
+
               {/* Price */}
-              <div className="flex items-end gap-4 pb-6 border-b border-gray-100">
-                <span className="text-[2rem] sm:text-[2.5rem] font-bold text-primary tabular-nums leading-none">
-                  ₦{displayPrice?.toLocaleString()}
+              <div className="flex items-baseline gap-3">
+                <span className="text-lg font-bold text-gray-900">
+                  ₦{displayPrice?.toLocaleString()} NGN
                 </span>
                 {hasDiscount && (
-                  <div className="flex items-center gap-3 pb-1">
-                    <span className="text-lg text-gray-300 line-through tabular-nums font-medium">
-                      ₦{originalPrice?.toLocaleString()}
-                    </span>
-                    <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2.5 py-1 rounded-full border border-green-100">
-                      SAVE {discountPercent}%
-                    </span>
-                  </div>
+                  <span className="text-[13px] font-bold text-red-600 line-through">
+                    ₦{originalPrice?.toLocaleString()} NGN
+                  </span>
                 )}
+              </div>
+
+              {/* Reviews */}
+              <div className="flex items-center gap-3">
+                <div className="flex text-black text-xs gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i}>{i < Math.round(avgRating) ? '★' : '☆'}</span>
+                  ))}
+                </div>
+                <span className="text-[11px] text-gray-500 underline cursor-pointer hover:text-gray-900">
+                  {reviews.length} Reviews
+                </span>
               </div>
 
               {/* Description */}
               {product.description && (
-                <div className="pb-6 border-b border-gray-100">
-                  <p className="text-[15px] text-gray-500 leading-[1.9] font-normal whitespace-pre-line">
+                <div className="pt-2">
+                  <p className="text-sm text-gray-600 leading-relaxed">
                     {product.description}
                   </p>
                 </div>
               )}
 
-              {/* Size */}
+              {/* Size Select (Faux Dropdown styling) */}
               {product.size?.label && (
-                <div className="pb-6 border-b border-gray-100 space-y-3">
-                  <p className="text-[11px] font-bold text-gray-800 uppercase tracking-[0.15em]">Size</p>
-                  <div className="flex gap-2">
-                    <span className="px-6 py-3 text-sm font-bold bg-primary text-white rounded-lg shadow-md shadow-primary/15 transition-transform active:scale-95">
-                      {product.size.label}
-                    </span>
+                <div className="pt-4">
+                  <div className="w-full border border-gray-300 px-4 py-3 text-sm flex justify-between items-center cursor-pointer hover:border-gray-900 transition-colors">
+                    <span className="font-bold">{product.size.label}</span>
+                    <ChevronDown className="w-4 h-4 text-gray-500" />
                   </div>
                 </div>
               )}
 
-              {/* Quantity + Add to Cart */}
-              <div className="space-y-3 pt-1">
-                <p className="text-[11px] font-bold text-gray-800 uppercase tracking-[0.15em]">Quantity</p>
-                <div className="flex items-center gap-3">
-                  {/* Quantity Selector */}
-                  <div className="flex items-center bg-[#f8f7f5] rounded-lg h-[54px] overflow-hidden">
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-12 h-full flex items-center justify-center text-gray-400 hover:text-primary hover:bg-gray-100 transition-colors"
-                    >
-                      <Minus className="w-4 h-4" />
-                    </button>
-                    <span className="w-10 text-center text-sm font-bold tabular-nums text-primary select-none">{quantity}</span>
-                    <button
-                      onClick={() => setQuantity(quantity + 1)}
-                      className="w-12 h-full flex items-center justify-center text-gray-400 hover:text-primary hover:bg-gray-100 transition-colors"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
+              {/* Add to Cart Area */}
+              <div className="flex gap-4 pt-6">
+                {/* Quantity */}
+                <div className="flex border border-gray-300 w-28 shrink-0">
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 flex items-center justify-center text-gray-600 hover:text-black">
+                    <Minus className="w-3 h-3" />
+                  </button>
+                  <div className="flex-1 flex items-center justify-center text-sm font-bold">
+                    {quantity}
                   </div>
-
-                  {/* Add to cart */}
-                  <motion.button
-                    whileTap={{ scale: 0.97 }}
-                    onClick={handleAddToCart}
-                    disabled={added}
-                    className={`flex-1 h-[54px] rounded-lg flex items-center justify-center gap-3 text-[13px] font-bold tracking-wide transition-all duration-500 shadow-lg shimmer-btn ${
-                      added
-                        ? 'bg-green-500 text-white shadow-green-200/50'
-                        : 'bg-primary text-white hover:shadow-xl hover:shadow-primary/20 active:shadow-md'
-                    }`}
-                  >
-                    <AnimatePresence mode="wait">
-                      {added ? (
-                        <motion.span key="added" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex items-center gap-2">
-                           <Check className="w-5 h-5" />
-                          Added to Cart
-                        </motion.span>
-                      ) : (
-                        <motion.span key="add" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex items-center gap-2">
-                          <ShoppingCart className="w-5 h-5" />
-                          Add to Cart — ₦{(displayPrice * quantity)?.toLocaleString()}
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                  </motion.button>
+                  <button onClick={() => setQuantity(quantity + 1)} className="w-8 flex items-center justify-center text-gray-600 hover:text-black">
+                    <Plus className="w-3 h-3" />
+                  </button>
                 </div>
+
+                {/* Add to Bag Button */}
+                <button
+                  onClick={handleAddToCart}
+                  disabled={added}
+                  className={`flex-1 flex items-center justify-center text-[11px] font-bold uppercase tracking-widest transition-colors ${
+                    added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'
+                  }`}
+                >
+                  {added ? 'ADDED TO BAG' : 'ADD TO BAG'}
+                </button>
               </div>
+
 
               {/* Trust bar */}
               <div className="grid grid-cols-3 gap-3 pt-4">
@@ -653,3 +612,4 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
     </div>
   );
 }
+

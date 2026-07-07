@@ -25,8 +25,9 @@ export default function AdminMobileNav() {
     <>
       {/* Mobile Top Bar */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-primary border-b border-white/10 flex items-center justify-between px-4 z-[9990]">
-        <div className="text-white font-playfair font-black tracking-widest uppercase">
-          SHARERS <span className="text-accent text-[10px] ml-2">Admin</span>
+        <div className="flex items-center gap-2">
+          <img src="/logo.png" alt="Sharers Gym" className="h-5 object-contain" />
+          <span className="text-accent text-[10px] font-black uppercase">Admin</span>
         </div>
         <button 
           onClick={() => setIsOpen(true)}
@@ -51,8 +52,8 @@ export default function AdminMobileNav() {
         }`}
       >
         <div className="h-16 flex items-center justify-between px-6 border-b border-white/10 shrink-0">
-          <div className="text-white font-playfair font-black tracking-widest uppercase">
-            SHARERS
+          <div className="flex items-center">
+            <img src="/logo.png" alt="Sharers Gym" className="h-6 object-contain brightness-0 invert" />
           </div>
           <button 
             onClick={() => setIsOpen(false)}

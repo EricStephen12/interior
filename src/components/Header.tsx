@@ -49,20 +49,13 @@ export default function Header() {
           </nav>
 
           {/* Logo - Center */}
-          <Link href="/" className="flex flex-col items-center">
-            <motion.div
+          <Link href="/" className="flex flex-col items-center justify-center">
+            <motion.img
+              src="/logo.png"
+              alt="Sharers Gym"
               whileHover={{ scale: 1.05 }}
-              className={`tracking-[0.3em] font-black transition-all duration-300 leading-none ${isScrolled
-                ? 'text-primary text-xl'
-                : 'text-primary text-2xl'
-                }`}
-              style={{ fontFamily: 'var(--font-montserrat)' }}
-            >
-              SHARERS
-            </motion.div>
-            <span className={`text-[9px] tracking-[0.5em] font-black text-accent uppercase mt-1 ${isScrolled ? 'hidden' : 'block'}`}>
-              GYM
-            </span>
+              className={`transition-all duration-300 object-contain ${isScrolled ? 'h-8' : 'h-12 sm:h-14'}`}
+            />
           </Link>
 
           {/* Action Group */}
@@ -107,7 +100,7 @@ export default function Header() {
                     </div>
                     <div className="p-2">
                       <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 text-[10px] font-black text-primary hover:bg-secondary transition-colors uppercase tracking-widest">
-                        <Users className="w-3.5 h-3.5" /> My Pass
+                        <Users className="w-3.5 h-3.5" /> Dashboard
                       </Link>
                       <Link href="/wishlist" className="flex items-center gap-3 px-3 py-2 text-[10px] font-black text-primary hover:bg-secondary transition-colors uppercase tracking-widest">
                         <Heart className="w-3.5 h-3.5" /> 
@@ -118,7 +111,7 @@ export default function Header() {
                       </Link>
                       {membership.state.role === 'ADMIN' && (
                         <Link href="/admin" className="flex items-center gap-3 px-3 py-2 text-[10px] font-black text-accent hover:bg-secondary transition-colors uppercase tracking-widest">
-                          <Shield className="w-3.5 h-3.5" /> Admin Panel
+                          <Shield className="w-3.5 h-3.5" /> Admin
                         </Link>
                       )}
                       <div className="h-[1px] bg-primary/5 my-2" />
@@ -215,11 +208,11 @@ export default function Header() {
             </Link>
             <div className={`h-[1px] w-full ${isScrolled ? 'bg-primary/5' : 'bg-primary/10'}`} />
             <Link
-              href="/dashboard"
+              href={isSignedIn ? "/dashboard" : "/sign-in"}
               className={`block transition-colors uppercase text-xs font-black tracking-[0.4em] ${isScrolled ? 'text-accent hover:text-primary' : 'text-accent hover:text-primary'}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              THE PASS
+              {isSignedIn ? 'DASHBOARD' : 'LOGIN'}
             </Link>
             {membership.state.role === 'ADMIN' && (
               <Link

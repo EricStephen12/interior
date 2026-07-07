@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         model: 'llama-3.1-8b-instant',
         messages: [
-          { role: 'system', content: SYSTEM_PROMPTS[type] || SYSTEM_PROMPTS.general },
+          { role: 'system', content: (SYSTEM_PROMPTS[type] || SYSTEM_PROMPTS.general) + ' CRITICAL: Return ONLY the raw enhanced text. Do not include any conversational filler, markdown formatting, JSON, or quotes.' },
           { role: 'user', content: `Enhance this text:\n\n"${text}"` }
         ],
         temperature: 0.7,
@@ -31,7 +31,20 @@ export async function POST(req: Request) {
     if (!res.ok) return NextResponse.json({ error: 'AI service error' }, { status: 500 })
 
     const data = await res.json()
-    return NextResponse.json({ enhanced: data.choices?.[0]?.message?.content?.trim() || text })
+    let enhancedText = data.choices?.[0]?.message?.content?.trim() || text
+
+    // Try to parse if it returned JSON accidentally
+    try {
+      if (enhancedText.startsWith('{') && enhancedText.endsWith('}')) {
+        const parsed = JSON.parse(enhancedText)
+        enhancedText = parsed.enhanced || parsed.text || parsed.description || enhancedText
+      }
+    } catch (e) {}
+
+    // Clean up any surrounding quotes
+    enhancedText = enhancedText.replace(/^["']|["']$/g, '').trim()
+
+    return NextResponse.json({ enhanced: enhancedText })
   } catch {
     return NextResponse.json({ error: 'Failed to enhance text' }, { status: 500 })
   }

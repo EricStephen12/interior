@@ -90,6 +90,7 @@ model Product {
   warranty    String?
   images      Json?
   isActive    Boolean  @default(true)
+  isBestseller Boolean @default(false)
   createdAt   DateTime @default(now())
   
   promoCodeId String?

@@ -44,7 +44,7 @@ export default function ShopSection({
     }
 
     if (productImages.length === 0) {
-      productImages = ['https://images.unsplash.com/photo-1581009146145-b5ef03a74e7f?auto=format&fit=crop&w=800&q=80']
+      productImages = ['/images/shop-fallback.jpg']
     }
 
     return {
@@ -308,22 +308,13 @@ export default function ShopSection({
         </motion.div>
 
         {/* Product Grid */}
-        {/* Product Grid - Dynamic Editorial Spacing */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-8 gap-y-16 sm:gap-y-32">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12 sm:gap-x-10 sm:gap-y-20">
           <AnimatePresence mode='popLayout'>
-            {filteredProducts.map((product, idx) => {
-              // Create an editorial rhythm: 1 large, 2 small, 1 medium
-              const isLarge = idx % 4 === 0;
-              const isMedium = idx % 4 === 3;
-              const colSpan = isLarge ? 'lg:col-span-7' : isMedium ? 'lg:col-span-5' : 'lg:col-span-4';
-              const mt = idx % 2 === 1 ? 'lg:mt-32' : 'lg:mt-0'; // Staggered vertical rhythm
-
-              return (
-                <div key={product.id} className={`${colSpan} ${mt}`}>
-                  <ProductCard product={product} index={idx} isLarge={isLarge} />
+            {filteredProducts.map((product, idx) => (
+                <div key={product.id}>
+                  <ProductCard product={product} index={idx} />
                 </div>
-              );
-            })}
+            ))}
           </AnimatePresence>
         </div>
 
@@ -359,7 +350,7 @@ import { useRouter } from 'next/navigation'
 import { ShoppingCart, Heart } from 'lucide-react'
 import { useToast } from '@/components/ToastProvider'
 
-function ProductCard({ product, index, isLarge }: { product: any, index: number, isLarge?: boolean }) {
+function ProductCard({ product, index }: { product: any, index: number }) {
   const [isHovered, setIsHovered] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const { subscribe } = useMembership()
@@ -368,6 +359,19 @@ function ProductCard({ product, index, isLarge }: { product: any, index: number,
   const { toggleWishlist, isWishlisted } = useWishlist()
   const router = useRouter()
   const wishlisted = isWishlisted(product.id)
+  
+  const [avgRating, setAvgRating] = useState(0)
+  const [reviewCount, setReviewCount] = useState(0)
+
+  useEffect(() => {
+    fetch(`/api/reviews?productId=${product.id}`)
+      .then(res => res.json())
+      .then(data => {
+        setAvgRating(data.avgRating || 0)
+        setReviewCount(data.total || 0)
+      })
+      .catch(() => {})
+  }, [product.id])
 
   const handleAction = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -433,101 +437,113 @@ function ProductCard({ product, index, isLarge }: { product: any, index: number,
           }
         }}
       >
-        <div className={`relative ${isLarge ? 'aspect-[16/10]' : 'aspect-[4/5]'} overflow-hidden mb-10 cursor-pointer bg-[#f8f7f5] shadow-sm transition-all duration-700`}>
-          {/* Shimmer Placeholder */}
-          {!loaded && (
-            <div className="absolute inset-0 bg-gray-100 animate-pulse" />
-          )}
-          {/* Primary Image */}
-          <Image
-            src={product.images[0]}
-            alt={product.name}
-            fill
-            className={`object-cover transition-all duration-[1.5s] ease-out 
-            ${isHovered ? 'scale-110' : 'scale-100'} ${loaded ? 'opacity-100 blur-0' : 'opacity-0 blur-sm'}`}
-            sizes="(max-width: 768px) 100vw, 50vw"
-            onLoad={() => setLoaded(true)}
-          />
-
-          {/* Glass Overlay Tag - Editorial Signature */}
-          <div className="absolute top-8 left-8 z-10 flex flex-col gap-2">
-            <span className="glass-light px-6 py-2 rounded-none text-[8px] font-black text-primary uppercase tracking-[0.4em] font-sans">
-              {product.brand}
-            </span>
-          </div>
-
-          {/* Wishlist Heart Button */}
-          <button
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              toggleWishlist(product.id)
-              showToast(
-                wishlisted ? 'Removed from Wishlist' : 'Saved to Wishlist',
-                wishlisted ? 'info' : 'success',
-                product.name
-              )
-            }}
-            className="absolute top-8 right-8 z-20 w-9 h-9 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-md hover:scale-110 transition-all duration-200"
-          >
-            <Heart
-              className={`w-4 h-4 transition-colors ${wishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
+          <div className={`relative aspect-square overflow-hidden mb-4 cursor-pointer bg-[#ececec] transition-all duration-700`}>
+            {/* Shimmer Placeholder */}
+            {!loaded && (
+              <div className="absolute inset-0 bg-gray-100 animate-pulse" />
+            )}
+            {/* Primary Image */}
+            <Image
+              src={product.images[0]}
+              alt={product.name}
+              fill
+              className={`object-cover mix-blend-multiply transition-transform duration-700 ease-out 
+              ${isHovered ? 'scale-105' : 'scale-100'} ${loaded ? 'opacity-100 blur-0' : 'opacity-0 blur-sm'}`}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              onLoad={() => setLoaded(true)}
             />
-          </button>
 
-          {/* Quick Reveal Overlay */}
-          <div className={`absolute inset-0 bg-primary/40 backdrop-blur-[2px] transition-all duration-700 flex flex-col items-center justify-center gap-4
-          ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-            <div className="h-full w-[1px] bg-white opacity-20 absolute top-0 bottom-0 pointer-events-none"></div>
-            
-            {product.category === 'Memberships' ? (
-              <button
-                onClick={handleAction}
-                className="bg-white text-primary px-8 py-4 w-48 text-center rounded-none tracking-[0.4em] uppercase text-[9px] font-black hover:bg-accent hover:text-white transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 shadow-2xl z-10"
-              >
-                JOIN NOW
-              </button>
-            ) : (
-              <>
+            {/* White Labels */}
+            <div className="absolute top-3 left-3 z-20 flex flex-col gap-1.5">
+              {product.promo_price && (
+                <span className="bg-white px-2 py-1 text-[9px] font-bold text-gray-800 uppercase tracking-wider shadow-sm">
+                  SALE
+                </span>
+              )}
+              {product.isBestseller && (
+                <span className="bg-white px-2 py-1 text-[9px] font-bold text-gray-800 uppercase tracking-wider shadow-sm">
+                  BESTSELLER
+                </span>
+              )}
+            </div>
+
+            {/* Wishlist Heart Button */}
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                toggleWishlist(product.id)
+                showToast(
+                  wishlisted ? 'Removed from Wishlist' : 'Saved to Wishlist',
+                  wishlisted ? 'info' : 'success',
+                  product.name
+                )
+              }}
+              className="absolute top-3 right-3 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-sm hover:scale-110 transition-transform duration-200"
+            >
+              <Heart
+                className={`w-3.5 h-3.5 transition-colors ${wishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
+              />
+            </button>
+
+            {/* Hover Actions (Add to Cart) */}
+            <div className={`absolute inset-x-0 bottom-0 p-4 transition-all duration-300 ease-out z-20 flex flex-col gap-2 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+              {product.category === 'Memberships' ? (
+                <button
+                  onClick={handleAction}
+                  className="w-full bg-black text-white py-3 text-[10px] font-black tracking-widest uppercase hover:bg-gray-800 transition-colors shadow-lg"
+                >
+                  JOIN NOW
+                </button>
+              ) : (
                 <button
                   onClick={handleAddToCart}
-                  className="bg-accent text-white px-8 py-4 w-48 text-center rounded-none tracking-[0.4em] uppercase text-[9px] font-black hover:bg-primary transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 shadow-2xl z-10 flex items-center justify-center gap-2"
+                  className="w-full bg-black text-white py-3 text-[10px] font-black tracking-widest uppercase hover:bg-gray-800 transition-colors shadow-lg flex items-center justify-center gap-2"
                 >
-                  <ShoppingCart className="w-3 h-3" /> ADD TO CART
+                  <ShoppingCart className="w-3.5 h-3.5" /> ADD TO CART
                 </button>
-                <div
-                  className="bg-white text-primary px-8 py-4 w-48 text-center rounded-none tracking-[0.4em] uppercase text-[9px] font-black hover:bg-slate-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 shadow-2xl z-10"
-                >
-                  VIEW DETAILS
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5 mt-4">
+            <div className="flex items-start justify-between gap-4">
+              <h3 className="font-bold text-sm text-primary uppercase tracking-wide group-hover:text-accent transition-colors">
+                {product.name}
+              </h3>
+            </div>
+            
+            {reviewCount > 0 && (
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <div className="flex text-black text-[10px] gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i}>{i < Math.round(avgRating) ? '★' : '☆'}</span>
+                  ))}
                 </div>
-              </>
+                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">
+                  {reviewCount}
+                </span>
+              </div>
             )}
+            
+            <div className="flex items-center gap-2 text-[10px] uppercase font-bold tracking-widest text-gray-400">
+              <span>{product.brand}</span>
+              <span className="w-1 h-1 rounded-full bg-gray-200" />
+              <span>{product.size}</span>
+            </div>
+
+            <div className="flex items-center gap-2 mt-1">
+              <span className="font-black text-sm text-primary">
+                ?{product.promo_price ? product.promo_price.toLocaleString() : product.price.toLocaleString()}
+              </span>
+              {product.promo_price && (
+                <span className="font-bold text-xs text-gray-300 line-through">
+                  ?{product.price.toLocaleString()}
+                </span>
+              )}
+            </div>
           </div>
-
-          {/* Subtle Grain Overlay */}
-          <div className="absolute inset-0 grain-overlay pointer-events-none opacity-10"></div>
-        </div>
-
-        <div className="space-y-6 px-4">
-          <div className="flex items-center gap-4">
-            <div className="h-[1px] w-8 bg-accent opacity-30"></div>
-            <p className="text-[9px] font-black text-accent uppercase tracking-[0.5em]">
-              {product.category}
-            </p>
-          </div>
-
-          <h4 className={`text-luxury ${isLarge ? 'text-4xl sm:text-6xl' : 'text-2xl sm:text-3xl'} text-primary tracking-tight group-hover:text-accent transition-colors duration-500 leading-tight`}>
-            {product.name}
-          </h4>
-
-          <div className="flex items-baseline gap-6">
-            <span className="text-3xl font-light text-primary tabular-nums">₦{product.price.toLocaleString()}</span>
-            {product.promo_price && (
-              <span className="text-sm text-text-muted line-through font-light tabular-nums">₦{product.promo_price.toLocaleString()}</span>
-            )}
-          </div>
-        </div>
-      </Link>
-    </motion.div>
+        </Link>
+      </motion.div>
   )
 }

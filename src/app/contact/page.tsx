@@ -16,7 +16,7 @@ export default function ContactPage() {
       <section className="relative h-[50vh] sm:h-[60vh] min-h-[400px] flex items-end overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=2000&q=90"
+            src="/images/real-gym-banner.png"
             alt="SHARERS GYM Contact"
             fill
             priority

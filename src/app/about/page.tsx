@@ -16,7 +16,7 @@ export default function AboutPage() {
             <section className="relative min-h-[60vh] sm:min-h-[70vh] flex items-end overflow-hidden">
                 <div className="absolute inset-0 z-0">
                     <Image
-                        src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=90"
+                        src="/images/about-main.jpg"
                         alt="SHARERS GYM Interior"
                         fill
                         priority
@@ -42,11 +42,13 @@ export default function AboutPage() {
                         {/* Image */}
                         <div className="relative">
                             <div className="aspect-[4/5] relative overflow-hidden shadow-2xl">
-                                <Image
-                                    src="https://images.unsplash.com/photo-1593079831268-3381b0db4a77?auto=format&fit=crop&w=800&q=80"
-                                    alt="SHARERS Training"
-                                    fill
-                                    className="object-cover grayscale hover:grayscale-0 transition-all duration-1000"
+                                <video
+                                    src="/video/hero-main.mp4"
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
                                 />
                                 <div className="absolute inset-0 bg-primary/10" />
                             </div>
@@ -154,3 +156,4 @@ function DifferenceRow({ title, description }: { title: string, description: str
         </div>
     );
 }
+

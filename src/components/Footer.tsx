@@ -45,11 +45,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-20 mb-16 sm:mb-32">
           <div className="space-y-10">
             <Link href="/" className="flex flex-col group">
-              <span className="text-3xl sm:text-5xl md:text-7xl font-black tracking-[0.3em] leading-none text-white group-hover:text-accent transition-colors duration-500">
-                SHARERS
-              </span>
-              <span className="text-[10px] tracking-[0.6em] font-black text-accent uppercase mt-2">
-                GYM • EST. 2024
+              <img src="/logo.png" alt="Sharers Gym" className="h-16 sm:h-24 object-contain brightness-0 invert" />
+              <span className="text-[10px] tracking-[0.6em] font-black text-accent uppercase mt-4">
+                EST. 2024
               </span>
             </Link>
             <p className="text-base sm:text-xl text-slate-400 font-medium leading-relaxed max-w-md">

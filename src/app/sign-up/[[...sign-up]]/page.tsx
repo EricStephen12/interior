@@ -6,7 +6,7 @@ export default function Page() {
       <div className="w-full max-w-md flex flex-col items-center">
         <div className="text-center mb-12">
           <p className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-4">GET STARTED</p>
-          <h1 className="text-4xl text-luxury text-primary">JOIN SHARERS.</h1>
+          <h1 className="text-4xl text-luxury text-primary">JOIN NOW.</h1>
         </div>
         <div className="flex justify-center w-full">
           <SignUp appearance={{

@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     siteName: "SHARERS GYM",
     images: [
       {
-        url: "https://sharersgym.com/og-image.jpg",
+        url: "https://sharersgym.com/logo.png",
         width: 1200,
         height: 630,
         alt: "SHARERS GYM - Train Different",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "SHARERS GYM | Train Different",
     description: "We got tired of gyms that all feel the same. So we built our own — with coaches who actually coach and equipment that makes sense.",
-    images: ["https://sharersgym.com/og-image.jpg"],
+    images: ["https://sharersgym.com/logo.png"],
     creator: "@sharersgym",
   },
   robots: {

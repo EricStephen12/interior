@@ -28,7 +28,8 @@ export default function EditProductPage() {
     type: '',
     description: '',
     images: [] as string[],
-    isActive: true
+    isActive: true,
+    isBestseller: false,
   })
 
   useEffect(() => {
@@ -58,7 +59,8 @@ export default function EditProductPage() {
             type: pr.type || '',
             description: pr.description || '',
             images: pr.images || [],
-            isActive: pr.isActive !== false
+            isActive: pr.isActive !== false,
+            isBestseller: pr.isBestseller || false,
           })
         }
       } catch (err) {
@@ -306,6 +308,18 @@ export default function EditProductPage() {
                     onChange={e => setFormData({ ...formData, type: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 text-sm font-semibold placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                   />
+                </div>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="isBestseller"
+                    checked={formData.isBestseller}
+                    onChange={e => setFormData({ ...formData, isBestseller: e.target.checked })}
+                    className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                  />
+                  <label htmlFor="isBestseller" className="text-sm font-bold text-gray-900 cursor-pointer select-none">
+                    Mark as Bestseller
+                  </label>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Brand</label>

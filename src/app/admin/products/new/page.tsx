@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Package, Sparkles, Loader2, X, Plus, ImageIcon } from 'lucide-react'
 import Link from 'next/link'
-import { CldUploadWidget } from 'next-cloudinary'
+import { CldUploadButton } from 'next-cloudinary'
 
 export default function NewProductPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
   const [enhancing, setEnhancing] = useState(false)
   const [brands, setBrands] = useState<any[]>([])
   const [sizes, setSizes] = useState<any[]>([])
@@ -24,6 +25,7 @@ export default function NewProductPage() {
     type: '',
     description: '',
     images: [] as string[],
+    isBestseller: false,
   })
 
   useEffect(() => {
@@ -51,6 +53,49 @@ export default function NewProductPage() {
 
   const removeImage = (url: string) => {
     setFormData(prev => ({ ...prev, images: prev.images.filter(img => img !== url) }))
+  }
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    setIsUploading(true)
+
+    const uploadPromises = Array.from(files).map(async (file) => {
+      const uploadData = new FormData()
+      uploadData.append('file', file)
+
+      try {
+        const res = await fetch(`/api/upload`, {
+          method: 'POST',
+          body: uploadData
+        })
+        const data = await res.json()
+        if (data.secure_url) {
+          return data.secure_url
+        } else {
+          console.error('Upload failed:', data.error?.message)
+          return null
+        }
+      } catch (err) {
+        console.error('Upload failed', err)
+        return null
+      }
+    })
+
+    const results = await Promise.all(uploadPromises)
+    const successfulUploads = results.filter(url => url !== null)
+
+    if (successfulUploads.length > 0) {
+      setFormData(prev => ({ ...prev, images: [...prev.images, ...successfulUploads] }))
+    }
+
+    if (successfulUploads.length < files.length) {
+      alert(`Successfully uploaded ${successfulUploads.length} images. ${files.length - successfulUploads.length} failed.`)
+    }
+
+    setIsUploading(false)
+    e.target.value = '' // reset input
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -178,26 +223,24 @@ export default function NewProductPage() {
                     </div>
                   ))}
 
-                  <CldUploadWidget
-                    uploadPreset="sharers_gym"
-                    options={{
-                      cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-                    }}
-                    onSuccess={(result: any) => {
-                      setFormData(prev => ({ ...prev, images: [...prev.images, result.info.secure_url] }))
-                    }}
-                  >
-                    {({ open }) => (
-                      <button
-                        type="button"
-                        onClick={() => open()}
-                        className="aspect-square border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center gap-2 hover:border-accent hover:bg-accent/5 transition-all group"
-                      >
+                  <label className="aspect-square border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center gap-2 hover:border-accent hover:bg-accent/5 transition-all group cursor-pointer">
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      multiple
+                      onChange={handleFileUpload} 
+                      disabled={isUploading}
+                      className="hidden" 
+                    />
+                    {isUploading ? (
+                      <Loader2 className="w-6 h-6 text-accent animate-spin" />
+                    ) : (
+                      <>
                         <ImageIcon className="w-6 h-6 text-gray-300 group-hover:text-accent transition-colors" />
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Upload</span>
-                      </button>
+                      </>
                     )}
-                  </CldUploadWidget>
+                  </label>
                 </div>
               </div>
             </div>
@@ -273,6 +316,18 @@ export default function NewProductPage() {
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 text-sm font-semibold placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                     placeholder="e.g. Equipment, Apparel"
                   />
+                </div>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="isBestseller"
+                    checked={formData.isBestseller}
+                    onChange={e => setFormData({ ...formData, isBestseller: e.target.checked })}
+                    className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                  />
+                  <label htmlFor="isBestseller" className="text-sm font-bold text-gray-900 cursor-pointer select-none">
+                    Mark as Bestseller
+                  </label>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Brand</label>

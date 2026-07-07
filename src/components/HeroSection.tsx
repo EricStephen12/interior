@@ -75,7 +75,6 @@ export default function HeroSection() {
                 <motion.span
                   className="inline-block ml-3"
                   animate={{ x: [0, 5, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
                 >
                   →
                 </motion.span>
@@ -98,8 +97,8 @@ export default function HeroSection() {
               className="absolute inset-0"
             >
               <Image
-                src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=90"
-                alt="SHARERS GYM Editorial"
+                src="/images/real-gym-banner.png"
+                alt="SHARERS GYM Interior"
                 fill
                 priority
                 className="object-cover"
@@ -113,13 +112,15 @@ export default function HeroSection() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.5, delay: 0.5 }}
-            className="absolute -bottom-12 -left-12 w-48 h-64 border-[12px] border-white shadow-2xl hidden xl:block z-30"
+            className="absolute -bottom-4 left-4 sm:-bottom-6 sm:left-8 lg:-bottom-12 lg:-left-12 w-24 h-36 sm:w-32 sm:h-48 xl:w-48 xl:h-64 border-[4px] xl:border-[12px] border-white shadow-2xl z-30"
           >
-            <Image
-              src="https://images.unsplash.com/photo-1593079831268-3381b0db4a77?auto=format&fit=crop&w=600&q=80"
-              alt="SHARERS Detail"
-              fill
-              className="object-cover"
+            <video
+              src="/video/hero-main.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
             />
           </motion.div>
         </div>
@@ -144,3 +145,4 @@ export default function HeroSection() {
     </section>
   )
 }
+

@@ -115,10 +115,13 @@ export default function StorySection() {
           {/* Collage Gallery - Right Staggered */}
           <div className="lg:col-span-7 relative">
             <div className="relative aspect-[3/4] w-full">
-              <RevealImage
-                src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=800&q=80"
-                alt="SHARERS GYM Strength Training"
-                className="w-full h-full shadow-2xl grayscale hover:grayscale-0 transition-all duration-1000"
+              <video
+                src="/video/built.webm"
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover shadow-2xl grayscale hover:grayscale-0 transition-all duration-1000"
               />
 
               {/* Overlapping Small Image */}
@@ -127,11 +130,11 @@ export default function StorySection() {
                 whileInView={{ x: 0, y: 0, opacity: 1 }}
                 transition={{ duration: 1.5, delay: 0.5 }}
                 viewport={{ once: true }}
-                className="absolute -bottom-20 -left-20 w-2/3 aspect-square shadow-2xl z-30 hidden sm:block"
+                className="absolute -bottom-20 -left-20 w-32 h-32 sm:w-2/3 sm:h-auto aspect-square shadow-2xl z-30"
               >
                 <div className="w-full h-full border-[20px] border-white relative overflow-hidden group shadow-2xl">
                   <video
-                    src="/video/shop-detail.mp4"
+                    src="/video/shop-detail.webm"
                     autoPlay
                     muted
                     loop
@@ -178,3 +181,4 @@ function RevealImage({ src, alt, className }: { src: string, alt: string, classN
     </div>
   )
 }
+
