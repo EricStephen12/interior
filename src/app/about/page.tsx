@@ -43,7 +43,7 @@ export default function AboutPage() {
                         <div className="relative">
                             <div className="aspect-[4/5] relative overflow-hidden shadow-2xl">
                                 <video
-                                    src="/video/hero-main.mp4"
+                                    src="/video/hero-main-v2.mp4"
                                     autoPlay
                                     loop
                                     muted
@@ -58,14 +58,14 @@ export default function AboutPage() {
                         {/* Copy - Written like a human */}
                         <div className="space-y-6 sm:space-y-10">
                             <div>
-                                <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-4 block">HOW IT STARTED</span>
-                                <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-primary tracking-tighter leading-[0.9] font-display">
+                                <span className="text-xs font-black tracking-[0.6em] text-accent uppercase mb-4 block">HOW IT STARTED</span>
+                                <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-primary tracking-tighter leading-[0.9] font-display">
                                     Started with <br />
                                     <span className="text-accent italic font-light">a question.</span>
                                 </h2>
                             </div>
 
-                            <div className="space-y-5 text-sm sm:text-base text-slate-500 font-medium leading-relaxed">
+                            <div className="space-y-5 text-base sm:text-lg text-slate-500 font-medium leading-relaxed">
                                 <p>&ldquo;Why does every gym feel the same?&rdquo;</p>
                                 <p>Same machines lined up in rows. Same music nobody asked for. Same energy that makes you want to leave the second you walk in. We got tired of it.</p>
                                 <p>So we built something different. Not different for the sake of it — different because it had to be. A space where you actually want to train. Where the coaches know your name and your goals. Where recovery isn&apos;t an afterthought, it&apos;s built into the process.</p>
@@ -74,7 +74,7 @@ export default function AboutPage() {
 
                             <div className="flex items-center gap-6 pt-4">
                                 <div className="w-16 h-[2px] bg-accent" />
-                                <span className="text-[9px] font-black tracking-[0.4em] text-primary/40 uppercase">Lagos, Nigeria</span>
+                                <span className="text-xs font-black tracking-[0.4em] text-primary/40 uppercase">Lagos, Nigeria</span>
                             </div>
                         </div>
                     </div>
@@ -94,8 +94,8 @@ export default function AboutPage() {
 
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="mb-12 sm:mb-20">
-                        <span className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-4 block">WHAT&apos;S DIFFERENT</span>
-                        <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-tighter leading-[0.9] font-display">
+                        <span className="text-xs font-black tracking-[0.8em] text-accent uppercase mb-4 block">WHAT&apos;S DIFFERENT</span>
+                        <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tighter leading-[0.9] font-display">
                             The stuff that <span className="text-accent italic font-light">actually matters.</span>
                         </h2>
                     </div>
@@ -128,18 +128,18 @@ export default function AboutPage() {
             {/* CTA */}
             <section className="py-16 sm:py-24 bg-white">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-                    <h3 className="text-2xl sm:text-4xl md:text-5xl font-black text-primary tracking-tighter font-display mb-4 sm:mb-6">
+                    <h3 className="text-3xl sm:text-5xl md:text-6xl font-black text-primary tracking-tighter font-display mb-4 sm:mb-6">
                         You already know if this <span className="text-accent italic font-light">is for you.</span>
                     </h3>
-                    <p className="text-sm sm:text-base text-slate-400 font-medium mb-8 sm:mb-12 max-w-lg mx-auto">
+                    <p className="text-base sm:text-lg text-slate-400 font-medium mb-8 sm:mb-12 max-w-lg mx-auto">
                         Stop thinking about it. Come see the space, talk to the coaches, and decide for yourself.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
                         <Link href="/dashboard" className="w-full sm:w-auto bg-primary text-white px-8 sm:px-12 py-4 sm:py-5 text-center hover:bg-accent transition-all duration-500">
-                            <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em]">Get Started</span>
+                            <span className="text-xs sm:text-sm font-black uppercase tracking-[0.3em]">Get Started</span>
                         </Link>
                         <Link href="/contact" className="w-full sm:w-auto border-2 border-primary text-primary px-8 sm:px-12 py-4 sm:py-5 text-center hover:bg-primary hover:text-white transition-all duration-500">
-                            <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em]">Talk To Us</span>
+                            <span className="text-xs sm:text-sm font-black uppercase tracking-[0.3em]">Talk To Us</span>
                         </Link>
                     </div>
                 </div>
@@ -151,8 +151,8 @@ export default function AboutPage() {
 function DifferenceRow({ title, description }: { title: string, description: string }) {
     return (
         <div className="group flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-12 py-8 sm:py-10 border-b border-white/5 hover:border-accent/20 transition-all duration-500">
-            <h4 className="text-base sm:text-lg font-black text-white uppercase tracking-tight sm:w-48 flex-shrink-0 group-hover:text-accent transition-colors duration-500">{title}</h4>
-            <p className="text-xs sm:text-sm text-white/40 font-medium leading-relaxed group-hover:text-white/60 transition-colors duration-500">{description}</p>
+            <h4 className="text-lg sm:text-2xl font-black text-white uppercase tracking-tight sm:w-64 flex-shrink-0 group-hover:text-accent transition-colors duration-500">{title}</h4>
+            <p className="text-base sm:text-lg text-white/40 font-medium leading-relaxed group-hover:text-white/60 transition-colors duration-500">{description}</p>
         </div>
     );
 }
