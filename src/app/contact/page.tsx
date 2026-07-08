@@ -31,7 +31,7 @@ export default function ContactPage() {
           <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-white tracking-tighter leading-[0.85] font-display">
             Get in <span className="text-accent italic font-light">Touch.</span>
           </h1>
-          <p className="text-sm sm:text-base text-white/40 font-medium mt-4 max-w-lg">
+          <p className="text-base sm:text-lg md:text-xl text-white/40 font-medium mt-4 max-w-2xl">
             Whether you're ready to start training or have a question about your membership, we're here.
           </p>
         </div>
@@ -46,8 +46,8 @@ export default function ContactPage() {
             <div className="lg:col-span-7 order-2 lg:order-1">
               <div className="bg-secondary/20 p-6 sm:p-10 md:p-16 border border-primary/5">
                 <div className="mb-8 sm:mb-14">
-                  <span className="text-[10px] font-black tracking-[0.4em] text-accent uppercase mb-3 block">DIRECT LINE</span>
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-primary tracking-tighter leading-[0.9] font-display">
+                  <span className="text-xs font-black tracking-[0.4em] text-accent uppercase mb-3 block">DIRECT LINE</span>
+                  <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-primary tracking-tighter leading-[0.9] font-display">
                     Send us a <span className="text-accent italic font-light">Message.</span>
                   </h2>
                 </div>
@@ -96,10 +96,10 @@ export default function ContactPage() {
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-4">
                     <Zap className="w-4 h-4 text-accent" />
-                    <span className="text-[10px] font-black tracking-[0.4em] text-accent uppercase">Fast Response</span>
+                    <span className="text-xs font-black tracking-[0.4em] text-accent uppercase">Fast Response</span>
                   </div>
-                  <h4 className="text-lg sm:text-xl font-black mb-2 tracking-tight">Under 15 minutes.</h4>
-                  <p className="text-xs sm:text-sm text-white/40 font-medium leading-relaxed">
+                  <h4 className="text-xl sm:text-2xl font-black mb-2 tracking-tight">Under 15 minutes.</h4>
+                  <p className="text-base sm:text-lg text-white/40 font-medium leading-relaxed">
                     Current members get priority response. General questions are answered within a few hours.
                   </p>
                 </div>
@@ -109,7 +109,7 @@ export default function ContactPage() {
               <div className="border border-primary/10 p-6 sm:p-8">
                 <div className="flex items-center gap-3 mb-6">
                   <Clock className="w-4 h-4 text-accent" />
-                  <span className="text-[10px] font-black tracking-[0.4em] text-primary uppercase">Operating Hours</span>
+                  <span className="text-xs font-black tracking-[0.4em] text-primary uppercase">Operating Hours</span>
                 </div>
                 <div className="space-y-3">
                   <HourRow day="Monday – Friday" hours="5:00 AM – 11:00 PM" />
@@ -145,11 +145,11 @@ function ContactCard({ icon: Icon, title, value, subtitle, link, accent }: {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">{title}</span>
+            <span className="text-xs sm:text-sm font-black text-slate-400 uppercase tracking-[0.3em]">{title}</span>
             {link && <ArrowUpRight className="w-3 h-3 text-accent opacity-0 group-hover:opacity-100 transition-opacity" />}
           </div>
-          <p className="text-base sm:text-lg font-bold text-primary tracking-tight truncate">{value}</p>
-          <p className="text-[10px] sm:text-xs text-slate-400 font-medium mt-1">{subtitle}</p>
+          <p className="text-lg sm:text-2xl font-bold text-primary tracking-tight truncate">{value}</p>
+          <p className="text-sm sm:text-base text-slate-400 font-medium mt-1">{subtitle}</p>
         </div>
       </div>
     </Wrapper>
@@ -159,8 +159,8 @@ function ContactCard({ icon: Icon, title, value, subtitle, link, accent }: {
 function HourRow({ day, hours }: { day: string, hours: string }) {
   return (
     <div className="flex justify-between items-center py-2 border-b border-primary/5 last:border-0">
-      <span className="text-xs sm:text-sm font-bold text-primary">{day}</span>
-      <span className="text-[10px] sm:text-xs font-black text-accent tracking-wider">{hours}</span>
+      <span className="text-base sm:text-lg font-bold text-primary">{day}</span>
+      <span className="text-sm sm:text-base font-black text-accent tracking-wider">{hours}</span>
     </div>
   );
 }

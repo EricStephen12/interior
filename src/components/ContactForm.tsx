@@ -57,7 +57,7 @@ export default function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-10">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
         <div className="space-y-3">
-          <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Full Name</label>
+          <label className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Full Name</label>
           <input
             required
             type="text"
@@ -68,7 +68,7 @@ export default function ContactForm() {
           />
         </div>
         <div className="space-y-3">
-          <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Email Address</label>
+          <label className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Email Address</label>
           <input
             required
             type="email"
@@ -82,7 +82,7 @@ export default function ContactForm() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
         <div className="space-y-3">
-          <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Phone / WhatsApp</label>
+          <label className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Phone / WhatsApp</label>
           <input
             required
             type="text"
@@ -93,7 +93,7 @@ export default function ContactForm() {
           />
         </div>
         <div className="space-y-3">
-          <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Subject</label>
+          <label className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Subject</label>
           <select 
             value={formData.subject}
             onChange={e => setFormData({ ...formData, subject: e.target.value })}
@@ -133,7 +133,7 @@ export default function ContactForm() {
           className="w-full bg-primary text-white py-4 sm:py-5 flex items-center justify-center gap-3 hover:bg-accent transition-all duration-500 group disabled:opacity-50"
         >
           <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em]">
+          <span className="text-xs sm:text-sm font-black uppercase tracking-[0.3em]">
             {status === 'submitting' ? 'Sending...' : 'Send Message'}
           </span>
         </button>
