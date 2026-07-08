@@ -43,7 +43,7 @@ export default function AboutPage() {
                         <div className="relative">
                             <div className="aspect-[4/5] relative overflow-hidden shadow-2xl">
                                 <video
-                                    src="/video/hero-main-v2.mp4"
+                                    src="/video/about-v2.mp4"
                                     autoPlay
                                     loop
                                     muted
