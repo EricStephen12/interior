@@ -157,10 +157,15 @@ export default function QRScannerPage() {
     if (!cameraActive) return;
 
     let html5QrCode: Html5Qrcode;
+    let isMounted = true;
     
     const startScanner = async () => {
-      html5QrCode = new Html5Qrcode("qr-reader");
+      // Small delay to ensure DOM is ready and cleanly unmounted from previous strict-mode cycles
+      await new Promise(resolve => setTimeout(resolve, 50));
+      if (!isMounted) return;
+
       try {
+        html5QrCode = new Html5Qrcode("qr-reader");
         await html5QrCode.start(
           { facingMode: "environment" }, 
           {
@@ -168,7 +173,9 @@ export default function QRScannerPage() {
             qrbox: { width: 250, height: 250 }
           },
           (decodedText) => {
-            html5QrCode.pause();
+            if (html5QrCode.isScanning) {
+              html5QrCode.pause();
+            }
             processScan(decodedText);
           },
           (error) => {
@@ -183,8 +190,17 @@ export default function QRScannerPage() {
     startScanner();
 
     return () => {
-      if (html5QrCode && html5QrCode.isScanning) {
-        html5QrCode.stop().then(() => html5QrCode.clear()).catch(console.error);
+      isMounted = false;
+      if (html5QrCode) {
+        try {
+          if (html5QrCode.isScanning) {
+            html5QrCode.stop().then(() => html5QrCode.clear()).catch(console.error);
+          } else {
+            html5QrCode.clear();
+          }
+        } catch (e) {
+          console.error("Error clearing qr code:", e);
+        }
       }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -208,9 +224,7 @@ export default function QRScannerPage() {
 
       {/* Main Scanner Box */}
       <div className="relative w-full max-w-sm sm:max-w-md aspect-square bg-secondary/50 border-2 border-dashed border-primary/20 flex flex-col items-center justify-center p-8 overflow-hidden">
-        {cameraActive && (
-           <div id="qr-reader" className="w-full h-full absolute inset-0 z-10 [&_video]:object-cover" />
-        )}
+        <div id="qr-reader" className={`w-full h-full absolute inset-0 z-10 [&_video]:object-cover ${cameraActive ? 'block' : 'hidden'}`} />
 
         {!cameraActive && scan.status === 'idle' && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center text-primary/40">

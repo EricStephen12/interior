@@ -11,7 +11,7 @@ export const emailService = {
 
     try {
       const data = await resend.emails.send({
-        from: process.env.EMAIL_FROM || 'SHARERS GYM <support@sharersgym.com>',
+        from: process.env.EMAIL_FROM || 'SHARERS GYM <sharersmall@gmail.com>',
         to: [to],
         subject,
         html,

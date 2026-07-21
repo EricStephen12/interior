@@ -131,7 +131,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">
                 <Mail className="w-4 h-4 text-accent" />
-                <span>support@sharersgym.com</span>
+                <span>sharersmall@gmail.com</span>
               </div>
             </div>
           </div>

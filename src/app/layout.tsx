@@ -103,7 +103,7 @@ export default function RootLayout({
     ],
     contactPoint: {
       '@type': 'ContactPoint',
-      email: 'support@sharersgym.com',
+      email: 'sharersmall@gmail.com',
       contactType: 'customer support',
     },
     sameAs: [

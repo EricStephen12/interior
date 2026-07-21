@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     `
 
     await emailService.sendEmail({
-      to: process.env.CONTACT_EMAIL || 'support@sharersgym.com', 
+      to: process.env.CONTACT_EMAIL || 'sharersmall@gmail.com', 
       subject: `[Contact Form] ${subject} - ${name}`,
       html,
     })

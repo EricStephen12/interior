@@ -101,7 +101,7 @@ export default function SupportChat() {
       const data = await res.json()
       setMessages(prev => [...prev, { role: 'assistant', content: data.reply }])
     } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, something went wrong. Try reaching us at support@sharersgym.com." }])
+      setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, something went wrong. Try reaching us at sharersmall@gmail.com." }])
     } finally {
       setIsLoading(false)
     }
@@ -214,12 +214,12 @@ export default function SupportChat() {
                         if (data.success && data.ticket?.id) {
                            localStorage.setItem('sharers_active_ticket', data.ticket.id);
                            setActiveTicketId(data.ticket.id);
-                           setMessages(prev => [...prev, { role: 'assistant', content: "I've flagged this for my human team. They'll review our chat and get back to you if you've provided contact info, or you can email us at support@sharersgym.com." }]);
+                           setMessages(prev => [...prev, { role: 'assistant', content: "I've flagged this for my human team. They'll review our chat and get back to you if you've provided contact info, or you can email us at sharersmall@gmail.com." }]);
                         } else {
                            throw new Error('API reported failure');
                         }
                       } catch (err) {
-                        setMessages(prev => [...prev, { role: 'assistant', content: "I couldn't reach them right now. Please email support@sharersgym.com directly." }]);
+                        setMessages(prev => [...prev, { role: 'assistant', content: "I couldn't reach them right now. Please email sharersmall@gmail.com directly." }]);
                       }
                       setIsLoading(false);
                     }}

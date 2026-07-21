@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 
-const FALLBACK = "Our support team is currently offline. Please reach out at support@sharersgym.com and we'll get back to you shortly."
+const FALLBACK = "Our support team is currently offline. Please reach out at sharersmall@gmail.com and we'll get back to you shortly."
 
 export async function POST(req: Request) {
   try {
@@ -51,7 +51,7 @@ CORE INFO:
 - Premium fitness gym in Lagos, Nigeria
 - Digital pass credit system for memberships
 - Hours: Mon-Fri 5AM-11PM, Sat 6AM-10PM, Sun 7AM-8PM
-- Contact: support@sharersgym.com
+- Contact: sharersmall@gmail.com
 - Dashboard at /dashboard, Products at /products
 
 RULES:
@@ -75,12 +75,12 @@ RULES:
       })
     })
 
-    if (!res.ok) return NextResponse.json({ reply: "I'm having trouble right now. Please try again or reach us at support@sharersgym.com." })
+    if (!res.ok) return NextResponse.json({ reply: "I'm having trouble right now. Please try again or reach us at sharersmall@gmail.com." })
 
     const data = await res.json()
     return NextResponse.json({ reply: data.choices?.[0]?.message?.content?.trim() || "Sorry, try again." })
   } catch (error) {
     console.error('Chat error:', error);
-    return NextResponse.json({ reply: "Something went wrong. Contact us at support@sharersgym.com." })
+    return NextResponse.json({ reply: "Something went wrong. Contact us at sharersmall@gmail.com." })
   }
 }
