@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Users, Shield, Search, Mail, ArrowLeft } from 'lucide-react'
+import { Users, Shield, Search, Mail, ArrowLeft, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -45,6 +45,34 @@ export default function UserManagement() {
       } else {
         const data = await res.json()
         alert(data.error || 'Failed to update')
+      }
+    } catch (err) {
+      alert('Network error')
+    } finally {
+      setUpdating(null)
+    }
+  }
+
+  const addCredits = async (userId: string) => {
+    const amountStr = window.prompt("Enter number of credits to add (e.g. 10):")
+    if (!amountStr) return
+    const amount = parseInt(amountStr)
+    if (isNaN(amount) || amount <= 0) return alert("Invalid amount")
+
+    setUpdating(userId)
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, creditsToAdd: amount })
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        setUsers(users.map(u => u.id === userId ? { ...u, credits: data.user.credits } : u))
+      } else {
+        const data = await res.json()
+        alert(data.error || 'Failed to add credits')
       }
     } catch (err) {
       alert('Network error')
@@ -164,17 +192,26 @@ export default function UserManagement() {
                       </div>
                     </td>
                     <td className="px-8 py-6 text-right">
-                      <button
-                        onClick={() => toggleRole(user.id, user.role)}
-                        disabled={updating === user.id}
-                        className={`px-6 py-2.5 text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${
-                          user.role === 'ADMIN' 
-                            ? 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-100' 
-                            : 'bg-primary text-white hover:bg-accent hover:shadow-xl'
-                        } disabled:opacity-50 disabled:cursor-not-allowed`}
-                      >
-                        {updating === user.id ? 'Processing...' : user.role === 'ADMIN' ? 'Revoke Auth' : 'Grant Auth'}
-                      </button>
+                      <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => addCredits(user.id)}
+                          disabled={updating === user.id}
+                          className="text-[9px] font-black tracking-widest uppercase bg-green-500/10 text-green-600 px-4 py-2 border border-green-500/20 hover:bg-green-500 hover:text-white transition-all disabled:opacity-50 flex items-center gap-1.5"
+                        >
+                          <Plus className="w-3 h-3" /> Top Up
+                        </button>
+                        <button
+                          onClick={() => toggleRole(user.id, user.role)}
+                          disabled={updating === user.id}
+                          className={`px-6 py-2 text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${
+                            user.role === 'ADMIN' 
+                              ? 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-100' 
+                              : 'bg-primary text-white hover:bg-accent hover:shadow-xl'
+                          } disabled:opacity-50 disabled:cursor-not-allowed`}
+                        >
+                          {updating === user.id ? 'Processing...' : user.role === 'ADMIN' ? 'Revoke Auth' : 'Grant Auth'}
+                        </button>
+                      </div>
                     </td>
                   </motion.tr>
                 ))}
