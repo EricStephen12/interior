@@ -54,7 +54,7 @@ export default function UserManagement() {
   }
 
   const addCredits = async (userId: string) => {
-    const amountStr = window.prompt("Enter number of credits to add (e.g. 10):")
+    const amountStr = window.prompt("Enter number of days to add (e.g. 10):")
     if (!amountStr) return
     const amount = parseInt(amountStr)
     if (isNaN(amount) || amount <= 0) return alert("Invalid amount")
@@ -72,7 +72,7 @@ export default function UserManagement() {
         setUsers(users.map(u => u.id === userId ? { ...u, credits: data.user.credits } : u))
       } else {
         const data = await res.json()
-        alert(data.error || 'Failed to add credits')
+        alert(data.error || 'Failed to add days')
       }
     } catch (err) {
       alert('Network error')
@@ -173,7 +173,7 @@ export default function UserManagement() {
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                        <p className="text-[10px] font-black text-primary tracking-widest uppercase">{user.credits} Credits</p>
+                        <p className="text-[10px] font-black text-primary tracking-widest uppercase">{user.credits} Days</p>
                       </div>
                     </td>
                     <td className="px-8 py-6">

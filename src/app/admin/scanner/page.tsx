@@ -119,7 +119,7 @@ export default function QRScannerPage() {
           status: 'success',
           member: data.user,
           lowCredit: data.lowCredit,
-          message: data.lowCredit ? `Only ${data.creditsRemaining} credits left` : undefined
+          message: data.lowCredit ? `Only ${data.creditsRemaining} days left` : undefined
         })
         playBeep('success')
       } else if (res.status === 409) {
@@ -371,7 +371,7 @@ export default function QRScannerPage() {
                     <p className="text-[9px] opacity-75 uppercase tracking-widest truncate">{scan.member.email}</p>
                     <div className="h-[1px] bg-white/10 my-4" />
                     <p className="text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2">
-                      <CreditCard className="w-4 h-4 text-white" /> {scan.member.credits} Credits Remaining
+                      <CreditCard className="w-4 h-4 text-white" /> {scan.member.credits} Days Remaining
                     </p>
                   </div>
                 )}
@@ -386,7 +386,7 @@ export default function QRScannerPage() {
                 {(scan.status === 'denied' || scan.status === 'error') && (
                   <div className="space-y-2">
                     <p className="text-sm font-bold uppercase tracking-widest">{scan.message}</p>
-                    <p className="text-[9px] opacity-75 uppercase tracking-widest">Verify membership status or top up pass credits</p>
+                    <p className="text-[9px] opacity-75 uppercase tracking-widest">Verify membership status or top up pass days</p>
                   </div>
                 )}
               </div>
