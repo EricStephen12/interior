@@ -17,51 +17,51 @@ export async function GET(req: Request) {
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0)
     const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999)
 
-    // 3. Find all users who have remaining days (credits > 0)
-    const activeUsers = await prisma.user.findMany({
+    // 3. Find all users who actually scanned in today
+    const todayCheckIns = await prisma.checkIn.findMany({
       where: {
-        credits: { gt: 0 }
-      },
-      select: {
-        id: true,
-        credits: true
-      }
-    })
-
-    let deductedCount = 0
-
-    // 4. For each active user, check if they scanned in today
-    for (const user of activeUsers) {
-      const todayCheckIn = await prisma.checkIn.findFirst({
-        where: {
-          userId: user.id,
-          date: {
-            gte: startOfToday,
-            lte: endOfToday
-          }
+        date: {
+          gte: startOfToday,
+          lte: endOfToday
         }
+      },
+      select: { userId: true }
+    })
+    const checkedInUserIds = todayCheckIns.map(c => c.userId)
+
+    // 4. Find all active users who DID NOT check in today
+    const missedUsers = await prisma.user.findMany({
+      where: {
+        credits: { gt: 0 },
+        id: { notIn: checkedInUserIds }
+      },
+      select: { id: true }
+    })
+    const missedUserIds = missedUsers.map(u => u.id)
+
+    // 5. Bulk update: Deduct 1 credit from everyone who missed today
+    if (missedUserIds.length > 0) {
+      await prisma.user.updateMany({
+        where: { id: { in: missedUserIds } },
+        data: { credits: { decrement: 1 } }
       })
 
-      // If they didn't scan in today (no CheckIn record found for today), deduct a day
-      if (!todayCheckIn) {
-        await prisma.user.update({
-          where: { id: user.id },
-          data: {
-            credits: { decrement: 1 },
-            // Create a MISSED record so it shows up in their history
-            checkIns: {
-              create: {
-                protocol: 'MISSED',
-                date: new Date() // Record the miss right now
-              }
-            }
-          }
-        })
-        deductedCount++
-      }
+      // 6. Bulk insert: Create MISSED records for all of them
+      const nowForRecord = new Date()
+      await prisma.checkIn.createMany({
+        data: missedUserIds.map(id => ({
+          userId: id,
+          protocol: 'MISSED',
+          date: nowForRecord
+        }))
+      })
     }
 
-    return NextResponse.json({ success: true, processed: activeUsers.length, deducted: deductedCount })
+    return NextResponse.json({ 
+      success: true, 
+      processed: missedUsers.length + checkedInUserIds.length, 
+      deducted: missedUserIds.length 
+    })
 
   } catch (error) {
     console.error('Cron Error:', error)
