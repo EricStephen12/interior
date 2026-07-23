@@ -137,14 +137,18 @@ export default function DashboardPage() {
                                                 <div className="flex items-center gap-10">
                                                     <span className="text-[10px] font-black text-accent/30 tabular-nums">0{state.checkInHistory.length - idx}</span>
                                                     <div>
-                                                        <h4 className="text-xl font-bold text-primary group-hover:text-accent transition-colors">SHARERS {checkIn.protocol}</h4>
+                                                        <h4 className={`text-xl font-bold transition-colors ${checkIn.protocol === 'MISSED' ? 'text-red-500' : 'text-primary group-hover:text-accent'}`}>
+                                                            {checkIn.protocol === 'MISSED' ? 'MISSED SESSION' : `SHARERS ${checkIn.protocol}`}
+                                                        </h4>
                                                         <p className="text-[10px] font-black text-text-muted tracking-widest uppercase mt-1">
                                                             {new Date(checkIn.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                                                         </p>
                                                     </div>
                                                 </div>
                                                 <div className="mt-6 sm:mt-0 flex items-center gap-4">
-                                                    <span className="px-5 py-2 bg-secondary text-[9px] font-black tracking-widest text-primary uppercase">-1 DAY</span>
+                                                    <span className={`px-5 py-2 text-[9px] font-black tracking-widest uppercase ${checkIn.protocol === 'MISSED' ? 'bg-red-500/10 text-red-500' : 'bg-secondary text-primary'}`}>
+                                                        -1 DAY
+                                                    </span>
                                                     <ChevronRight className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-2" />
                                                 </div>
                                             </motion.div>
