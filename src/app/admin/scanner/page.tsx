@@ -169,8 +169,8 @@ export default function QRScannerPage() {
         await html5QrCode.start(
           { facingMode: "environment" }, 
           {
-            fps: 10,
-            qrbox: { width: 250, height: 250 }
+            fps: 30,
+            aspectRatio: 1.0
           },
           (decodedText) => {
             if (html5QrCode.isScanning) {
