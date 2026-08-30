@@ -65,7 +65,7 @@ export default function AdminOrders() {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2 mb-8">
-        {['ALL', 'PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'FAILED'].map(f => (
+        {['ALL', 'PENDING_VERIFICATION', 'PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'FAILED'].map(f => (
           <button
             key={f}
             onClick={() => setFilter(f)}
@@ -75,7 +75,7 @@ export default function AdminOrders() {
                 : 'bg-white text-slate-400 hover:text-primary hover:bg-secondary/50 border border-primary/5'
             }`}
           >
-            {f}
+            {f === 'PENDING_VERIFICATION' ? '⚠️ Bank Verification' : f}
           </button>
         ))}
       </div>
@@ -94,14 +94,27 @@ export default function AdminOrders() {
             <p className="text-sm font-bold text-gray-400">No orders found.</p>
           </div>
         ) : (
-          filteredOrders.map((order, idx) => (
+          filteredOrders.map((order, idx) => {
+            const isManualTransfer = order.status === 'PENDING_VERIFICATION' || (order.shippingDetails as any)?.paymentType === 'MANUAL_BANK_TRANSFER';
+            const transferRef = (order.shippingDetails as any)?.transferReference;
+
+            return (
             <motion.div
               key={order.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
-              className="bg-white border border-primary/5 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+              className={`bg-white border overflow-hidden shadow-sm hover:shadow-md transition-shadow ${
+                order.status === 'PENDING_VERIFICATION' ? 'border-amber-400/80 ring-1 ring-amber-400/30' : 'border-primary/5'
+              }`}
             >
+              {order.status === 'PENDING_VERIFICATION' && (
+                <div className="bg-amber-500 text-white px-6 py-2 text-[10px] font-black uppercase tracking-widest flex items-center justify-between">
+                  <span>⚠️ Awaiting Manual Bank Transfer Verification</span>
+                  {transferRef && <span>Sender Ref: {transferRef}</span>}
+                </div>
+              )}
+
               <div className="p-6 sm:p-8 flex flex-col lg:flex-row gap-8">
                 
                 {/* Left: Customer & Address */}
@@ -112,9 +125,10 @@ export default function AdminOrders() {
                         order.status === 'DELIVERED' || order.status === 'PAID' || order.status === 'COMPLETED' ? 'bg-green-50 text-green-600 border border-green-100' :
                         order.status === 'FAILED' ? 'bg-red-50 text-red-600 border border-red-100' :
                         order.status === 'SHIPPED' ? 'bg-blue-50 text-blue-600 border border-blue-100' :
+                        order.status === 'PENDING_VERIFICATION' ? 'bg-amber-100 text-amber-800 border border-amber-300 font-black' :
                         'bg-yellow-50 text-yellow-600 border border-yellow-100'
                       }`}>
-                        {order.status}
+                        {order.status === 'PENDING_VERIFICATION' ? 'PENDING VERIFICATION' : order.status}
                       </span>
                       <span className="text-[10px] text-slate-400 font-bold">
                         {new Date(order.createdAt).toLocaleDateString()}
@@ -124,16 +138,26 @@ export default function AdminOrders() {
                   </div>
 
                   {order.shippingDetails ? (
-                    <div className="bg-secondary/20 p-4 border border-primary/5">
-                      <div className="flex items-center gap-2 text-primary font-black text-[10px] uppercase tracking-widest mb-3">
-                        <MapPin className="w-3 h-3" /> Shipping Address
+                    <div className="bg-secondary/20 p-4 border border-primary/5 space-y-2">
+                      <div className="flex items-center justify-between text-primary font-black text-[10px] uppercase tracking-widest">
+                        <span className="flex items-center gap-2">
+                          <MapPin className="w-3 h-3" /> Shipping Address
+                        </span>
+                        {isManualTransfer && (
+                          <span className="text-amber-700 bg-amber-100 px-2 py-0.5 rounded text-[8px] font-black">Bank Transfer</span>
+                        )}
                       </div>
                       <p className="text-sm font-bold text-primary mb-1">{(order.shippingDetails as any).name}</p>
                       <p className="text-xs text-slate-500 leading-relaxed">{(order.shippingDetails as any).address}</p>
                       <p className="text-xs text-slate-400 mt-2 font-mono">{(order.shippingDetails as any).phone}</p>
                       {(order.shippingDetails as any).zone && (
-                        <p className="text-[9px] font-black text-accent uppercase tracking-widest mt-3 pt-3 border-t border-primary/5">
+                        <p className="text-[9px] font-black text-accent uppercase tracking-widest pt-2 border-t border-primary/5">
                           Zone: {(order.shippingDetails as any).zone}
+                        </p>
+                      )}
+                      {transferRef && (
+                        <p className="text-[10px] font-mono text-amber-900 bg-amber-50 p-2 rounded border border-amber-200 mt-2">
+                          <strong>Transfer Note / Sender:</strong> {transferRef}
                         </p>
                       )}
                     </div>
@@ -161,15 +185,35 @@ export default function AdminOrders() {
                     ))}
                   </div>
                   <div className="flex justify-between items-center pt-4 border-t border-primary/10">
-                    <span className="text-[10px] font-black text-primary uppercase tracking-widest">Total Paid</span>
+                    <span className="text-[10px] font-black text-primary uppercase tracking-widest">Total Amount</span>
                     <span className="text-lg font-black text-primary tabular-nums">₦{order.totalAmount.toLocaleString()}</span>
                   </div>
                 </div>
 
                 {/* Right: Actions */}
-                <div className="w-full lg:w-48 flex flex-col gap-3">
+                <div className="w-full lg:w-52 flex flex-col gap-3">
                   <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Actions</h3>
                   
+                  {order.status === 'PENDING_VERIFICATION' && (
+                    <>
+                      <button 
+                        onClick={() => updateStatus(order.id, 'PAID')}
+                        disabled={updating === order.id}
+                        className="w-full px-4 py-3 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-colors shadow-md disabled:opacity-50 flex items-center justify-center gap-1.5"
+                      >
+                        <CheckCircle className="w-3.5 h-3.5" />
+                        {updating === order.id ? 'Verifying...' : 'Verify & Mark Paid'}
+                      </button>
+                      <button 
+                        onClick={() => updateStatus(order.id, 'FAILED')}
+                        disabled={updating === order.id}
+                        className="w-full px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-[10px] font-bold uppercase tracking-wider transition-colors disabled:opacity-50"
+                      >
+                        Reject Transfer
+                      </button>
+                    </>
+                  )}
+
                   {order.status === 'PAID' && (
                     <button 
                       onClick={() => updateStatus(order.id, 'PROCESSING')}
@@ -237,8 +281,8 @@ export default function AdminOrders() {
                 </div>
               </div>
             </motion.div>
-          ))
-        )}
+          );
+        }))}
       </div>
     </div>
   )

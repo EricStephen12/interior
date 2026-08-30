@@ -1,42 +1,78 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&family=Crimson+Text:wght@400;600&family=Montserrat:wght@300;400;500;600;700&display=swap');
+/* Google Fonts are loaded via next/font/google in layout.tsx — no @import needed here */
+/*
+ * ═══════════════════════════════════════════════════════════════════════════
+ * DESIGN TOKEN MASTER REFERENCE: src/lib/theme.ts
+ *
+ * All fonts, font sizes, colors, borders, border-radius, shadows, spacing,
+ * letter-spacing, z-index and transitions are defined in theme.ts.
+ *
+ * This file maps those tokens to CSS custom properties (--var-name) and
+ * Tailwind utilities via the @theme block below.
+ *
+ * To change any design token → update theme.ts FIRST, then mirror here.
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
 @import "tailwindcss";
 
 @theme {
+  /* ── Colors ─────────────────────────────────────────────────────────────── */
   --color-primary: #020617;
   --color-secondary: #f8fafc;
   --color-accent: #6366f1;
   --color-accent-light: #818cf8;
   --color-text-muted: #64748b;
   --color-surface: #ffffff;
+  --color-placeholder: #94a3b8;  /* slate-400 — ALL input placeholders */
   --shadow-editorial: 0 40px 80px -15px rgba(99, 102, 241, 0.15);
+  --shadow-story: 0 80px 100px -20px rgba(0, 0, 0, 0.1);
+  --shadow-stat: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
 
-  --font-playfair: "Playfair Display", serif;
-  --font-inter: "Inter", sans-serif;
-  --font-crimson: "Crimson Text", serif;
-  --font-montserrat: "Montserrat", sans-serif;
+  /* ── Fonts ───────────────────────────────────────────────────────────────
+   * These CSS variables are injected by next/font/google in layout.tsx.
+   * To change a font: update layout.tsx + src/lib/theme.ts + these values.
+   * ──────────────────────────────────────────────────────────────────────── */
+  --font-cormorant: "Cormorant Garamond", serif;  /* Headings */
+  --font-outfit: "Outfit", sans-serif;             /* Body & UI */
+
+  /* ── Border widths ──────────────────────────────────────────────────────── */
+  --border-DEFAULT: 1px;
+  --border-md: 2px;
+  --border-lg: 4px;
+  --border-xl: 12px;
+
+  /* ── Border radius ──────────────────────────────────────────────────────── */
+  --radius-brand-none: 0px;
+  --radius-brand-sm: 0.5rem;  /* admin nav, avatars */
+  --radius-brand-md: 0.75rem; /* admin nav links, back button */
+
+  /* ── Font size tokens ────────────────────────────────────────────────────── */
+  --text-label-xs: 8px;
+  --text-label-sm: 9px;
+  --text-label: 10px;
+  --text-label-lg: 11px;
 }
 
 :root {
-  --font-playfair: 'Playfair Display', serif;
-  --font-inter: 'Inter', sans-serif;
-  --font-crimson: 'Crimson Text', serif;
-  --font-montserrat: 'Montserrat', sans-serif;
+  /* Font families — injected by next/font/google via layout.tsx */
+  --font-cormorant: 'Cormorant Garamond', serif;  /* Headings */
+  --font-outfit: 'Outfit', sans-serif;             /* Body & UI */
 
-  /* SHARERS GYM LUXURY PALETTE VARIABLES */
+  /* Colour aliases */
   --primary: var(--color-primary);
   --secondary: var(--color-secondary);
   --accent: var(--color-accent);
+  --placeholder: var(--color-placeholder);
 }
 
 @layer base {
   html {
-    font-family: var(--font-inter);
+    font-family: var(--font-outfit);
     font-feature-settings: 'liga' 1, 'kern' 1;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
-    background-color: #ffffff;
+    background-color: var(--color-surface);
     color: var(--primary);
   }
 
@@ -46,25 +82,49 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-playfair);
+    font-family: var(--font-cormorant);
     font-feature-settings: 'liga' 1, 'kern' 1;
-    letter-spacing: -0.04em;
+    letter-spacing: -0.02em;
     color: var(--primary);
-    font-weight: 800;
+    font-weight: 700;
+  }
+
+  /*
+   * ── GLOBAL PLACEHOLDER COLOR ─────────────────────────────────────────────
+   * Change --color-placeholder in :root to update ALL input placeholders
+   * site-wide without touching any component file.
+   * ─────────────────────────────────────────────────────────────────────── */
+  input::placeholder,
+  textarea::placeholder,
+  select::placeholder {
+    color: var(--color-placeholder);
+    opacity: 1;
   }
 }
 
 @layer components {
+  /* Universal Dynamic Button & Action Radius bound to Theme Studio */
+  button:not([data-static-shape]):not(.admin-nav-item),
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-elite,
+  a.btn-primary,
+  a.btn-secondary,
+  a.btn-elite {
+    border-radius: var(--radius-brand-none, 0px) !important;
+  }
+
   .btn-primary {
-    @apply bg-primary hover:bg-accent hover:border-accent text-white font-bold py-3 px-6 sm:py-5 sm:px-10 rounded-none border border-primary transition-all duration-700 tracking-[0.3em] uppercase text-[9px] sm:text-[10px] active:scale-95 shadow-2xl;
+    @apply bg-primary hover:bg-accent hover:border-accent text-white font-bold py-3 px-6 sm:py-5 sm:px-10 border border-primary transition-all duration-500 tracking-[0.3em] uppercase text-[9px] sm:text-[10px] active:scale-95 shadow-2xl;
   }
 
   .btn-secondary {
-    @apply bg-transparent hover:bg-primary hover:text-white text-primary font-bold py-3 px-6 sm:py-5 sm:px-10 rounded-none border border-primary transition-all duration-700 tracking-[0.3em] uppercase text-[9px] sm:text-[10px] shadow-sm;
+    @apply bg-transparent hover:bg-primary hover:text-white text-primary font-bold py-3 px-6 sm:py-5 sm:px-10 border border-primary transition-all duration-500 tracking-[0.3em] uppercase text-[9px] sm:text-[10px] shadow-sm;
   }
 
   .btn-elite {
-    @apply bg-primary text-white py-4 px-8 sm:py-6 sm:px-12 rounded-none tracking-[0.3em] sm:tracking-[0.5em] uppercase text-[9px] sm:text-[10px] font-black hover:bg-accent transition-all duration-700 relative overflow-hidden active:scale-95 border border-primary;
+    @apply bg-primary text-white py-4 px-8 sm:py-6 sm:px-12 tracking-[0.3em] sm:tracking-[0.5em] uppercase text-[9px] sm:text-[10px] font-black hover:bg-accent transition-all duration-500 relative overflow-hidden active:scale-95 border border-primary;
   }
 
   .glass-light {
@@ -80,7 +140,7 @@
   }
 
   .text-luxury {
-    @apply font-playfair tracking-[-0.05em] leading-[0.85];
+    @apply font-cormorant tracking-[-0.03em] leading-[0.85];
   }
 
   .clip-editorial {
@@ -106,7 +166,7 @@
     @apply p-10 border-b border-white/10 flex flex-col items-center gap-4 relative z-10;
   }
   .admin-logo {
-    @apply text-2xl font-black tracking-[0.3em] font-playfair text-center leading-[1.2];
+    @apply text-2xl font-black tracking-[0.3em] font-cormorant text-center leading-[1.2];
   }
   .admin-logo-sub {
     @apply text-[10px] text-accent font-sans uppercase tracking-[0.5em] block mt-2;
@@ -150,7 +210,7 @@
     @apply border-b border-primary/10 pb-8;
   }
   .admin-title {
-    @apply text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-primary uppercase font-playfair mb-2;
+    @apply text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-primary uppercase font-cormorant mb-2;
   }
   .admin-subtitle {
     @apply text-text-muted font-black text-[10px] tracking-[0.3em] uppercase;
@@ -168,7 +228,7 @@
     @apply text-[10px] font-black uppercase tracking-[0.2em] text-text-muted;
   }
   .admin-stat-value {
-    @apply text-4xl sm:text-5xl font-playfair font-black text-primary tabular-nums;
+    @apply text-4xl sm:text-5xl font-cormorant font-black text-primary tabular-nums;
   }
   .admin-stat-change {
     @apply text-[10px] font-black tracking-[0.2em] uppercase;

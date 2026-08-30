@@ -32,13 +32,18 @@ export async function POST(req: Request) {
     if (!apiKey) return NextResponse.json({ reply: FALLBACK })
 
     // Fetch real-time data from DB to prevent "old data" issues
-    const [products, deliveryZones] = await Promise.all([
+    const [products, deliveryZones, emailSetting, phoneSetting] = await Promise.all([
       prisma.product.findMany({ select: { name: true, price: true } }),
-      prisma.deliveryLocation.findMany({ where: { isActive: true } })
+      prisma.deliveryLocation.findMany({ where: { isActive: true } }),
+      prisma.storeSetting.findUnique({ where: { key: 'section.footer.email' } }),
+      prisma.storeSetting.findUnique({ where: { key: 'section.footer.phone' } })
     ]);
 
-    const productsList = products.map(p => `${p.name} (₦${p.price.toLocaleString()})`).join(', ');
-    const deliveryList = deliveryZones.map(d => `${d.name}: ₦${d.basePrice.toLocaleString()}`).join(', ');
+    const activeEmail = emailSetting?.value || 'sharersmall@gmail.com';
+    const activePhone = phoneSetting?.value || '+234 808 906 2085';
+
+    const productsList = products.map((p: any) => `${p.name} (₦${p.price.toLocaleString()})`).join(', ');
+    const deliveryList = deliveryZones.map((d: any) => `${d.name}: ₦${d.basePrice.toLocaleString()}`).join(', ');
 
     const systemPrompt = `You are the SHARERS GYM customer support assistant. Be helpful, direct, and elite.
 Today's Date: ${new Date().toLocaleDateString()}
@@ -51,7 +56,8 @@ CORE INFO:
 - Premium fitness gym in Lagos, Nigeria
 - Digital pass credit system for memberships
 - Hours: Mon-Fri 5AM-11PM, Sat 6AM-10PM, Sun 7AM-8PM
-- Contact: sharersmall@gmail.com
+- Email: ${activeEmail}
+- Phone: ${activePhone}
 - Dashboard at /dashboard, Products at /products
 
 RULES:

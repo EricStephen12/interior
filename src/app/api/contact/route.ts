@@ -26,8 +26,13 @@ export async function POST(req: Request) {
       </div>
     `
 
+    const emailSetting = prisma ? await prisma.storeSetting.findUnique({
+      where: { key: 'section.footer.email' }
+    }) : null
+    const recipientEmail = emailSetting?.value || process.env.CONTACT_EMAIL || 'sharersmall@gmail.com'
+
     await emailService.sendEmail({
-      to: process.env.CONTACT_EMAIL || 'sharersmall@gmail.com', 
+      to: recipientEmail, 
       subject: `[Contact Form] ${subject} - ${name}`,
       html,
     })

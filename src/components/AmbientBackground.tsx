@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
+import { t } from '@/lib/theme'
 
 export default function AmbientBackground() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
@@ -49,7 +50,7 @@ export default function AmbientBackground() {
         <motion.div style={{ y: y1 }} className="translate-x-[-10%]">
           PERFORMANCE
         </motion.div>
-        <motion.div style={{ y: y2, WebkitTextStroke: '3px #000', color: 'transparent' }} className="translate-x-[5%]">
+        <motion.div style={{ y: y2, WebkitTextStroke: `3px ${t.colors.black}`, color: 'transparent' }} className="translate-x-[5%]">
           DISCIPLINE
         </motion.div>
         <motion.div style={{ y: y1 }} className="translate-x-[-15%]">

@@ -9,6 +9,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Plus } from 'lucide-react'
 import { useToast } from '@/components/ToastProvider'
+import { useCustomization } from '@/lib/customization-context'
 
 interface CartDrawerProps {
   isOpen: boolean
@@ -16,6 +17,14 @@ interface CartDrawerProps {
 }
 
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
+  const { get } = useCustomization()
+  const cartTitle = get('section.cart.title', 'Your Cart')
+  const cartEmptyTitle = get('section.cart.emptyTitle', 'Your cart is empty')
+  const cartEmptyDesc = get('section.cart.emptyDesc', 'Explore the collection to add items.')
+  const cartUpsellTitle = get('section.cart.upsellTitle', 'You might also like')
+  const cartCheckoutBtn = get('section.cart.checkoutBtn', 'Secure Checkout')
+  const cartContinueBtn = get('section.cart.continueBtn', 'Continue Exploring')
+
   const { state, updateQuantity, removeFromCart, addToCart } = useCart()
   const { items: cartItems } = state
   const router = useRouter()
@@ -79,7 +88,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                       <div className="flex items-start justify-between">
                         <Dialog.Title className="text-xl font-black text-primary tracking-tight uppercase">
-                          Your Cart
+                          {cartTitle}
                         </Dialog.Title>
                         <div className="ml-3 flex h-7 items-center">
                           <button
@@ -98,8 +107,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                           {cartItems.length === 0 ? (
                             <div className="text-center py-12">
                               <ShoppingCartIcon className="mx-auto h-12 w-12 text-secondary" />
-                              <h3 className="mt-2 text-sm font-black text-primary uppercase">Your cart is empty</h3>
-                              <p className="mt-1 text-sm text-text-muted">Explore the collection to add items.</p>
+                              <h3 className="mt-2 text-sm font-black text-primary uppercase">{cartEmptyTitle}</h3>
+                              <p className="mt-1 text-sm text-text-muted">{cartEmptyDesc}</p>
                             </div>
                           ) : (
                             <ul role="list" className="-my-6 divide-y divide-gray-100">
@@ -168,7 +177,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     {/* Upsell Section */}
                     {upsellProducts.length > 0 && (
                       <div className="px-4 pt-6 pb-2 sm:px-6 border-t border-gray-100">
-                        <p className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 mb-4">You Might Also Like</p>
+                        <p className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 mb-4">{cartUpsellTitle}</p>
                         <div className="flex flex-col gap-3">
                           {upsellProducts.map((p: any) => {
                             const imgs = Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images || '[]') : [])
@@ -226,9 +235,10 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                               onClose()
                               router.push('/checkout')
                             }}
-                            className="w-full bg-primary hover:bg-black text-white font-black py-5 rounded-none tracking-widest uppercase text-xs transition-all shadow-xl shimmer-btn"
+                            className="w-full bg-primary hover:bg-accent text-white font-black py-5 tracking-widest uppercase text-xs transition-all shadow-xl shimmer-btn"
+                            style={{ borderRadius: 'var(--radius-brand-none, 0px)' }}
                           >
-                            Secure Checkout
+                            {cartCheckoutBtn}
                           </motion.button>
                         </div>
                         <div className="mt-6 flex justify-center text-center text-[10px] font-black tracking-widest uppercase">
@@ -239,7 +249,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                               className="text-accent hover:text-primary transition-colors"
                               onClick={onClose}
                             >
-                              Continue Exploring
+                              {cartContinueBtn}
                               <span aria-hidden="true"> &rarr;</span>
                             </button>
                           </p>

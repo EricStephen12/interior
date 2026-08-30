@@ -9,7 +9,6 @@ import PromoBanner from './PromoBanner'
 import AmbientBackground from './AmbientBackground'
 
 const SupportChat = dynamic(() => import('./SupportChat'), { ssr: false })
-const CustomCursor = dynamic(() => import('./CustomCursor'), { ssr: false })
 
 interface LayoutProps {
   children: React.ReactNode
@@ -25,7 +24,6 @@ export default function Layout({ children }: LayoutProps) {
       {/* Global Grain Texture Overlay */}
       <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03] grain-overlay"></div>
 
-      <CustomCursor />
       {!isAdmin && <PromoBanner />}
       {!isAdmin && <Header />}
       <AnimatePresence mode="wait">

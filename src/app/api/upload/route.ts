@@ -14,12 +14,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Cloudinary configuration missing' }, { status: 500 })
     }
 
-    // Proxy the form data directly to Cloudinary from the server
+    // Proxy the form data directly to Cloudinary from the server with 'auto' for image + video support
     const cloudinaryFormData = new FormData()
     cloudinaryFormData.append('file', file)
     cloudinaryFormData.append('upload_preset', 'sharers_gym')
 
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
       method: 'POST',
       body: cloudinaryFormData
     })

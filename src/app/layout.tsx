@@ -1,31 +1,32 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter, Crimson_Text, Montserrat } from "next/font/google";
+import { Cormorant_Garamond, Outfit } from "next/font/google";
 import "./globals.css";
 import Layout from "@/components/Layout";
 import { CartProvider } from "@/lib/cart-context";
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-});
+/**
+ * ── FONT CONFIGURATION ────────────────────────────────────────────────────────
+ * To change the site font:
+ *   1. Import the new font from "next/font/google"
+ *   2. Update the variable name (e.g. "--font-cormorant" → "--font-newname")
+ *   3. Update src/lib/theme.ts fonts.heading or fonts.body to match
+ *   4. Update globals.css @theme and :root font variable names
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 
-const inter = Inter({
-  variable: "--font-inter",
+/** Headings — luxury editorial serif */
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
 });
 
-const crimson = Crimson_Text({
-  variable: "--font-crimson",
+/** Body & UI — modern geometric sans-serif */
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["400", "600"],
-});
-
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -79,6 +80,10 @@ import ScrollToTop from "@/components/ScrollToTop";
 import { ToastProvider } from "@/components/ToastProvider";
 import { WishlistProvider } from "@/lib/wishlist-context";
 
+import DynamicTheme from "@/components/DynamicTheme";
+
+import { CustomizationProvider } from "@/lib/customization-context";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -115,26 +120,29 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <head>
+          <DynamicTheme />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
           />
         </head>
         <body
-          className={`${playfair.variable} ${inter.variable} ${crimson.variable} ${montserrat.variable} font-sans antialiased`}
+          className={`${cormorant.variable} ${outfit.variable} font-outfit antialiased`}
         >
           <ScrollToTop />
-          <MembershipProvider>
-            <CartProvider>
-              <WishlistProvider>
-                <ToastProvider>
-                  <Layout>
-                    {children}
-                  </Layout>
-                </ToastProvider>
-              </WishlistProvider>
-            </CartProvider>
-          </MembershipProvider>
+          <CustomizationProvider>
+            <MembershipProvider>
+              <CartProvider>
+                <WishlistProvider>
+                  <ToastProvider>
+                    <Layout>
+                      {children}
+                    </Layout>
+                  </ToastProvider>
+                </WishlistProvider>
+              </CartProvider>
+            </MembershipProvider>
+          </CustomizationProvider>
         </body>
       </html>
     </ClerkProvider>

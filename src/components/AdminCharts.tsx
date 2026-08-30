@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { TrendingUp, Activity } from 'lucide-react'
+import { t } from '@/lib/theme'
 
 interface ChartDataPoint {
   date: string
@@ -122,8 +123,8 @@ export default function AdminCharts({ revenueData, checkInData }: AdminChartsPro
             {/* Gradient Def */}
             <defs>
               <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#6366f1" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="#6366f1" stopOpacity="0.00" />
+                <stop offset="0%" stopColor={t.colors.accent} stopOpacity="0.25" />
+                <stop offset="100%" stopColor={t.colors.accent} stopOpacity="0.00" />
               </linearGradient>
             </defs>
 
@@ -146,7 +147,7 @@ export default function AdminCharts({ revenueData, checkInData }: AdminChartsPro
                 transition={{ duration: 1, ease: "easeInOut" }}
                 d={linePath}
                 fill="none"
-                stroke="#6366f1"
+                stroke={t.colors.accent}
                 strokeWidth="2.5"
               />
             )}
@@ -172,8 +173,8 @@ export default function AdminCharts({ revenueData, checkInData }: AdminChartsPro
                 cy={pt.y}
                 r={hoveredRevIndex === i ? 6 : 4}
                 className="transition-all duration-200"
-                fill={hoveredRevIndex === i ? "#6366f1" : "#fff"}
-                stroke="#6366f1"
+                fill={hoveredRevIndex === i ? t.colors.accent : t.colors.white}
+                stroke={t.colors.accent}
                 strokeWidth={hoveredRevIndex === i ? 3 : 2}
               />
             ))}
@@ -274,7 +275,7 @@ export default function AdminCharts({ revenueData, checkInData }: AdminChartsPro
                     transition={{ duration: 0.6, delay: i * 0.05, ease: "easeOut" }}
                     x={pt.x - barWidth / 2}
                     width={barWidth}
-                    fill={hoveredCheckIndex === i ? "#6366f1" : "rgba(99, 102, 241, 0.45)"}
+                    fill={hoveredCheckIndex === i ? t.colors.accent : 'rgba(99, 102, 241, 0.45)'}
                     className="transition-colors duration-150"
                   />
                 </g>

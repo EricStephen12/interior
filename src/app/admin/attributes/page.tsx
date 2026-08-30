@@ -16,7 +16,7 @@ export default function AttributesPage() {
   const [newBrand, setNewBrand] = useState('')
   const [newSize, setNewSize] = useState('')
   const [newPromo, setNewPromo] = useState({ code: '', discount: '' })
-  const [newPack, setNewPack] = useState({ name: '', credits: '', price: '', description: '', isPopular: false })
+  const [newPack, setNewPack] = useState({ name: '', credits: '', unit: 'days', price: '', description: '', isPopular: false })
   const [submitting, setSubmitting] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [espeesRate, setEspeesRate] = useState('2050')
@@ -80,8 +80,11 @@ export default function AttributesPage() {
     try {
       await Promise.all([
         fetch('/api/admin/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: 'banner_enabled', value: String(bannerEnabled) }) }),
+        fetch('/api/admin/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: 'section.banner.enabled', value: String(bannerEnabled) }) }),
         fetch('/api/admin/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: 'banner_message', value: bannerMessage }) }),
+        fetch('/api/admin/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: 'section.banner.message', value: bannerMessage }) }),
         fetch('/api/admin/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: 'banner_code', value: bannerCode }) }),
+        fetch('/api/admin/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: 'section.banner.code', value: bannerCode }) }),
       ])
       alert('Banner settings saved!')
     } catch {
@@ -152,10 +155,24 @@ export default function AttributesPage() {
     if (!newPack.name || !newPack.credits || !newPack.price) return
     setSubmitting(true)
     try {
-      const res = await fetch('/api/credit-packs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newPack) })
+      const formattedDesc = newPack.description?.trim() 
+        ? `${newPack.description}`
+        : (newPack.unit === 'hours' ? 'Hourly Arena Session' : 'Full Day Arena Access')
+
+      const res = await fetch('/api/credit-packs', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({
+          name: newPack.name,
+          credits: parseInt(newPack.credits),
+          price: parseFloat(newPack.price),
+          description: newPack.unit === 'hours' ? `[HOURLY] ${formattedDesc}` : `[DAILY] ${formattedDesc}`,
+          isPopular: newPack.isPopular
+        }) 
+      })
       const data = await res.json()
       if (res.ok) {
-        setNewPack({ name: '', credits: '', price: '', description: '', isPopular: false })
+        setNewPack({ name: '', credits: '', unit: 'days', price: '', description: '', isPopular: false })
         await refreshData()
       } else {
         alert(data.error || 'Failed to add credit pack')
@@ -195,7 +212,7 @@ export default function AttributesPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-[var(--color-secondary)]">
       {/* Top Bar */}
       <div className="bg-white border-b border-gray-100 px-6 sm:px-10 py-5 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-5">
@@ -251,7 +268,7 @@ export default function AttributesPage() {
                       onChange={e => setNewBrand(e.target.value)}
                       onKeyDown={e => e.key === 'Enter' && addBrand()}
                       placeholder="Brand name..."
-                      className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold text-gray-800 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent w-48"
+                      className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent w-48"
                     />
                     <button onClick={addBrand} disabled={submitting} className="flex items-center gap-1.5 bg-gray-900 text-white px-4 py-2.5 rounded-lg text-xs font-bold hover:bg-accent transition-colors disabled:opacity-40">
                       {submitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
@@ -292,7 +309,7 @@ export default function AttributesPage() {
                       onChange={e => setNewSize(e.target.value)}
                       onKeyDown={e => e.key === 'Enter' && addSize()}
                       placeholder="Size label..."
-                      className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold text-gray-800 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent w-48"
+                      className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent w-48"
                     />
                     <button onClick={addSize} disabled={submitting} className="flex items-center gap-1.5 bg-gray-900 text-white px-4 py-2.5 rounded-lg text-xs font-bold hover:bg-accent transition-colors disabled:opacity-40">
                       {submitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
@@ -333,7 +350,7 @@ export default function AttributesPage() {
                       value={newPromo.code}
                       onChange={e => setNewPromo({ ...newPromo, code: e.target.value.toUpperCase() })}
                       placeholder="Code (e.g. LAUNCH20)"
-                      className="flex-1 px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-800 uppercase tracking-wider placeholder:text-gray-300 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
+                      className="flex-1 px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-800 uppercase tracking-wider placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
                     />
                     <div className="flex gap-2">
                       <div className="relative">
@@ -342,7 +359,7 @@ export default function AttributesPage() {
                           value={newPromo.discount}
                           onChange={e => setNewPromo({ ...newPromo, discount: e.target.value })}
                           placeholder="Discount"
-                          className="w-32 px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-800 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent pr-8"
+                          className="w-32 px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent pr-8"
                         />
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm">%</span>
                       </div>
@@ -383,44 +400,56 @@ export default function AttributesPage() {
               </div>
             )}
 
-            {/* ──── DAY PASSES ──── */}
+            {/* ──── GYM ACCESS PASSES (HOURS & DAYS) ──── */}
             {activeTab === 'packs' && (
               <div>
-                <div className="px-8 py-6 border-b border-gray-50">
-                  <h2 className="text-lg font-bold text-gray-900">Day Passes</h2>
-                  <p className="text-sm text-gray-400 mt-0.5">Define the day passes members can purchase from the dashboard.</p>
+                <div className="px-8 py-6 border-b border-gray-50 flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900">Gym Access Passes (Hours & Days)</h2>
+                    <p className="text-sm text-gray-400 mt-0.5">Configure hourly training sessions and multi-day membership passes.</p>
+                  </div>
                 </div>
                 {/* Add Pack Form */}
                 <div className="px-8 py-6 bg-gray-50/50 border-b border-gray-100 space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                     <input
                       type="text"
                       value={newPack.name}
                       onChange={e => setNewPack({ ...newPack, name: e.target.value })}
-                      placeholder="Pack name (e.g. Elite)"
-                      className="px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-800 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
+                      placeholder="Pass name (e.g. 2 Hours Session, 1 Day Pass)"
+                      className="px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent sm:col-span-2"
                     />
-                    <input
-                      type="number"
-                      value={newPack.credits}
-                      onChange={e => setNewPack({ ...newPack, credits: e.target.value })}
-                      placeholder="Days (e.g. 1)"
-                      className="px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-800 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
-                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="number"
+                        value={newPack.credits}
+                        onChange={e => setNewPack({ ...newPack, credits: e.target.value })}
+                        placeholder={newPack.unit === 'hours' ? 'Hours (e.g. 1)' : 'Days (e.g. 30)'}
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
+                      />
+                      <select
+                        value={newPack.unit}
+                        onChange={e => setNewPack({ ...newPack, unit: e.target.value as any })}
+                        className="px-3 py-3 bg-white border border-gray-200 rounded-lg text-xs font-black uppercase text-gray-800 focus:outline-none focus:border-accent"
+                      >
+                        <option value="hours">⏱️ Hours</option>
+                        <option value="days">📅 Days</option>
+                      </select>
+                    </div>
                     <input
                       type="number"
                       value={newPack.price}
                       onChange={e => setNewPack({ ...newPack, price: e.target.value })}
-                      placeholder="Price in ₦ (e.g. 50000)"
-                      className="px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-800 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
+                      placeholder="Price in ₦ (e.g. 5000)"
+                      className="px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
                     />
                   </div>
                   <input
                     type="text"
                     value={newPack.description}
                     onChange={e => setNewPack({ ...newPack, description: e.target.value })}
-                    placeholder="Short description (e.g. The professional standard)"
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm text-gray-800 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
+                    placeholder="Short description (e.g. Single Arena Session or All Access Pass)"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
                   />
                   <div className="flex items-center justify-between">
                     <label className="flex items-center gap-2.5 cursor-pointer select-none">
@@ -434,15 +463,19 @@ export default function AttributesPage() {
                     </label>
                     <button onClick={addPack} disabled={submitting} className="flex items-center gap-1.5 bg-gray-900 text-white px-5 py-3 rounded-lg text-xs font-bold hover:bg-accent transition-colors disabled:opacity-40">
                       {submitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
-                      Add Pack
+                      Add Pass
                     </button>
                   </div>
                 </div>
                 {/* Pack List */}
                 <div className="divide-y divide-gray-50">
                   {packs.length === 0 ? (
-                    <p className="px-8 py-16 text-center text-gray-300 text-sm">No day passes yet. Create one above.</p>
-                  ) : packs.map(pack => (
+                    <p className="px-8 py-16 text-center text-gray-300 text-sm">No access passes yet. Create one above.</p>
+                  ) : packs.map(pack => {
+                    const isHourly = (pack.name || '').toLowerCase().includes('hour') || (pack.name || '').toLowerCase().includes('hr') || (pack.description || '').toLowerCase().includes('hour') || (pack.description || '').includes('[HOURLY]');
+                    const cleanDesc = (pack.description || '').replace('[HOURLY] ', '').replace('[DAILY] ', '');
+
+                    return (
                     <div key={pack.id} className={`flex items-center justify-between px-8 py-5 hover:bg-gray-50/50 transition-all group relative ${deletingId === pack.id ? 'bg-gray-50/80' : ''}`}>
                       <div className="flex items-center gap-4">
                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${pack.isPopular ? 'bg-accent/10' : 'bg-gray-100'} ${deletingId === pack.id ? 'opacity-40' : ''}`}>
@@ -451,15 +484,20 @@ export default function AttributesPage() {
                         <div className={deletingId === pack.id ? 'opacity-40' : ''}>
                           <div className="flex items-center gap-2">
                             <p className="text-sm font-bold text-gray-900">{pack.name}</p>
+                            <span className={`text-[9px] font-black px-2 py-0.5 rounded uppercase ${
+                              isHourly ? 'bg-amber-100 text-amber-800' : 'bg-indigo-100 text-indigo-800'
+                            }`}>
+                              {isHourly ? '⏱️ Hourly' : '📅 Daily'}
+                            </span>
                             {pack.isPopular && <span className="text-[9px] font-bold bg-accent text-white px-1.5 py-0.5 rounded uppercase">Featured</span>}
                           </div>
-                          <p className="text-xs text-gray-400">{pack.description || `${pack.credits} day${pack.credits !== 1 ? 's' : ''}`}</p>
+                          <p className="text-xs text-gray-400">{cleanDesc || `${pack.credits} ${isHourly ? 'hours' : 'days'}`}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-6">
                         <div className={`text-right ${deletingId === pack.id ? 'opacity-40' : ''}`}>
                           <p className="text-sm font-bold text-gray-900 tabular-nums">₦{pack.price.toLocaleString()}</p>
-                          <p className="text-xs text-gray-400">{pack.credits} day{pack.credits !== 1 ? 's' : ''}</p>
+                          <p className="text-xs text-gray-400">{pack.credits} {isHourly ? (pack.credits === 1 ? 'hour' : 'hours') : (pack.credits === 1 ? 'day' : 'days')}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           {deletingId === pack.id && <span className="text-[10px] font-bold text-gray-400 animate-pulse uppercase">Deleting</span>}
@@ -469,7 +507,7 @@ export default function AttributesPage() {
                         </div>
                       </div>
                     </div>
-                  ))}
+                  )})}
                 </div>
               </div>
             )}
@@ -534,7 +572,7 @@ export default function AttributesPage() {
                       value={bannerMessage}
                       onChange={e => setBannerMessage(e.target.value)}
                       placeholder="e.g. Free Delivery on Orders Above ₦50,000"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold text-gray-800 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
                     />
                   </div>
                   <div>
@@ -544,22 +582,30 @@ export default function AttributesPage() {
                       value={bannerCode}
                       onChange={e => setBannerCode(e.target.value.toUpperCase())}
                       placeholder="e.g. FREESHIP"
-                      className="w-full sm:w-64 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-800 uppercase tracking-wider placeholder:text-gray-300 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
+                      className="w-full sm:w-64 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-800 uppercase tracking-wider placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
                     />
                     <p className="text-[10px] text-gray-400 mt-1.5">Customers can click to copy this code directly from the banner.</p>
                   </div>
                 </div>
 
-                <button
-                  onClick={saveBanner}
-                  disabled={savingBanner}
-                  className="mt-6 flex items-center justify-center gap-1.5 bg-gray-900 text-white px-6 py-3 rounded-lg text-xs font-bold hover:bg-accent transition-colors disabled:opacity-40"
-                >
-                  {savingBanner ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
-                  Save Banner
-                </button>
-              </div>
+                <div className="mt-6 flex items-center gap-3">
+                  <button
+                    onClick={saveBanner}
+                    disabled={savingBanner}
+                    className="flex items-center justify-center gap-1.5 bg-gray-900 text-white px-6 py-3 rounded-lg text-xs font-bold hover:bg-accent transition-colors disabled:opacity-40 shadow-xs"
+                  >
+                    {savingBanner ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+                    Save Banner
+                  </button>
 
+                  <Link
+                    href="/admin/theme"
+                    className="px-4 py-3 bg-secondary text-primary hover:text-accent border border-primary/10 rounded-lg text-xs font-bold transition-colors inline-flex items-center gap-1.5"
+                  >
+                    Visual Live Customizer in Theme Studio &rarr;
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         )}

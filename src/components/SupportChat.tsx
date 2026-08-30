@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle, X, Send, Bot, User } from 'lucide-react'
 import { useUser } from '@clerk/nextjs'
+import { t } from '@/lib/theme'
 
 interface ChatMessage {
   role: 'user' | 'assistant'
@@ -127,7 +128,8 @@ export default function SupportChat() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-50 w-14 h-14 sm:w-16 sm:h-16 bg-accent text-white rounded-full shadow-[0_8px_30px_rgba(99,102,241,0.4)] flex items-center justify-center hover:bg-accent/90 transition-colors group"
+            className="fixed bottom-6 right-6 z-50 w-14 h-14 sm:w-16 sm:h-16 bg-accent text-white rounded-full flex items-center justify-center hover:bg-accent/90 transition-colors group"
+            style={{ boxShadow: t.chat.triggerShadow }}
             aria-label="Open support chat"
           >
             <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 group-hover:scale-110 transition-transform" />
@@ -145,7 +147,8 @@ export default function SupportChat() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[380px] h-[500px] sm:h-[520px] bg-white border border-primary/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] flex flex-col overflow-hidden"
+            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[380px] h-[500px] sm:h-[520px] bg-white border border-primary/10 flex flex-col overflow-hidden"
+            style={{ boxShadow: t.chat.windowShadow }}
           >
             {/* Header */}
             <div className="bg-primary px-5 py-4 flex items-center justify-between flex-shrink-0">
@@ -252,7 +255,7 @@ export default function SupportChat() {
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Type a message..."
-                className="flex-1 px-3 py-2.5 text-sm bg-secondary/30 border-none rounded-none focus:outline-none focus:ring-1 focus:ring-accent text-primary placeholder:text-slate-400 font-medium"
+                className="flex-1 px-3 py-2.5 text-sm bg-secondary/30 border-none rounded-none focus:outline-none focus:ring-1 focus:ring-accent text-primary font-medium"
               />
               <button
                 onClick={sendMessage}

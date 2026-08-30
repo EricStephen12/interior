@@ -72,13 +72,13 @@ export default function AdminDeliveryPage() {
   }
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#fafafa]">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--color-secondary)]">
       <Loader2 className="w-10 h-10 animate-spin text-accent" />
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-[var(--color-secondary)]">
       {/* Top Bar */}
       <div className="bg-white border-b border-gray-100 px-6 sm:px-10 py-5 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-5">

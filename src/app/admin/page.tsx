@@ -9,7 +9,8 @@ import {
   TrendingUp,
   CreditCard,
   Activity,
-  MessageSquare
+  MessageSquare,
+  Palette
 } from 'lucide-react'
 
 import prisma from '@/lib/prisma'
@@ -129,6 +130,7 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
   ]
 
   const quickActions = [
+    { name: 'Theme Studio', href: '/admin/theme', icon: Palette },
     { name: 'Access Scanner', href: '/admin/scanner', icon: QrCode },
     { name: 'Support Desk', href: '/admin/support', icon: MessageSquare },
     { name: 'Manage Products', href: '/admin/products', icon: Package },

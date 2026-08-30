@@ -33,9 +33,13 @@ export async function GET(req: Request) {
       return NextResponse.json({ success: true, status: 'PENDING', message: 'No payment provider ID' })
     }
 
-    const secretKey = process.env.KINGSPAY_SECRET_KEY
+    // Retrieve KingsPay secret key from database settings or environment
+    const secretKeyRow = await prisma.storeSetting.findUnique({
+      where: { key: 'payment_kingspay_secret_key' }
+    })
+    const secretKey = secretKeyRow?.value || process.env.KINGSPAY_SECRET_KEY
     if (!secretKey) {
-      console.error('KINGSPAY_SECRET_KEY is not defined in environment variables')
+      console.error('KINGSPAY_SECRET_KEY is not defined in settings or environment')
       return NextResponse.json({ error: 'Payment gateway configuration error' }, { status: 500 })
     }
 

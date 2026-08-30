@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { useMembership } from '@/lib/membership-context'
 import { Shield } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
+import { t } from '@/lib/theme'
 
 export default function MemberPass() {
     const { state } = useMembership()
@@ -17,7 +18,8 @@ export default function MemberPass() {
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative bg-primary overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/10 premium-glow-card"
+                className="relative bg-primary overflow-hidden border border-white/10 premium-glow-card"
+                style={{ boxShadow: t.memberPass.cardShadow }}
             >
                 {/* Animated Background Gradients */}
                 <div className="absolute inset-0 opacity-20">
@@ -45,7 +47,7 @@ export default function MemberPass() {
                     {/* Header */}
                     <div className="flex justify-between items-start mb-6 sm:mb-8">
                         <div className="space-y-1">
-                            <p className="text-[8px] sm:text-[10px] font-black tracking-[0.4em] text-accent">OFFICIAL PASS</p>
+                            <p className="text-xs font-black tracking-[0.3em] text-accent">OFFICIAL PASS</p>
                             <h2 className="text-lg sm:text-2xl font-black tracking-tight">SHARERS GYM</h2>
                         </div>
                         <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-accent opacity-50" />
@@ -81,22 +83,22 @@ export default function MemberPass() {
                             />
                         </motion.div>
 
-                        <p className="text-[8px] sm:text-[10px] font-black tracking-[0.3em] sm:tracking-[0.4em] text-white/40 uppercase">ID: {state.memberId}</p>
+                        <p className="text-xs font-bold tracking-[0.3em] text-white/50 uppercase">ID: {state.memberId}</p>
                     </div>
 
                     {/* Footer Info */}
                     <div className="space-y-4 sm:space-y-6">
                         <div className="flex justify-between items-end border-t border-white/10 pt-4 sm:pt-6">
                             <div>
-                                <p className="text-[8px] sm:text-[9px] font-black tracking-widest text-accent uppercase mb-1">SUBSCRIPTION DAYS</p>
+                                <p className="text-xs font-bold tracking-wider text-accent uppercase mb-1">ACCESS CREDITS</p>
                                 <div className="flex items-baseline gap-1.5 sm:gap-2">
                                     <span className="text-2xl sm:text-4xl font-black">{state.remainingCredits}</span>
-                                    <span className="text-xs sm:text-lg font-bold text-white/50 lowercase">/ {state.totalCredits} days</span>
+                                    <span className="text-xs sm:text-lg font-bold text-white/50 lowercase">/ {state.totalCredits} remaining</span>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="text-[8px] sm:text-[9px] font-black tracking-widest text-white/40 mb-1 uppercase">MEMBER LEVEL</p>
-                                <p className="text-[10px] sm:text-sm font-black text-white uppercase">{state.tier === 'NONE' ? 'BASIC' : state.tier}</p>
+                                <p className="text-xs font-bold tracking-wider text-white/50 mb-1 uppercase">MEMBER LEVEL</p>
+                                <p className="text-xs sm:text-sm font-black text-white uppercase">{state.tier === 'NONE' ? 'BASIC' : state.tier}</p>
                             </div>
                         </div>
 
@@ -107,7 +109,7 @@ export default function MemberPass() {
                                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                                 className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12"
                             />
-                            <span className="text-[6px] sm:text-[8px] font-black tracking-[0.4em] sm:tracking-[0.6em] text-white/20">AUTHENTICATED DIGITAL ASSET</span>
+                            <span className="text-[10px] font-bold tracking-[0.3em] text-white/30">AUTHENTICATED DIGITAL ASSET</span>
                         </div>
                     </div>
                 </div>

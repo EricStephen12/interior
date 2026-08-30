@@ -6,11 +6,34 @@ import { motion } from 'framer-motion'
 import { useUser, useSignIn } from '@clerk/nextjs'
 import { Instagram, MessageCircle, MapPin, Mail, ArrowUpRight, Phone, Check, Loader2 } from 'lucide-react'
 
+import { useCustomization } from '@/lib/customization-context'
+
 export default function Footer() {
+  const { get } = useCustomization()
   const currentYear = new Date().getFullYear()
   const { isSignedIn, isLoaded } = useUser()
   const [email, setEmail] = useState('')
   const [newsletterState, setNewsletterState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+
+  const footerEst = get('section.footer.est', 'EST. 2024')
+  const footerTagline = get('section.footer.tagline', 'Show up. Put in the work. Leave better than you came.')
+  const newsletterBadge = get('section.footer.newsletterBadge', 'Newsletter')
+  const newsletterTitle = get('section.footer.newsletterTitle', 'Stay updated.')
+  const footerAddress = get('section.footer.address', 'Lagos, Nigeria')
+  const footerEmail = get('section.footer.email', 'sharersmall@gmail.com')
+  const footerPhone = get('section.footer.phone', '+234 808 906 2085')
+  const footerCopyright = get('section.footer.copyright', `© 2024 - ${currentYear} SHARERS GYM. All Rights Reserved.`)
+  
+  const footerBg = get('section.footer.bg', '#020617')
+  const footerText = get('section.footer.text', '#ffffff')
+  const footerAccent = get('section.footer.accent', '#6366f1')
+
+  const footerPadding = get('section.footer.padding', 'pt-16 sm:pt-32 pb-12')
+  const footerMaxWidth = get('section.footer.maxWidth', 'max-w-7xl')
+  const footerBorderTop = get('section.footer.borderTop', '1px')
+  const footerBorderBottom = get('section.footer.borderBottom', '0px')
+  const footerBorderColor = get('section.footer.borderColor', 'rgba(99, 102, 241, 0.1)')
+  const footerBorderRadius = get('section.footer.borderRadius', '0px')
 
   const handleNewsletterSubmit = async () => {
     if (!email.trim() || !email.includes('@')) return
@@ -38,26 +61,37 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-primary text-white pt-16 sm:pt-32 pb-12 overflow-hidden relative border-t border-accent/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <footer 
+      className={`${footerPadding} overflow-hidden relative`}
+      style={{ 
+        backgroundColor: footerBg, 
+        color: footerText,
+        borderTopWidth: footerBorderTop,
+        borderBottomWidth: footerBorderBottom,
+        borderColor: footerBorderColor,
+        borderStyle: 'solid',
+        borderRadius: footerBorderRadius
+      }}
+    >
+      <div className={`${footerMaxWidth} mx-auto px-4 sm:px-6 lg:px-8 relative z-10`}>
 
         {/* Top Section: Theatrical Brand Call */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-20 mb-16 sm:mb-32">
           <div className="space-y-10">
             <Link href="/" className="flex flex-col group">
               <img src="/logo.png" alt="Sharers Gym" className="h-16 sm:h-24 object-contain brightness-0 invert" />
-              <span className="text-[10px] tracking-[0.6em] font-black text-accent uppercase mt-4">
-                EST. 2024
+              <span className="text-[10px] tracking-[0.6em] font-black uppercase mt-4" style={{ color: footerAccent }}>
+                {footerEst}
               </span>
             </Link>
             <p className="text-base sm:text-xl text-slate-400 font-medium leading-relaxed max-w-md">
-              Show up. Put in the work. Leave better than you came.
+              {footerTagline}
             </p>
           </div>
 
           <div className="glass-dark p-8 sm:p-12 rounded-none border border-white/5 space-y-8 self-center">
-            <h4 className="text-[10px] font-black tracking-[0.4em] text-accent uppercase">Newsletter</h4>
-            <h3 className="text-xl sm:text-3xl font-bold tracking-tight">Stay updated.</h3>
+            <h4 className="text-[10px] font-black tracking-[0.4em] uppercase" style={{ color: footerAccent }}>{newsletterBadge}</h4>
+            <h3 className="text-xl sm:text-3xl font-bold tracking-tight text-white">{newsletterTitle}</h3>
             {newsletterState === 'success' ? (
               <div className="flex items-center gap-3 text-green-400">
                 <Check className="w-5 h-5" />
@@ -72,67 +106,67 @@ export default function Footer() {
                   onChange={e => { setEmail(e.target.value); setNewsletterState('idle') }}
                   onKeyDown={e => e.key === 'Enter' && handleNewsletterSubmit()}
                   disabled={newsletterState === 'loading'}
-                  className="w-full bg-transparent border-b border-white/10 pb-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-accent transition-colors disabled:opacity-50"
+                  className="w-full bg-transparent border-b border-white/10 pb-4 text-white focus:outline-none focus:border-accent transition-colors disabled:opacity-50"
                 />
                 <button
                   onClick={handleNewsletterSubmit}
                   disabled={newsletterState === 'loading' || !email.trim()}
-                  className="absolute right-0 bottom-4 text-accent hover:text-white transition-colors disabled:opacity-40"
+                  className="absolute right-0 bottom-4 text-[10px] font-black uppercase tracking-[0.3em] hover:text-white transition-colors disabled:opacity-50"
+                  style={{ color: footerAccent }}
                 >
-                  {newsletterState === 'loading'
-                    ? <Loader2 className="w-5 h-5 animate-spin" />
-                    : <ArrowUpRight className="w-5 h-5" />
-                  }
+                  {newsletterState === 'loading' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Subscribe'}
                 </button>
-                {newsletterState === 'error' && (
-                  <p className="text-xs text-red-400 mt-2">Something went wrong. Try again.</p>
-                )}
               </div>
             )}
           </div>
         </div>
 
-        {/* Middle Section: Links */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16 mb-16 sm:mb-32">
-          <FooterSection
-            title="Shop"
+        {/* Links Navigation Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 sm:gap-16 pb-16 sm:pb-24 border-b border-white/5">
+          <FooterSection 
+            title="The Arena" 
             links={[
-              { label: 'shop now', href: '/products' },
-              { label: 'dashboard', href: '/dashboard' },
-              { label: 'Journal', href: '/blog' }
-            ]}
+              { label: 'Overview', href: '/' },
+              { label: 'Shop Gear', href: '/products' },
+              { label: 'Day Passes', href: '/dashboard' },
+              { label: 'Subscriptions', href: '/dashboard' }
+            ]} 
           />
-          <FooterSection
-            title="Company"
+          <FooterSection 
+            title="Registry" 
             links={[
-              { label: 'About', href: '/about' },
-              { label: 'Support', href: '/contact' }
-            ]}
+              { label: 'Journal & Stories', href: '/blogs' },
+              { label: 'Coaches', href: '/dashboard' },
+              { label: 'Training Rules', href: '/terms' },
+              { label: 'Member Portal', href: '/dashboard' }
+            ]} 
           />
-          <FooterSection
-            title="Legal"
+          <FooterSection 
+            title="Connect" 
             links={[
-              { label: 'Terms of Use', href: '/terms' },
-              { label: 'Privacy Policy', href: '/privacy' },
-              { label: 'Refund Policy', href: '/refund' }
-            ]}
+              { label: 'Contact Us', href: '/contact' },
+              { label: 'Live Support', href: '/contact' },
+              { label: 'Community', href: 'https://instagram.com/sharersgym' },
+              { label: 'Instagram', href: 'https://instagram.com/sharersgym' }
+            ]} 
           />
-          <div className="space-y-8">
-            <h4 className="text-[10px] font-black tracking-[0.4em] text-accent uppercase">Connect</h4>
-            <div className="flex gap-6">
-              <SocialLink icon={Instagram} href="https://www.instagram.com/sharersgym/" />
-              <SocialLink icon={MessageCircle} href="https://wa.me/2348089062085" />
-              <SocialLink icon={Phone} href="tel:+2348089062085" />
-            </div>
-            <div className="space-y-4 pt-4">
+          <div className="space-y-6">
+            <h4 className="text-[10px] font-black tracking-[0.4em] uppercase" style={{ color: footerAccent }}>HQ Terminal</h4>
+            <div className="space-y-3">
               <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">
-                <MapPin className="w-4 h-4 text-accent" />
-                <span>Lagos, Nigeria</span>
+                <MapPin className="w-4 h-4" style={{ color: footerAccent }} />
+                <span>{footerAddress}</span>
               </div>
               <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">
-                <Mail className="w-4 h-4 text-accent" />
-                <span>sharersmall@gmail.com</span>
+                <Mail className="w-4 h-4" style={{ color: footerAccent }} />
+                <span>{footerEmail}</span>
               </div>
+              {footerPhone && (
+                <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">
+                  <Phone className="w-4 h-4" style={{ color: footerAccent }} />
+                  <span>{footerPhone}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -140,7 +174,7 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
           <p className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase order-2 md:order-1">
-            © 2024 - {currentYear} SHARERS GYM. All Rights Reserved.
+            {footerCopyright}
           </p>
           <div className="flex items-center gap-8 order-1 md:order-2">
             {!isSignedIn && isLoaded && (
@@ -156,43 +190,27 @@ export default function Footer() {
           </div>
         </div>
       </div>
-
-      {/* Decorative Gradient Line */}
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent/30 to-transparent"></div>
     </footer>
   )
 }
 
-function FooterSection({ title, links }: { title: string, links: { label: string, href: string }[] }) {
+function FooterSection({ title, links }: { title: string; links: { label: string; href: string }[] }) {
   return (
-    <div className="space-y-8">
-      <h4 className="text-[10px] font-black tracking-[0.4em] text-accent uppercase">{title}</h4>
+    <div className="space-y-6">
+      <h4 className="text-[10px] font-black tracking-[0.4em] text-white uppercase">{title}</h4>
       <ul className="space-y-4">
-        {links.map((link, i) => (
-          <li key={i}>
+        {links.map((link, idx) => (
+          <li key={idx}>
             <Link
               href={link.href}
-              className="text-slate-400 hover:text-white transition-colors font-medium text-sm block"
+              className="text-sm font-bold text-slate-400 hover:text-accent flex items-center gap-1 transition-colors group"
             >
-              {link.label}
+              <span>{link.label}</span>
+              <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all -translate-y-0.5 group-hover:translate-x-0.5 text-accent" />
             </Link>
           </li>
         ))}
       </ul>
     </div>
-  )
-}
-
-function SocialLink({ icon: Icon, href }: { icon: React.ElementType, href: string }) {
-  return (
-    <motion.a
-      whileHover={{ y: -5 }}
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="w-12 h-12 glass-dark rounded-none border border-white/5 flex items-center justify-center text-white hover:text-accent transition-colors"
-    >
-      <Icon className="w-5 h-5" />
-    </motion.a>
   )
 }

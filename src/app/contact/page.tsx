@@ -4,6 +4,8 @@ import ContactForm from '@/components/ContactForm';
 import { Metadata } from 'next';
 import Image from 'next/image';
 
+import ContactHero from '@/components/ContactHero';
+
 export const metadata: Metadata = {
   title: "Contact Us",
   description: "Want to know more, book a session, or just come see the place? Hit us up — we'll get back to you fast.",
@@ -13,29 +15,7 @@ export default function ContactPage() {
   return (
     <div className="bg-white">
       {/* Cinematic Hero */}
-      <section className="relative h-[50vh] sm:h-[60vh] min-h-[400px] flex items-end overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/real-gym-banner.png"
-            alt="SHARERS GYM Contact"
-            fill
-            priority
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-primary/75" />
-          <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/30 to-transparent" />
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-20 w-full">
-          <span className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-4 block">MEMBER SUPPORT</span>
-          <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-white tracking-tighter leading-[0.85] font-display">
-            Get in <span className="text-accent italic font-light">Touch.</span>
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-white/40 font-medium mt-4 max-w-2xl">
-            Whether you're ready to start training or have a question about your membership, we're here.
-          </p>
-        </div>
-      </section>
+      <ContactHero />
 
       {/* Main Content */}
       <section className="py-12 sm:py-24 bg-white">

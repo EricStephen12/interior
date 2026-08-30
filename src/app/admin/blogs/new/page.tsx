@@ -59,7 +59,7 @@ export default function NewBlogPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-[var(--color-secondary)]">
       {/* Top Bar */}
       <div className="bg-white border-b border-gray-100 px-6 sm:px-10 py-5 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-5">
@@ -111,7 +111,7 @@ export default function NewBlogPage() {
                     type="text"
                     value={formData.title}
                     onChange={e => setFormData({ ...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') })}
-                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 text-xl font-bold placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 text-xl font-bold focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                     placeholder="e.g. The Science of Recovery"
                   />
                 </div>
@@ -122,7 +122,7 @@ export default function NewBlogPage() {
                     type="text"
                     value={formData.slug}
                     onChange={e => setFormData({ ...formData, slug: e.target.value })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-500 font-mono text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-500 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                     placeholder="the-science-of-recovery"
                   />
                 </div>

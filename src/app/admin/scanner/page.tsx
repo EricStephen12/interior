@@ -272,7 +272,7 @@ export default function QRScannerPage() {
           <input
             type="text"
             placeholder="Search member name, email or ID..."
-            className="w-full pl-12 pr-6 py-4 bg-secondary/30 border border-transparent rounded-none focus:ring-0 focus:bg-white focus:border-accent/20 transition-all text-xs font-bold text-primary placeholder:text-slate-300"
+            className="w-full pl-12 pr-6 py-4 bg-secondary/30 border border-transparent rounded-none focus:ring-0 focus:bg-white focus:border-accent/20 transition-all text-xs font-bold text-primary"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

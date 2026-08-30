@@ -90,9 +90,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
                 {/* Text */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-black text-primary uppercase tracking-widest">{toast.message}</p>
+                  <p className="text-xs font-black text-primary uppercase tracking-wider">{toast.message}</p>
                   {toast.subtext && (
-                    <p className="text-[10px] text-text-muted mt-0.5 font-medium">{toast.subtext}</p>
+                    <p className="text-xs text-text-muted mt-0.5 font-medium">{toast.subtext}</p>
                   )}
                 </div>
 

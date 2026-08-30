@@ -114,13 +114,13 @@ export default function EditProductPage() {
   }
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#fafafa]">
+    <div className="min-h-screen flex items-center justify-center bg-secondary/50">
       <Loader2 className="w-10 h-10 animate-spin text-accent" />
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-secondary/50">
       {/* Admin Top Bar */}
       <div className="bg-white border-b border-gray-100 px-6 sm:px-10 py-5 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-5">
@@ -171,7 +171,7 @@ export default function EditProductPage() {
                     type="text"
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 text-lg font-semibold placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                   />
                 </div>
                 <div>
@@ -192,7 +192,7 @@ export default function EditProductPage() {
                     rows={8}
                     value={formData.description}
                     onChange={e => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 text-sm leading-relaxed placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all resize-none"
+                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all resize-none"
                   />
                 </div>
               </div>
@@ -257,7 +257,7 @@ export default function EditProductPage() {
                     type="number"
                     value={formData.price}
                     onChange={e => setFormData({ ...formData, price: e.target.value })}
-                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 text-2xl font-bold tabular-nums placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 text-2xl font-bold tabular-nums focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                   />
                 </div>
                 <div>
@@ -289,7 +289,7 @@ export default function EditProductPage() {
                     type="number"
                     value={formData.promoPrice}
                     onChange={e => setFormData({ ...formData, promoPrice: e.target.value })}
-                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-green-600 text-2xl font-bold tabular-nums placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-green-600 text-2xl font-bold tabular-nums focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                   />
                 </div>
               </div>
@@ -306,7 +306,7 @@ export default function EditProductPage() {
                     type="text"
                     value={formData.type}
                     onChange={e => setFormData({ ...formData, type: e.target.value })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 text-sm font-semibold placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                   />
                 </div>
                 <div className="flex items-center gap-3">

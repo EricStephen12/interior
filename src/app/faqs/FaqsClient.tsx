@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
+import { useCustomization } from '@/lib/customization-context';
 
 const faqs = [
     {
@@ -23,15 +24,23 @@ const faqs = [
 ];
 
 export default function FaqsClient() {
+    const { get } = useCustomization();
     const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+    const badge = get('section.faqs.badge', 'FAQ');
+    const title1 = get('section.faqs.title1', 'Common');
+    const title2 = get('section.faqs.title2', 'Questions.');
+    const subtitle = get('section.faqs.subtitle', 'Everything you need to know about our training and memberships.');
 
     return (
         <div className="pt-24 sm:pt-40 pb-16 sm:pb-32 bg-secondary/20 min-h-screen selection:bg-accent/20">
             <div className="max-w-4xl mx-auto px-4">
                 <div className="text-center mb-16 sm:mb-24">
-                    <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-6 block">FAQ</span>
-                    <h1 className="text-5xl md:text-7xl text-luxury text-primary mb-6">Common <br /><span className="text-accent italic">Questions.</span></h1>
-                    <p className="text-lg text-text-muted font-light uppercase tracking-widest">Everything you need to know about our training and memberships.</p>
+                    <span className="text-[10px] font-black tracking-[0.6em] text-accent uppercase mb-6 block">{badge}</span>
+                    <h1 className="text-5xl md:text-7xl text-luxury text-primary mb-6">
+                        {title1} <br /><span className="text-accent italic">{title2}</span>
+                    </h1>
+                    <p className="text-lg text-text-muted font-light uppercase tracking-widest">{subtitle}</p>
                 </div>
 
                 <div className="space-y-6">
@@ -58,18 +67,6 @@ export default function FaqsClient() {
                             )}
                         </div>
                     ))}
-                </div>
-
-                <div className="mt-24 sm:mt-32 p-10 sm:p-20 bg-primary rounded-none text-center text-white relative overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.3)]">
-                    <div className="relative z-10">
-                        <h2 className="text-4xl text-luxury mb-8">Still Have <br /><span className="text-accent italic">Questions?</span></h2>
-                        <p className="text-white/60 mb-12 max-w-sm mx-auto font-light text-lg">Our team is here to help. Send us a message and we'll get back to you quickly.</p>
-                        <a href="/contact" className="btn-primary !bg-white !text-primary hover:!bg-accent hover:!text-white py-6">
-                            Get In Touch
-                        </a>
-                    </div>
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-accent/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-[100px]"></div>
-                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-[100px]"></div>
                 </div>
             </div>
         </div>

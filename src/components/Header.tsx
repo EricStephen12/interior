@@ -10,8 +10,11 @@ import { useCart } from '@/lib/cart-context'
 import { useWishlist } from '@/lib/wishlist-context'
 import { UserButton, useUser, SignOutButton } from '@clerk/nextjs'
 import { useMembership } from '@/lib/membership-context'
+import { useCustomization } from '@/lib/customization-context'
 
 export default function Header() {
+  const { get } = useCustomization()
+  const logoUrl = get('theme.media.logo', '/logo.png')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const { state: cartState, toggleCart } = useCart()
@@ -51,7 +54,7 @@ export default function Header() {
           {/* Logo - Center */}
           <Link href="/" className="flex flex-col items-center justify-center">
             <motion.img
-              src="/logo.png"
+              src={logoUrl}
               alt="Sharers Gym"
               whileHover={{ scale: 1.05 }}
               className={`transition-all duration-300 object-contain ${isScrolled ? 'h-8' : 'h-12 sm:h-14'}`}

@@ -67,6 +67,28 @@ export default function DashboardPage() {
                         </div>
                     </div>
 
+                    {/* Pending Verification Notice */}
+                    {state.orderHistory.some(o => o.status === 'PENDING_VERIFICATION') && (
+                        <div className="mb-12 p-6 sm:p-8 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-sm">
+                            <div className="flex items-start gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0">
+                                    <Clock className="w-5 h-5 animate-pulse" />
+                                </div>
+                                <div className="space-y-1">
+                                    <h4 className="text-sm font-black uppercase tracking-wider text-amber-900">
+                                        Manual Bank Transfer Awaiting Verification
+                                    </h4>
+                                    <p className="text-xs text-amber-800/80 leading-relaxed max-w-2xl">
+                                        Your bank transfer order is currently being reviewed by our front desk. Once confirmed, your gym access credits and pass will be automatically activated.
+                                    </p>
+                                </div>
+                            </div>
+                            <span className="px-3.5 py-1.5 bg-amber-200/60 text-amber-950 rounded-full text-[10px] font-black uppercase tracking-widest shrink-0">
+                                In Review
+                            </span>
+                        </div>
+                    )}
+
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
 
                     {/* Member Pass - Left/Sticky on Desktop */}
@@ -93,7 +115,7 @@ export default function DashboardPage() {
                                 <StatCard
                                     label="SUBSCRIPTION STATUS"
                                     value={`${state.remainingCredits} / ${state.totalCredits}`}
-                                    desc="Active days remaining"
+                                    desc="Active credits remaining"
                                     icon={Clock}
                                 />
                                 <StatCard
@@ -113,8 +135,8 @@ export default function DashboardPage() {
                             {/* Activity Log - Editorial List */}
                             <motion.div variants={item} className="space-y-12">
                                 <div className="flex items-end justify-between border-b border-primary/10 pb-8">
-                                    <h3 className="text-3xl sm:text-4xl text-luxury text-primary">Session <span className="text-accent italic">History.</span></h3>
-                                    <span className="text-[10px] font-black tracking-widest text-text-muted hidden sm:block">LATEST UPDATES</span>
+                                    <h3 className="text-3xl sm:text-4xl text-luxury text-primary">Activity <span className="text-accent italic">Log.</span></h3>
+                                    <span className="text-[10px] font-black tracking-widest text-text-muted hidden sm:block">DOOR SCANS</span>
                                 </div>
 
                                 {state.checkInHistory.length === 0 ? (
@@ -147,7 +169,7 @@ export default function DashboardPage() {
                                                 </div>
                                                 <div className="mt-6 sm:mt-0 flex items-center gap-4">
                                                     <span className={`px-5 py-2 text-[9px] font-black tracking-widest uppercase ${checkIn.protocol === 'MISSED' ? 'bg-red-500/10 text-red-500' : 'bg-secondary text-primary'}`}>
-                                                        -1 DAY
+                                                        -1 CREDIT
                                                     </span>
                                                     <ChevronRight className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-2" />
                                                 </div>
@@ -199,14 +221,21 @@ export default function DashboardPage() {
                                                     <span className="px-5 py-2 bg-secondary text-[9px] font-black tracking-widest text-primary uppercase">
                                                         ₦{order.totalAmount.toLocaleString()}
                                                     </span>
-                                                    <div className={`px-4 py-2 text-[8px] font-black tracking-widest uppercase ${
-                                                        ['COMPLETED', 'PAID', 'DELIVERED'].includes(order.status) ? 'bg-green-50 text-green-600' :
-                                                        order.status === 'SHIPPED' ? 'bg-blue-50 text-blue-600' :
-                                                        order.status === 'FAILED' ? 'bg-red-50 text-red-600' :
-                                                        'bg-orange-50 text-orange-600'
-                                                    }`}>
-                                                        {order.status}
-                                                    </div>
+                                                    {order.status === 'PENDING_VERIFICATION' ? (
+                                                        <div className="px-4 py-2 text-[9px] font-black tracking-widest uppercase bg-amber-100 text-amber-900 border border-amber-300 rounded flex items-center gap-1.5">
+                                                            <Clock className="w-3 h-3 text-amber-700 animate-pulse" />
+                                                            Pending Verification
+                                                        </div>
+                                                    ) : (
+                                                        <div className={`px-4 py-2 text-[8px] font-black tracking-widest uppercase ${
+                                                            ['COMPLETED', 'PAID', 'DELIVERED'].includes(order.status) ? 'bg-green-50 text-green-600' :
+                                                            order.status === 'SHIPPED' ? 'bg-blue-50 text-blue-600' :
+                                                            order.status === 'FAILED' ? 'bg-red-50 text-red-600' :
+                                                            'bg-orange-50 text-orange-600'
+                                                        }`}>
+                                                            {order.status}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </motion.div>
                                         ))}

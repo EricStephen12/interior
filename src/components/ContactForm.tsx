@@ -63,7 +63,7 @@ export default function ContactForm() {
             type="text"
             value={formData.name}
             onChange={e => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors text-sm sm:text-base text-primary font-medium placeholder:text-slate-300"
+            className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors text-sm sm:text-base text-primary font-medium"
             placeholder="Your full name"
           />
         </div>
@@ -74,7 +74,7 @@ export default function ContactForm() {
             type="email"
             value={formData.email}
             onChange={e => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors text-sm sm:text-base text-primary font-medium placeholder:text-slate-300"
+            className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors text-sm sm:text-base text-primary font-medium"
             placeholder="you@example.com"
           />
         </div>
@@ -88,7 +88,7 @@ export default function ContactForm() {
             type="text"
             value={formData.phone}
             onChange={e => setFormData({ ...formData, phone: e.target.value })}
-            className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors text-sm sm:text-base text-primary font-medium placeholder:text-slate-300"
+            className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors text-sm sm:text-base text-primary font-medium"
             placeholder="+234..."
           />
         </div>
@@ -115,7 +115,7 @@ export default function ContactForm() {
           rows={5}
           value={formData.message}
           onChange={e => setFormData({ ...formData, message: e.target.value })}
-          className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors resize-none text-sm sm:text-base text-primary font-medium placeholder:text-slate-300"
+          className="w-full px-0 py-3 sm:py-4 bg-transparent border-b-2 border-primary/10 rounded-none focus:outline-none focus:border-accent transition-colors resize-none text-sm sm:text-base text-primary font-medium"
           placeholder="Tell us what you need..."
         />
       </div>

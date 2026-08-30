@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
+import { t } from '@/lib/theme'
 import {
   ShoppingCartIcon,
   Search,
@@ -11,10 +12,15 @@ import {
   DollarSign,
   Tag,
   Layers,
-  X
+  X,
+  Truck,
+  Shield,
+  Zap
 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+
+import { useCustomization } from '@/lib/customization-context'
 
 export default function ShopSection({ 
   initialProducts = [],
@@ -25,6 +31,22 @@ export default function ShopSection({
   brands?: string[],
   categories?: string[]
 }) {
+  const { get } = useCustomization()
+  const shopBadge = get('section.shop.badge', 'The Arsenal')
+  const shopTitle1 = get('section.shop.title1', 'The Good')
+  const shopTitle2 = get('section.shop.title2', 'Stuff.')
+  const shopSubtitle = get('section.shop.subtitle', 'Nothing here ended up on the shelf by accident. Every product, every session, every membership is chosen because it works. Because the people here deserve that.')
+  const shopBg = get('section.shop.bg', '#ffffff')
+  const shopText = get('section.shop.text', '#020617')
+  const shopAccent = get('section.shop.accent', '#6366f1')
+
+  const shopPadding = get('section.shop.padding', 'py-16 sm:py-24 md:py-32')
+  const shopMaxWidth = get('section.shop.maxWidth', 'max-w-7xl')
+  const shopBorderTop = get('section.shop.borderTop', '0px')
+  const shopBorderBottom = get('section.shop.borderBottom', '0px')
+  const shopBorderColor = get('section.shop.borderColor', 'transparent')
+  const shopBorderRadius = get('section.shop.borderRadius', '0px')
+
   const SIZES = ['All', 'Standard', 'Custom']
   const PRICE_RANGES = ['All', 'Under ₦50,000', '₦50,000 - ₦200,000', '₦200,000 - ₦500,000', 'Above ₦500,000']
   const normalizedProducts = useMemo(() => initialProducts.map(p => {
@@ -50,23 +72,26 @@ export default function ShopSection({
     return {
       id: p.id,
       name: p.name,
-      brand: p.brand?.name || 'Sharers Elite',
-      category: p.categories?.[0]?.category?.name || 'Training',
-      size: p.size?.label || 'Standard',
+      slug: p.slug || p.id,
       price: Number(p.price) || 0,
       promo_price: p.promoPrice ? Number(p.promoPrice) : undefined,
       images: productImages,
+      brand: p.brand?.name || 'SHARERS',
+      category: p.categories?.[0]?.category?.name || 'Gear',
+      size: p.size?.label || 'Standard',
+      type: p.type || 'Standard',
+      isBestseller: p.isBestseller || false,
       description: p.description || '',
       in_stock: p.isActive ?? true,
     }
   }), [initialProducts])
 
+  const [filteredProducts, setFilteredProducts] = useState(normalizedProducts)
   const [selectedBrand, setSelectedBrand] = useState('All')
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [selectedSize, setSelectedSize] = useState('All')
   const [selectedPrice, setSelectedPrice] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
-  const [filteredProducts, setFilteredProducts] = useState(normalizedProducts)
   const [showFilters, setShowFilters] = useState(false)
 
   const containerRef = useRef(null)
@@ -75,14 +100,20 @@ export default function ShopSection({
   useEffect(() => {
     let result = normalizedProducts
 
-    // Collection Filter
-    if (selectedBrand !== 'All') result = result.filter(p => p.brand === selectedBrand)
+    // Brand Filter
+    if (selectedBrand !== 'All') {
+      result = result.filter(p => p.brand.toLowerCase() === selectedBrand.toLowerCase())
+    }
 
     // Category Filter
-    if (selectedCategory !== 'All') result = result.filter(p => p.category === selectedCategory)
+    if (selectedCategory !== 'All') {
+      result = result.filter(p => p.category.toLowerCase() === selectedCategory.toLowerCase())
+    }
 
     // Size Filter
-    if (selectedSize !== 'All') result = result.filter(p => p.size === selectedSize)
+    if (selectedSize !== 'All') {
+      result = result.filter(p => p.size.toLowerCase() === selectedSize.toLowerCase())
+    }
 
     // Price Filter
     if (selectedPrice !== 'All') {
@@ -106,7 +137,7 @@ export default function ShopSection({
     }
 
     setFilteredProducts(result)
-  }, [selectedBrand, selectedCategory, selectedSize, selectedPrice, searchQuery])
+  }, [selectedBrand, selectedCategory, selectedSize, selectedPrice, searchQuery, normalizedProducts])
 
   const clearFilters = () => {
     setSelectedBrand('All')
@@ -119,27 +150,40 @@ export default function ShopSection({
   const isFiltered = selectedBrand !== 'All' || selectedCategory !== 'All' || selectedSize !== 'All' || selectedPrice !== 'All' || searchQuery !== ''
 
   return (
-    <section ref={containerRef} className="py-16 sm:py-24 md:py-32 bg-white selection:bg-secondary min-h-screen font-sans">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section 
+      ref={containerRef} 
+      className={`${shopPadding} selection:bg-secondary min-h-screen font-sans`}
+      style={{ 
+        backgroundColor: shopBg, 
+        color: shopText,
+        borderTopWidth: shopBorderTop,
+        borderBottomWidth: shopBorderBottom,
+        borderColor: shopBorderColor,
+        borderStyle: 'solid',
+        borderRadius: shopBorderRadius
+      }}
+    >
+      <div className={`${shopMaxWidth} mx-auto px-4 sm:px-6 lg:px-8`}>
 
         {/* Elite Header */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-16 sm:mb-24">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-12 sm:mb-16">
           <div className="max-w-2xl">
             <motion.span
               initial={{ opacity: 0, x: -20 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
-              className="inline-block text-[10px] font-black tracking-[0.4em] text-accent uppercase mb-4 sm:mb-6"
+              className="inline-block text-xs font-black tracking-[0.3em] uppercase mb-4 sm:mb-6"
+              style={{ color: shopAccent }}
             >
-              The Arsenal
+              {shopBadge}
             </motion.span>
             <motion.h3
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.2 }}
-              className="text-4xl sm:text-6xl md:text-7xl font-black text-primary tracking-[-0.04em] leading-[0.9] font-display"
+              className="text-4xl sm:text-6xl md:text-7xl font-black tracking-[-0.04em] leading-[0.9] font-heading"
             >
-              The Good <br />
-              <span className="text-accent font-display">Stuff.</span>
+              {shopTitle1} <br />
+              <span className="font-heading" style={{ color: shopAccent }}>{shopTitle2}</span>
             </motion.h3>
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -147,8 +191,8 @@ export default function ShopSection({
               transition={{ delay: 0.3 }}
               className="max-w-md mt-6"
             >
-              <p className="text-sm text-text-muted font-bold leading-relaxed">
-                Nothing here ended up on the shelf by accident. Every product, every session, every membership is chosen because it works. Because the people here deserve that.
+              <p className="text-sm text-text-muted font-medium leading-relaxed">
+                {shopSubtitle}
               </p>
             </motion.div>
           </div>
@@ -164,7 +208,7 @@ export default function ShopSection({
             <input
               type="text"
               placeholder="Search products..."
-              className="w-full pl-14 pr-6 py-4 sm:py-5 bg-secondary/30 border border-transparent rounded-none focus:ring-0 focus:bg-white focus:border-accent/20 transition-all text-sm font-bold text-primary placeholder:text-slate-300"
+              className="w-full pl-14 pr-6 py-4 sm:py-5 bg-secondary/30 border border-transparent rounded-none focus:ring-0 focus:bg-white focus:border-accent/20 transition-all text-sm font-bold text-primary"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -182,7 +226,7 @@ export default function ShopSection({
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-3 px-6 py-3 rounded-none transition-all font-black text-[10px] uppercase tracking-widest
+                className={`flex items-center gap-3 px-6 py-3 rounded-none transition-all font-black text-xs uppercase tracking-wider
                   ${showFilters ? 'bg-primary text-white' : 'bg-white text-primary hover:bg-secondary/50 border border-primary/10'}`}
               >
                 <SlidersHorizontal className="w-4 h-4" />
@@ -192,14 +236,14 @@ export default function ShopSection({
               {isFiltered && (
                 <button
                   onClick={clearFilters}
-                  className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-red-800 hover:text-red-900 transition-colors px-4"
+                  className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-red-800 hover:text-red-900 transition-colors px-4"
                 >
                   <X className="w-4 h-4" /> Reset
                 </button>
               )}
             </div>
 
-            <p className="hidden md:block text-[10px] font-black text-slate-300 uppercase tracking-widest">
+            <p className="hidden md:block text-xs font-black text-slate-400 uppercase tracking-wider">
               Available: {filteredProducts.length} Pieces
             </p>
           </div>
@@ -211,23 +255,23 @@ export default function ShopSection({
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden space-y-8 pb-8"
+                className="overflow-hidden space-y-8 bg-secondary/20 p-6 sm:p-8 border border-primary/5"
               >
                 {/* Brand Filter */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2 text-slate-400">
-                    <Tag className="w-3 h-3" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Collection</span>
+                    <Tag className="w-3.5 h-3.5" />
+                    <span className="text-xs font-black uppercase tracking-wider">Collection</span>
                   </div>
                     <div className="flex flex-wrap gap-2">
                       {brands.map((brand) => (
                         <button
                           key={brand}
                           onClick={() => setSelectedBrand(brand)}
-                          className={`px-4 sm:px-6 py-2 rounded-none text-[9px] font-black tracking-widest uppercase transition-all
+                          className={`px-4 sm:px-6 py-2 rounded-none text-xs font-bold tracking-wider uppercase transition-all
                             ${selectedBrand === brand
                               ? 'bg-accent text-white'
-                              : 'bg-white text-slate-400 hover:bg-secondary/30 border border-slate-100'}`}
+                              : 'bg-white text-slate-500 hover:bg-secondary/30 border border-slate-200'}`}
                         >
                           {brand}
                         </button>
@@ -239,18 +283,18 @@ export default function ShopSection({
                   {/* Category Filter */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-slate-400">
-                      <Layers className="w-3 h-3" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Category</span>
+                      <Layers className="w-3.5 h-3.5" />
+                      <span className="text-xs font-black uppercase tracking-wider">Category</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {categories.map((cat) => (
                         <button
                           key={cat}
                           onClick={() => setSelectedCategory(cat)}
-                          className={`px-5 py-2.5 rounded-none text-[9px] font-black tracking-widest uppercase transition-all
+                          className={`px-5 py-2.5 rounded-none text-xs font-bold tracking-wider uppercase transition-all
                             ${selectedCategory === cat
                               ? 'bg-primary text-white'
-                              : 'bg-white text-slate-400 hover:bg-secondary/30 border border-slate-100'}`}
+                              : 'bg-white text-slate-500 hover:bg-secondary/30 border border-slate-200'}`}
                         >
                           {cat}
                         </button>
@@ -261,18 +305,18 @@ export default function ShopSection({
                   {/* Size Filter */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-slate-400">
-                      <Ruler className="w-3 h-3" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Sizing</span>
+                      <Ruler className="w-3.5 h-3.5" />
+                      <span className="text-xs font-black uppercase tracking-wider">Sizing</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {SIZES.map((size) => (
                         <button
                           key={size}
                           onClick={() => setSelectedSize(size)}
-                          className={`px-5 py-2.5 rounded-none text-[9px] font-black tracking-widest uppercase transition-all
+                          className={`px-5 py-2.5 rounded-none text-xs font-bold tracking-wider uppercase transition-all
                             ${selectedSize === size
                               ? 'bg-primary text-white'
-                              : 'bg-white text-slate-400 hover:bg-secondary/30 border border-slate-100'}`}
+                              : 'bg-white text-slate-500 hover:bg-secondary/30 border border-slate-200'}`}
                         >
                           {size}
                         </button>
@@ -283,18 +327,18 @@ export default function ShopSection({
                   {/* Price Filter */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-slate-400">
-                      <DollarSign className="w-3 h-3" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Price</span>
+                      <DollarSign className="w-3.5 h-3.5" />
+                      <span className="text-xs font-black uppercase tracking-wider">Price</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {PRICE_RANGES.map((range) => (
                         <button
                           key={range}
                           onClick={() => setSelectedPrice(range)}
-                          className={`px-5 py-2.5 rounded-none text-[9px] font-black tracking-widest uppercase transition-all
+                          className={`px-5 py-2.5 rounded-none text-xs font-bold tracking-wider uppercase transition-all
                             ${selectedPrice === range
                               ? 'bg-primary text-white'
-                              : 'bg-white text-slate-400 hover:bg-secondary/30 border border-slate-100'}`}
+                              : 'bg-white text-slate-500 hover:bg-secondary/30 border border-slate-200'}`}
                         >
                           {range}
                         </button>
@@ -437,10 +481,10 @@ function ProductCard({ product, index }: { product: any, index: number }) {
           }
         }}
       >
-          <div className={`relative aspect-square overflow-hidden mb-4 cursor-pointer bg-[#ececec] transition-all duration-700`}>
+          <div className={`relative aspect-square overflow-hidden mb-4 cursor-pointer transition-all duration-700`} style={{ backgroundColor: t.shop.imgPlaceholderBg }}>
             {/* Shimmer Placeholder */}
             {!loaded && (
-              <div className="absolute inset-0 bg-gray-100 animate-pulse" />
+              <div className="absolute inset-0 animate-pulse" style={{ backgroundColor: t.shop.shimmerBg }} />
             )}
             {/* Primary Image */}
             <Image
@@ -453,15 +497,15 @@ function ProductCard({ product, index }: { product: any, index: number }) {
               onLoad={() => setLoaded(true)}
             />
 
-            {/* White Labels */}
-            <div className="absolute top-3 left-3 z-20 flex flex-col gap-1.5">
+            {/* Badges */}
+            <div className="absolute top-3 left-3 z-20 flex flex-row items-center gap-1.5">
               {product.promo_price && (
-                <span className="bg-white px-2 py-1 text-xs font-bold text-gray-800 uppercase tracking-wider shadow-sm">
+                <span className="bg-accent text-white px-2.5 py-1 text-[10px] font-black uppercase tracking-widest rounded shadow-sm">
                   SALE
                 </span>
               )}
               {product.isBestseller && (
-                <span className="bg-white px-2 py-1 text-xs font-bold text-gray-800 uppercase tracking-wider shadow-sm">
+                <span className="bg-primary/90 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black uppercase tracking-widest rounded shadow-sm">
                   BESTSELLER
                 </span>
               )}
@@ -479,7 +523,7 @@ function ProductCard({ product, index }: { product: any, index: number }) {
                   product.name
                 )
               }}
-              className="absolute top-3 right-3 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-sm hover:scale-110 transition-transform duration-200"
+              className="absolute top-3 right-3 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-md shadow-sm hover:scale-110 transition-transform duration-200"
             >
               <Heart
                 className={`w-3.5 h-3.5 transition-colors ${wishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
@@ -491,53 +535,61 @@ function ProductCard({ product, index }: { product: any, index: number }) {
               {product.category === 'Memberships' ? (
                 <button
                   onClick={handleAction}
-                  className="w-full bg-black text-white py-3 text-[10px] font-black tracking-widest uppercase hover:bg-gray-800 transition-colors shadow-lg"
+                  className="w-full text-white py-3.5 text-xs font-black tracking-widest uppercase transition-all shadow-lg hover:brightness-110 active:scale-95"
+                  style={{ 
+                    backgroundColor: t.shop.addToCartBg,
+                    borderRadius: 'var(--radius-brand-none, 0px)' 
+                  }}
                 >
                   JOIN NOW
                 </button>
               ) : (
                 <button
                   onClick={handleAddToCart}
-                  className="w-full bg-black text-white py-3.5 text-xs font-black tracking-widest uppercase hover:bg-gray-800 transition-colors shadow-lg flex items-center justify-center gap-2"
+                  className="w-full text-white py-3.5 text-xs font-black tracking-widest uppercase transition-all shadow-lg flex items-center justify-center gap-2 hover:brightness-110 active:scale-95"
+                  style={{ 
+                    backgroundColor: t.shop.addToCartBg,
+                    borderRadius: 'var(--radius-brand-none, 0px)' 
+                  }}
                 >
-                  <ShoppingCart className="w-4 h-4" /> ADD TO CART
+                  <ShoppingCart className="w-4 h-4" /> ADD TO BAG
                 </button>
               )}
             </div>
           </div>
 
-          <div className="flex flex-col gap-1.5 mt-5">
+          <div className="flex flex-col gap-1.5 mt-4">
             <div className="flex items-start justify-between gap-4">
-              <h3 className="font-bold text-lg text-primary uppercase tracking-wide group-hover:text-accent transition-colors">
+              <h3 className="font-black text-base text-primary uppercase tracking-tight group-hover:text-accent transition-colors">
                 {product.name}
               </h3>
             </div>
             
             {reviewCount > 0 && (
-              <div className="flex items-center gap-1.5 mt-1">
-                <div className="flex text-yellow-500 text-sm gap-0.5">
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <div className="flex text-amber-400 text-xs gap-0.5">
                   {[...Array(5)].map((_, i) => (
                     <span key={i}>{i < Math.round(avgRating) ? '★' : '☆'}</span>
                   ))}
                 </div>
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">
-                  {reviewCount}
+                <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest">
+                  ({reviewCount})
                 </span>
               </div>
             )}
             
-            <div className="flex items-center gap-2 text-xs uppercase font-bold tracking-widest text-gray-400 mt-1">
+            <div className="flex items-center gap-2 text-[10px] uppercase font-bold tracking-widest text-text-muted mt-0.5">
               <span>{product.brand}</span>
-              <span className="w-1 h-1 rounded-full bg-gray-200" />
+              <span className="w-1 h-1 rounded-full bg-primary/20" />
               <span>{product.size}</span>
             </div>
 
-            <div className="flex items-center gap-2 mt-2">
-              <span className="font-black text-lg text-primary">
+            <div className="flex items-baseline gap-2 mt-1">
+              <span className="font-black text-base text-primary font-mono">
                 ₦{product.promo_price ? product.promo_price.toLocaleString() : product.price.toLocaleString()}
               </span>
               {product.promo_price && (
-                <span className="font-bold text-base text-gray-400 line-through">
+                <span className="font-bold text-xs text-text-muted line-through font-mono">
                   ₦{product.price.toLocaleString()}
                 </span>
               )}

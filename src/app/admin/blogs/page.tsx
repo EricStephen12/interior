@@ -40,7 +40,7 @@ export default function AdminBlogsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-[var(--color-secondary)]">
       {/* Top Bar */}
       <div className="bg-white border-b border-gray-100 px-6 sm:px-10 py-5 flex items-center justify-between sticky top-0 z-50">
         <h1 className="text-lg font-bold text-gray-900">Blog Articles</h1>
