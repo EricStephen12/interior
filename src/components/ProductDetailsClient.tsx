@@ -492,7 +492,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                   type="button"
                   onClick={handleAddToCart}
                   disabled={added}
-                  className={`flex-1 py-3.5 px-6 text-xs font-black uppercase tracking-[0.25em] flex items-center justify-center gap-2 shadow-lg transition-all duration-300 active:scale-95 ${
+                  className={`flex-1 py-4 px-6 text-xs font-black uppercase tracking-[0.25em] flex items-center justify-center gap-2 shadow-lg transition-all duration-300 active:scale-95 touch-manipulation cursor-pointer ${
                     added
                       ? 'bg-emerald-600 text-white'
                       : 'bg-primary hover:bg-accent text-white hover:shadow-accent/25'
@@ -517,7 +517,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
               <button
                 type="button"
                 onClick={handleInstantBuy}
-                className="w-full py-3 px-6 rounded-lg border border-primary/20 bg-secondary/40 hover:bg-primary hover:text-white text-primary text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2"
+                className="w-full py-3.5 px-6 rounded-lg border border-primary/20 bg-secondary/40 hover:bg-primary hover:text-white text-primary text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 touch-manipulation cursor-pointer active:scale-95"
                 style={{ borderRadius: 'var(--radius-brand-none, 0px)' }}
               >
                 <Zap className="w-3.5 h-3.5 text-accent" />

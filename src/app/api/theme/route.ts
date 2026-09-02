@@ -228,7 +228,7 @@ export const THEME_DEFAULTS: Record<string, string> = {
   'section.banner.code':      'FREESHIP',
   'section.banner.bg':        '#020617',
   'section.banner.text':      '#ffffff',
-  'section.banner.accent':    '#6366f1',
+  'section.banner.accent':    '#ffffff',
 
   // --- HERO ---
   'section.hero.tagline':     'SHARERS GYM',

@@ -530,10 +530,11 @@ function ProductCard({ product, index }: { product: any, index: number }) {
               />
             </button>
 
-            {/* Hover Actions (Add to Cart) */}
-            <div className={`absolute inset-x-0 bottom-0 p-4 transition-all duration-300 ease-out z-20 flex flex-col gap-2 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+            {/* Desktop Hover Actions (Add to Cart) */}
+            <div className={`hidden sm:flex absolute inset-x-0 bottom-0 p-4 transition-all duration-300 ease-out z-20 flex-col gap-2 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
               {product.category === 'Memberships' ? (
                 <button
+                  type="button"
                   onClick={handleAction}
                   className="w-full text-white py-3.5 text-xs font-black tracking-widest uppercase transition-all shadow-lg hover:brightness-110 active:scale-95"
                   style={{ 
@@ -545,6 +546,7 @@ function ProductCard({ product, index }: { product: any, index: number }) {
                 </button>
               ) : (
                 <button
+                  type="button"
                   onClick={handleAddToCart}
                   className="w-full text-white py-3.5 text-xs font-black tracking-widest uppercase transition-all shadow-lg flex items-center justify-center gap-2 hover:brightness-110 active:scale-95"
                   style={{ 
@@ -592,6 +594,29 @@ function ProductCard({ product, index }: { product: any, index: number }) {
                 <span className="font-bold text-xs text-text-muted line-through font-mono">
                   ₦{product.price.toLocaleString()}
                 </span>
+              )}
+            </div>
+
+            {/* Mobile Quick Add To Cart Button */}
+            <div className="sm:hidden mt-2 pt-2 border-t border-primary/5">
+              {product.category === 'Memberships' ? (
+                <button
+                  type="button"
+                  onClick={handleAction}
+                  className="w-full py-3 px-4 bg-primary text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 active:bg-accent active:scale-95 transition-all touch-manipulation shadow-sm cursor-pointer"
+                  style={{ borderRadius: 'var(--radius-brand-none, 0px)' }}
+                >
+                  JOIN NOW
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleAddToCart}
+                  className="w-full py-3 px-4 bg-primary text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 active:bg-accent active:scale-95 transition-all touch-manipulation shadow-sm cursor-pointer"
+                  style={{ borderRadius: 'var(--radius-brand-none, 0px)' }}
+                >
+                  <ShoppingCart className="w-3.5 h-3.5" /> ADD TO BAG
+                </button>
               )}
             </div>
           </div>

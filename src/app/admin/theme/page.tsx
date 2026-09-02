@@ -1147,7 +1147,7 @@ export default function ThemeStudioPage() {
                         {/* Banner Colors */}
                         <div className="pt-2 border-t border-primary/5 space-y-3">
                           <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block">Section Colors</span>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <ColorPickerField
                               label="Banner Background"
                               value={v('section.banner.bg')}
@@ -1161,6 +1161,13 @@ export default function ThemeStudioPage() {
                               defaultValue={THEME_DEFAULTS['section.banner.text']}
                               onChange={val => update('section.banner.text', val)}
                               onReset={() => update('section.banner.text', THEME_DEFAULTS['section.banner.text'])}
+                            />
+                            <ColorPickerField
+                              label="Banner Accent Color"
+                              value={v('section.banner.accent')}
+                              defaultValue={THEME_DEFAULTS['section.banner.accent']}
+                              onChange={val => update('section.banner.accent', val)}
+                              onReset={() => update('section.banner.accent', THEME_DEFAULTS['section.banner.accent'])}
                             />
                           </div>
                         </div>

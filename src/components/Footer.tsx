@@ -84,18 +84,18 @@ export default function Footer() {
                 {footerEst}
               </span>
             </Link>
-            <p className="text-base sm:text-xl text-slate-400 font-medium leading-relaxed max-w-md">
+            <p className="text-base sm:text-xl text-slate-100 font-normal leading-relaxed max-w-md">
               {footerTagline}
             </p>
           </div>
 
-          <div className="glass-dark p-8 sm:p-12 rounded-none border border-white/5 space-y-8 self-center">
+          <div className="glass-dark p-8 sm:p-12 rounded-none border border-white/10 space-y-8 self-center shadow-2xl">
             <h4 className="text-[10px] font-black tracking-[0.4em] uppercase" style={{ color: footerAccent }}>{newsletterBadge}</h4>
             <h3 className="text-xl sm:text-3xl font-bold tracking-tight text-white">{newsletterTitle}</h3>
             {newsletterState === 'success' ? (
               <div className="flex items-center gap-3 text-green-400">
                 <Check className="w-5 h-5" />
-                <p className="text-sm font-bold">You're on the list! We'll keep you posted.</p>
+                <p className="text-sm font-bold text-slate-100">You're on the list! We'll keep you posted.</p>
               </div>
             ) : (
               <div className="relative">
@@ -106,9 +106,10 @@ export default function Footer() {
                   onChange={e => { setEmail(e.target.value); setNewsletterState('idle') }}
                   onKeyDown={e => e.key === 'Enter' && handleNewsletterSubmit()}
                   disabled={newsletterState === 'loading'}
-                  className="w-full bg-transparent border-b border-white/10 pb-4 text-white focus:outline-none focus:border-accent transition-colors disabled:opacity-50"
+                  className="w-full bg-transparent border-b border-white/20 pb-4 text-white placeholder:text-slate-400 placeholder:text-sm text-sm focus:outline-none focus:border-white focus:ring-0 transition-colors disabled:opacity-50 !text-white"
                 />
                 <button
+                  type="button"
                   onClick={handleNewsletterSubmit}
                   disabled={newsletterState === 'loading' || !email.trim()}
                   className="absolute right-0 bottom-4 text-[10px] font-black uppercase tracking-[0.3em] hover:text-white transition-colors disabled:opacity-50"
@@ -122,7 +123,7 @@ export default function Footer() {
         </div>
 
         {/* Links Navigation Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 sm:gap-16 pb-16 sm:pb-24 border-b border-white/5">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 sm:gap-16 pb-16 sm:pb-24 border-b border-white/10">
           <FooterSection 
             title="The Arena" 
             links={[
@@ -153,18 +154,18 @@ export default function Footer() {
           <div className="space-y-6">
             <h4 className="text-[10px] font-black tracking-[0.4em] uppercase" style={{ color: footerAccent }}>HQ Terminal</h4>
             <div className="space-y-3">
-              <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">
-                <MapPin className="w-4 h-4" style={{ color: footerAccent }} />
+              <div className="flex items-center gap-3 text-slate-200 text-sm font-medium">
+                <MapPin className="w-4 h-4 shrink-0" style={{ color: footerAccent }} />
                 <span>{footerAddress}</span>
               </div>
-              <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">
-                <Mail className="w-4 h-4" style={{ color: footerAccent }} />
-                <span>{footerEmail}</span>
+              <div className="flex items-center gap-3 text-slate-200 text-sm font-medium">
+                <Mail className="w-4 h-4 shrink-0" style={{ color: footerAccent }} />
+                <a href={`mailto:${footerEmail}`} className="hover:text-white transition-colors underline-offset-4 hover:underline">{footerEmail}</a>
               </div>
               {footerPhone && (
-                <div className="flex items-center gap-3 text-slate-400 text-sm font-medium">
-                  <Phone className="w-4 h-4" style={{ color: footerAccent }} />
-                  <span>{footerPhone}</span>
+                <div className="flex items-center gap-3 text-slate-200 text-sm font-medium">
+                  <Phone className="w-4 h-4 shrink-0" style={{ color: footerAccent }} />
+                  <a href={`tel:${footerPhone.replace(/[^0-9+]/g, '')}`} className="hover:text-white transition-colors underline-offset-4 hover:underline">{footerPhone}</a>
                 </div>
               )}
             </div>
@@ -172,17 +173,17 @@ export default function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
-          <p className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase order-2 md:order-1">
+        <div className="pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
+          <p className="text-[10px] font-black tracking-[0.3em] text-slate-300 uppercase order-2 md:order-1">
             {footerCopyright}
           </p>
           <div className="flex items-center gap-8 order-1 md:order-2">
             {!isSignedIn && isLoaded && (
-              <Link href="/sign-up" className="px-6 py-2 bg-accent text-primary text-[10px] font-black tracking-widest uppercase hover:bg-white transition-all">
+              <Link href="/sign-up" className="px-6 py-2 bg-white text-primary text-[10px] font-black tracking-widest uppercase hover:bg-slate-200 transition-all shadow-md">
                 JOIN NOW
               </Link>
             )}
-            <div className="flex gap-6 text-[10px] font-black tracking-widest text-slate-500 uppercase">
+            <div className="flex gap-6 text-[10px] font-black tracking-widest text-slate-300 uppercase">
               <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
               <Link href="/terms" className="hover:text-white transition-colors">Legal</Link>
               <Link href="/refund" className="hover:text-white transition-colors">Refund</Link>
@@ -203,10 +204,10 @@ function FooterSection({ title, links }: { title: string; links: { label: string
           <li key={idx}>
             <Link
               href={link.href}
-              className="text-sm font-bold text-slate-400 hover:text-accent flex items-center gap-1 transition-colors group"
+              className="text-sm font-semibold text-slate-200 hover:text-white flex items-center gap-1.5 transition-colors group"
             >
               <span>{link.label}</span>
-              <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all -translate-y-0.5 group-hover:translate-x-0.5 text-accent" />
+              <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-all -translate-y-0.5 group-hover:translate-x-0.5 text-white" />
             </Link>
           </li>
         ))}

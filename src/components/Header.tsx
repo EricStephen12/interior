@@ -138,16 +138,19 @@ export default function Header() {
 
             {/* Cart Button - ALWAYS VISIBLE */}
             <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.92 }}
               onClick={toggleCart}
-              className={`p-3 -m-3 transition-colors relative ${isScrolled ? 'text-primary hover:text-accent' : 'text-primary hover:text-accent'
-                }`}
+              type="button"
+              aria-label="Open Shopping Cart"
+              className={`relative flex items-center justify-center w-11 h-11 rounded-full transition-all duration-300 touch-manipulation select-none cursor-pointer ${
+                isScrolled ? 'text-primary hover:bg-primary/5 active:bg-primary/10' : 'text-primary hover:bg-primary/5 active:bg-primary/10'
+              }`}
             >
-              <ShoppingCartIcon className="h-6 w-6" />
+              <ShoppingCartIcon className="h-6 w-6 pointer-events-none" />
               {cartState.items.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-accent text-white text-[9px] font-black rounded-none h-4 w-4 flex items-center justify-center shadow-2xl">
-                  {cartState.items.length}
+                <span className="absolute -top-0.5 -right-0.5 bg-accent text-white text-[9px] font-black rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center shadow-lg ring-2 ring-white pointer-events-none animate-in zoom-in">
+                  {cartState.items.reduce((total, i) => total + i.quantity, 0)}
                 </span>
               )}
             </motion.button>
@@ -155,15 +158,18 @@ export default function Header() {
             {/* Mobile menu trigger */}
             <div className="md:hidden">
               <motion.button
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.92 }}
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className={`p-3 -m-3 transition-colors ${isScrolled ? 'text-primary' : 'text-primary'
-                  }`}
+                type="button"
+                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                className={`flex items-center justify-center w-11 h-11 rounded-full transition-all duration-300 touch-manipulation select-none cursor-pointer ${
+                  isScrolled ? 'text-primary hover:bg-primary/5 active:bg-primary/10' : 'text-primary hover:bg-primary/5 active:bg-primary/10'
+                }`}
               >
                 {isMenuOpen ? (
-                  <XMarkIcon className="h-6 w-6" />
+                  <XMarkIcon className="h-6 w-6 pointer-events-none" />
                 ) : (
-                  <Bars3Icon className="h-6 w-6" />
+                  <Bars3Icon className="h-6 w-6 pointer-events-none" />
                 )}
               </motion.button>
             </div>
@@ -238,6 +244,28 @@ export default function Header() {
           </div>
         </motion.div>
       </div>
+
+      {/* Floating Quick Mobile Cart Bar (when cart has items on mobile) */}
+      {cartState.items.length > 0 && (
+        <motion.button
+          initial={{ scale: 0, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0, opacity: 0, y: 20 }}
+          whileTap={{ scale: 0.92 }}
+          type="button"
+          onClick={toggleCart}
+          aria-label="View Shopping Cart"
+          className="sm:hidden fixed bottom-6 left-6 z-40 bg-primary text-white pl-4 pr-5 py-3.5 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.35)] flex items-center gap-3 border border-white/20 touch-manipulation cursor-pointer hover:bg-accent transition-colors"
+        >
+          <div className="relative">
+            <ShoppingCartIcon className="w-5 h-5 text-white" />
+            <span className="absolute -top-1.5 -right-2 bg-accent text-white text-[9px] font-black rounded-full min-w-[17px] h-[17px] px-1 flex items-center justify-center ring-2 ring-primary">
+              {cartState.items.reduce((t, i) => t + i.quantity, 0)}
+            </span>
+          </div>
+          <span className="text-[10px] font-black uppercase tracking-widest text-white">Cart</span>
+        </motion.button>
+      )}
 
       {/* Cart Drawer */}
       <CartDrawer isOpen={cartState.isOpen} onClose={toggleCart} />
