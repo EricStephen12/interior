@@ -505,12 +505,14 @@ function CheckoutContent() {
                       <button
                         key={zone.id}
                         type="button"
+                        data-static-shape="true"
                         onClick={() => setSelectedZone(zone)}
                         className={`p-4 sm:p-5 text-left rounded-xl transition-all relative flex items-center justify-between gap-4 border ${
                           isSelected
                             ? 'border-primary bg-primary/[0.04] shadow-sm ring-1 ring-primary/20'
                             : 'border-primary/10 bg-white hover:border-primary/30 hover:bg-neutral-50/60'
                         }`}
+                        style={{ borderRadius: '12px' }}
                       >
                         <div className="flex items-center gap-3.5 min-w-0">
                           <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
@@ -858,10 +860,11 @@ function PaymentOption({ icon: Icon, title, description, active, onClick, color,
   return (
     <button
       type="button"
+      data-static-shape="true"
       onClick={onClick}
       disabled={disabled}
       className={`p-6 rounded-xl border text-left transition-all relative ${active ? 'border-primary bg-primary text-white shadow-lg' : 'border-primary/10 bg-white hover:border-accent'} ${disabled ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
-      style={{ borderRadius: 'var(--radius-brand-none, 0px)' }}
+      style={{ borderRadius: '12px' }}
     >
       <div className={`mb-4 w-10 h-10 rounded flex items-center justify-center border border-white/10 ${active ? 'bg-secondary/20 text-white' : 'bg-secondary text-primary'}`}>
         <Icon className="w-5 h-5" />
