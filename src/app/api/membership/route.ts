@@ -29,28 +29,44 @@ function lowCreditEmail(name: string, credits: number) {
 export async function GET() {
   try {
     const { userId } = await auth()
-    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!userId) return NextResponse.json({ user: null, orders: [] }, { status: 200 })
 
-    let user = await prisma.user.findUnique({
-      where: { clerkId: userId },
+    let clerkUser = null
+    try {
+      clerkUser = await currentUser()
+    } catch {}
+
+    const clerkEmail = clerkUser?.emailAddresses?.[0]?.emailAddress?.toLowerCase()
+
+    let user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { clerkId: userId },
+          ...(clerkEmail ? [{ email: { equals: clerkEmail, mode: 'insensitive' as const } }] : [])
+        ]
+      },
       include: { 
         checkIns: { orderBy: { date: 'desc' } }
       }
     })
 
-    // Fallback: If user is not synced in DB yet, sync now (occurs once on first login)
-    if (!user) {
-      const clerkUser = await currentUser()
-      if (clerkUser) {
-        const synced = await syncUserWithClerk(clerkUser)
-        if (synced) {
-          user = await prisma.user.findUnique({
-            where: { id: synced.id },
-            include: { 
-              checkIns: { orderBy: { date: 'desc' } }
-            }
-          })
-        }
+    if (user && user.clerkId !== userId) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { clerkId: userId }
+      }).catch(() => {})
+    }
+
+    // Fallback: If user is not synced in DB yet, sync now
+    if (!user && clerkUser) {
+      const synced = await syncUserWithClerk(clerkUser)
+      if (synced) {
+        user = await prisma.user.findUnique({
+          where: { id: synced.id },
+          include: { 
+            checkIns: { orderBy: { date: 'desc' } }
+          }
+        })
       }
     }
 
@@ -59,7 +75,9 @@ export async function GET() {
     const email = user.email
 
     const orders = await prisma.order.findMany({
-      where: { userEmail: email },
+      where: { 
+        userEmail: { equals: email, mode: 'insensitive' }
+      },
       orderBy: { createdAt: 'desc' }
     })
 
@@ -96,8 +114,19 @@ export async function POST(req: Request) {
       })
     }
 
-    if (!user) return NextResponse.json({ error: 'User/Pass not found' }, { status: 404 })
-    if (user.credits <= 0) return NextResponse.json({ error: 'No credits remaining. Please top up your pass.' }, { status: 400 })
+    if (!user) return NextResponse.json({ error: 'User/Pass not found in system.' }, { status: 404 })
+    if (user.credits <= 0) {
+      return NextResponse.json({ 
+        error: 'Pass has 0 credits remaining. Please top up to enter.',
+        noCredits: true,
+        user: {
+          name: user.name,
+          email: user.email,
+          credits: user.credits,
+          memberId: user.memberId
+        }
+      }, { status: 400 })
+    }
 
     const email = user.email
 
@@ -107,28 +136,89 @@ export async function POST(req: Request) {
       const minutesSinceLast = (Date.now() - new Date(lastCheckIn.date).getTime()) / 60000
       if (minutesSinceLast < COOLDOWN_MINUTES) {
         return NextResponse.json({
-          error: 'Just scanned — wait a moment before scanning again.',
-          alreadyCheckedIn: true
+          error: 'Pass was already scanned just now. Member is already checked in.',
+          alreadyCheckedIn: true,
+          user: {
+            name: user.name,
+            email: user.email,
+            credits: user.credits,
+            memberId: user.memberId
+          }
         }, { status: 409 })
       }
     }
+
+    // Determine if the member has an hourly pass or a day pass
+    const latestOrder = await prisma.order.findFirst({
+      where: {
+        userEmail: { equals: email, mode: 'insensitive' },
+        status: { in: ['COMPLETED', 'PAID', 'DELIVERED', 'PENDING_VERIFICATION'] }
+      },
+      orderBy: { createdAt: 'desc' }
+    })
+
+    let isHourly = false
+    let detectedPlanName = ''
+
+    if (latestOrder) {
+      let items: any[] = []
+      if (Array.isArray(latestOrder.items)) {
+        items = latestOrder.items
+      } else if (typeof latestOrder.items === 'string') {
+        try {
+          const parsed = JSON.parse(latestOrder.items)
+          items = Array.isArray(parsed) ? parsed : [parsed]
+        } catch {
+          items = [{ name: latestOrder.items }]
+        }
+      }
+
+      for (const item of items) {
+        const rawName = (item.name || '').trim()
+        const lower = rawName.toLowerCase()
+        if (lower.includes('hour') || lower.includes('hr') || lower.includes('session')) {
+          isHourly = true
+          detectedPlanName = rawName
+          break
+        } else if (lower.includes('day') || lower.includes('month') || lower.includes('pass')) {
+          isHourly = false
+          detectedPlanName = rawName
+          break
+        }
+      }
+    }
+
+    if (detectedPlanName.includes('(') && detectedPlanName.includes(')')) {
+      const match = detectedPlanName.match(/^(.*?)\s*\((.*?)\)$/)
+      if (match) {
+        const inside = match[2].trim()
+        if (inside.toLowerCase().includes('hour') || inside.toLowerCase().includes('day') || inside.toLowerCase().includes('pass') || inside.toLowerCase().includes('session')) {
+          detectedPlanName = inside
+        } else {
+          detectedPlanName = `${match[1].trim()} Pass`
+        }
+      }
+    }
+
+    const checkInLabel = isHourly ? 'Hourly Session' : 'Day Pass'
 
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: {
         credits: { decrement: 1 },
-        checkIns: { create: { protocol: protocol || 'Daily Protocol' } }
+        checkIns: { create: { protocol: protocol || `${checkInLabel} Check-in` } }
       },
       include: { checkIns: { orderBy: { date: 'desc' } } }
     })
 
     const credits = updatedUser.credits
+    const unitLabel = credits === 1 ? (isHourly ? 'Hour' : 'Day') : (isHourly ? 'Hours' : 'Days')
 
     // Email alert exactly at 7 credits (First Warning)
     if (credits === EMAIL_THRESHOLD) {
       emailService.sendEmail({
         to: email,
-        subject: `${credits} credits remaining — SHARERS GYM`,
+        subject: `${credits} ${unitLabel.toLowerCase()} remaining — SHARERS GYM`,
         html: lowCreditEmail(updatedUser.name || 'Member', credits)
       }).catch(() => {})
     }
@@ -137,13 +227,15 @@ export async function POST(req: Request) {
     if (credits === 2) {
       emailService.sendEmail({
         to: email,
-        subject: `FINAL WARNING: ${credits} credits left — SHARERS GYM`,
+        subject: `FINAL WARNING: ${credits} ${unitLabel.toLowerCase()} left — SHARERS GYM`,
         html: lowCreditEmail(updatedUser.name || 'Member', credits)
       }).catch(() => {})
     }
 
     const orders = await prisma.order.findMany({
-      where: { userEmail: email },
+      where: { 
+        userEmail: { equals: email, mode: 'insensitive' }
+      },
       orderBy: { createdAt: 'desc' }
     })
 
@@ -151,6 +243,10 @@ export async function POST(req: Request) {
       success: true,
       user: updatedUser,
       orders,
+      isHourly,
+      passType: isHourly ? 'HOURLY PASS' : 'DAY PASS',
+      planName: detectedPlanName || `${isHourly ? 'Hourly' : 'Day'} Pass`,
+      unitLabel,
       creditsRemaining: credits,
       lowCredit: credits <= EMAIL_THRESHOLD
     })

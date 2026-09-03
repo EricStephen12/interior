@@ -55,17 +55,27 @@ export async function PATCH(req: Request) {
       const hasMembership = !!shipping?.hasMembership
 
       if (email && (creditAmount > 0 || hasMembership)) {
-        const user = await prisma.user.findUnique({ where: { email } })
-        if (user) {
-          await prisma.user.update({
-            where: { email },
-            data: {
-              credits: { increment: creditAmount > 0 ? creditAmount : 30 },
-              tier: hasMembership ? 'PRO' : user.tier === 'NONE' ? 'ACTIVE' : user.tier
-            }
-          })
-          console.log(`Auto-credited ${creditAmount || 30} passes to ${email} upon bank transfer verification.`)
-        }
+        const name = shipping?.name || 'Valued Member'
+        const phone = shipping?.phone || ''
+        const addCredits = creditAmount > 0 ? creditAmount : 30
+
+        await prisma.user.upsert({
+          where: { email },
+          update: {
+            phone: phone || undefined,
+            credits: { increment: addCredits },
+            tier: hasMembership ? 'PRO' : undefined
+          },
+          create: {
+            email,
+            phone,
+            clerkId: 'guest_' + Date.now(),
+            name,
+            credits: addCredits,
+            tier: hasMembership ? 'PRO' : 'NONE'
+          }
+        })
+        console.log(`Auto-credited ${addCredits} passes to ${email} upon bank transfer verification.`)
       }
     }
 

@@ -68,27 +68,27 @@ export const fontSize = {
 // ─── COLORS — Brand Palette ────────────────────────────────────────────────────
 export const colors = {
   // Core brand
-  primary: '#020617',      // Deep navy-black
-  secondary: '#f8fafc',    // Off-white
-  accent: '#6366f1',       // Indigo
-  accentLight: '#818cf8',  // Light indigo
-  textMuted: '#64748b',    // Slate-500
-  surface: '#ffffff',      // White
+  primary: '#0a0a0a',      // Pure luxury obsidian black
+  secondary: '#f4f4f5',    // Clean neutral off-white
+  accent: '#f20d0d',       // Brand red
+  accentLight: '#ff4d4d',  // Bright red
+  textMuted: '#71717a',    // Neutral gray
+  surface: '#ffffff',      // Pure white
   /** ALL input/textarea placeholder text — mirrors --color-placeholder in globals.css */
-  placeholder: '#94a3b8',  // slate-400
+  placeholder: '#a1a1aa',  // neutral-400
 
   // Admin panel dark theme
   admin: {
-    bg: '#090d16',           // Sidebar background
-    bgDark: '#070a11',       // Sidebar footer (darker)
-    border: 'rgba(51,65,85,0.8)',  // slate-800/80
-    text: '#e2e8f0',         // slate-200
-    textMuted: '#94a3b8',    // slate-400
-    textSubtle: '#64748b',   // slate-500
-    navActive: 'rgba(99,102,241,0.15)',  // indigo-600/15
-    navActiveBorder: 'rgba(99,102,241,0.30)', // indigo-500/30
-    navHover: 'rgba(30,41,59,0.5)',     // slate-800/50
-    iconActive: '#818cf8',   // indigo-400
+    bg: '#09090b',           // Neutral obsidian sidebar background
+    bgDark: '#000000',       // Sidebar footer (pure black)
+    border: 'rgba(39,39,42,0.8)',  // zinc-800/80
+    text: '#f4f4f5',         // zinc-100
+    textMuted: '#a1a1aa',    // zinc-400
+    textSubtle: '#71717a',   // zinc-500
+    navActive: 'rgba(242,13,13,0.15)',  // red-600/15
+    navActiveBorder: 'rgba(242,13,13,0.30)', // red-500/30
+    navHover: 'rgba(24,24,27,0.5)',     // zinc-900/50
+    iconActive: '#ff4d4d',   // red-400
     success: '#10b981',      // emerald-500
   },
 
@@ -102,8 +102,8 @@ export const colors = {
   // Misc
   white: '#ffffff',
   black: '#000000',
-  slate400: '#94a3b8',
-  slate500: '#64748b',
+  slate400: '#a1a1aa',
+  slate500: '#71717a',
 } as const
 
 // ─── BORDER ───────────────────────────────────────────────────────────────────
@@ -118,30 +118,30 @@ export const border = {
   },
   /** Border colors */
   color: {
-    primary: 'rgba(2,6,23,0.1)',        // primary/10
-    primaryFaint: 'rgba(2,6,23,0.05)',  // primary/5
-    accent: '#6366f1',
-    accentFaint: 'rgba(99,102,241,0.2)',
-    accentSubtle: 'rgba(99,102,241,0.1)',
+    primary: 'rgba(10,10,10,0.1)',        // primary/10
+    primaryFaint: 'rgba(10,10,10,0.05)',  // primary/5
+    accent: '#f20d0d',
+    accentFaint: 'rgba(242,13,13,0.2)',
+    accentSubtle: 'rgba(242,13,13,0.1)',
     white: 'rgba(255,255,255,0.2)',
     whiteFaint: 'rgba(255,255,255,0.05)',
     whiteThin: 'rgba(255,255,255,0.1)',
     // Admin dark panel borders
-    adminBorder: 'rgba(51,65,85,0.8)',  // slate-800/80
-    adminMid: 'rgba(71,85,105,0.6)',    // slate-700/60
+    adminBorder: 'rgba(39,39,42,0.8)',  // zinc-800/80
+    adminMid: 'rgba(63,63,70,0.6)',     // zinc-700/60
     transparent: 'transparent',
     gray: '#f3f4f6',    // gray-100
-    dashed: 'rgba(2,6,23,0.1)',  // used in dashed placeholder borders
+    dashed: 'rgba(10,10,10,0.1)',  // used in dashed placeholder borders
   },
   /** Compound shorthand strings for Tailwind arbitrary values */
   css: {
-    faint: '1px solid rgba(2,6,23,0.05)',
-    subtle: '1px solid rgba(2,6,23,0.1)',
-    accent: '1px solid #6366f1',
-    accentFaint: '1px solid rgba(99,102,241,0.2)',
+    faint: '1px solid rgba(10,10,10,0.05)',
+    subtle: '1px solid rgba(10,10,10,0.1)',
+    accent: '1px solid #f20d0d',
+    accentFaint: '1px solid rgba(242,13,13,0.2)',
     white: '1px solid rgba(255,255,255,0.2)',
     whiteFaint: '1px solid rgba(255,255,255,0.05)',
-    admin: '1px solid rgba(51,65,85,0.8)',
+    admin: '1px solid rgba(39,39,42,0.8)',
     accentLeft4: 'border-l-4 border-accent',
     accentLeft2: 'border-l-2 border-accent',
   },

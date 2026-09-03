@@ -14,42 +14,40 @@ export default async function AdminLayout({
     redirect('/')
   }
 
-  // Look up user by clerkId in DB first (extremely fast local check)
+  let clerkUser = null
+  try {
+    clerkUser = await currentUser()
+  } catch (err) {
+    console.error("Clerk currentUser error:", err)
+  }
+
+  const clerkEmail = (clerkUser?.emailAddresses?.[0]?.emailAddress || '').toLowerCase()
+
+  // Look up user by clerkId in DB first
   let user = await prisma.user.findUnique({
     where: { clerkId: userId }
   })
 
-  let email = user?.email || undefined
-
-  // Fallback: If not in DB yet, query Clerk API and sync
-  if (!user) {
-    try {
-      const clerkUser = await currentUser()
-      email = clerkUser?.emailAddresses[0]?.emailAddress
-      if (clerkUser) {
-        user = await prisma.user.findUnique({
-          where: { email: email || 'undefined' }
-        })
-        if (user) {
-          // Sync clerkId
-          user = await prisma.user.update({
-            where: { id: user.id },
-            data: { clerkId: userId }
-          })
-        }
-      }
-    } catch (error) {
-      console.error("Clerk API Error fetching user details:", error)
+  // If not found by clerkId, look up by email and sync clerkId
+  if (!user && clerkEmail) {
+    user = await prisma.user.findFirst({
+      where: { email: { equals: clerkEmail, mode: 'insensitive' } }
+    })
+    if (user) {
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { clerkId: userId }
+      }).catch(() => user)
     }
   }
 
-  // HARD OVERRIDE FOR THE OWNER
-  const isOwner = email === (process.env.ADMIN_EMAIL || 'sharersgymtest@gmail.com')
+  const email = (user?.email || clerkEmail).toLowerCase()
+  const isOwner = email === (process.env.ADMIN_EMAIL || 'sharersgymtest@gmail.com').toLowerCase()
   const isAdmin = user?.role === 'ADMIN' || isOwner
 
   if (!isAdmin) {
     console.log(`ACCESS DENIED for ${email || 'unknown'}. Role in DB: ${user?.role}`)
-    redirect('/')
+    redirect('/dashboard')
   }
 
   return (

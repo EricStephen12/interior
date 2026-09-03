@@ -16,14 +16,14 @@
 
 @theme {
   /* ── Colors ─────────────────────────────────────────────────────────────── */
-  --color-primary: #020617;
-  --color-secondary: #f8fafc;
-  --color-accent: #6366f1;
-  --color-accent-light: #818cf8;
-  --color-text-muted: #64748b;
+  --color-primary: #0a0a0a;
+  --color-secondary: #f4f4f5;
+  --color-accent: #f20d0d;
+  --color-accent-light: #ff4d4d;
+  --color-text-muted: #71717a;
   --color-surface: #ffffff;
-  --color-placeholder: #94a3b8;  /* slate-400 — ALL input placeholders */
-  --shadow-editorial: 0 40px 80px -15px rgba(99, 102, 241, 0.15);
+  --color-placeholder: #a1a1aa;  /* neutral-400 — ALL input placeholders */
+  --shadow-editorial: 0 40px 80px -15px rgba(242, 13, 13, 0.15);
   --shadow-story: 0 80px 100px -20px rgba(0, 0, 0, 0.1);
   --shadow-stat: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
 
@@ -109,7 +109,7 @@
   input::placeholder,
   textarea::placeholder,
   select::placeholder {
-    color: var(--color-placeholder, #94a3b8);
+    color: var(--color-placeholder, #71717a);
     opacity: 1;
   }
 

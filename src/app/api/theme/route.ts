@@ -209,10 +209,10 @@ export type ThemeKey = typeof THEME_KEYS[number]
 /** Default values — full content matching every site section */
 export const THEME_DEFAULTS: Record<string, string> = {
   // Global Theme Tokens
-  'theme.color.primary':      '#020617',
-  'theme.color.accent':       '#6366f1',
-  'theme.color.secondary':    '#f8fafc',
-  'theme.color.placeholder':  '#94a3b8',
+  'theme.color.primary':      '#0a0a0a',
+  'theme.color.accent':       '#f20d0d',
+  'theme.color.secondary':    '#f4f4f5',
+  'theme.color.placeholder':  '#a1a1aa',
   'theme.font.heading':       'Cormorant Garamond',
   'theme.font.body':          'Outfit',
   'theme.fontSize.body':      '16px',
@@ -226,7 +226,7 @@ export const THEME_DEFAULTS: Record<string, string> = {
   'section.banner.enabled':   'true',
   'section.banner.message':   'Limited Time — Free Delivery on Orders Above ₦50,000',
   'section.banner.code':      'FREESHIP',
-  'section.banner.bg':        '#020617',
+  'section.banner.bg':        '#f20d0d',
   'section.banner.text':      '#ffffff',
   'section.banner.accent':    '#ffffff',
 
@@ -241,9 +241,9 @@ export const THEME_DEFAULTS: Record<string, string> = {
   'section.hero.exclusiveText': 'Experience high performance training in an environment curated for physical excellence.',
   'section.hero.image':       '/images/real-gym-banner.png',
   'section.hero.pipVideo':    '/video/hero-main-v2.mp4',
-  'section.hero.bg':          '#f8fafc',
-  'section.hero.text':        '#020617',
-  'section.hero.accent':      '#6366f1',
+  'section.hero.bg':          '#f4f4f5',
+  'section.hero.text':        '#0a0a0a',
+  'section.hero.accent':      '#f20d0d',
 
   // --- STORY ---
   'section.story.badge1':     'Chapter I',
@@ -268,8 +268,8 @@ export const THEME_DEFAULTS: Record<string, string> = {
   'section.story.video1':     '/video/story-main-v2.mp4',
   'section.story.video2':     '/video/built-v2.mp4',
   'section.story.bg':         '#ffffff',
-  'section.story.text':       '#020617',
-  'section.story.accent':     '#6366f1',
+  'section.story.text':       '#0a0a0a',
+  'section.story.accent':     '#f20d0d',
 
   // --- SHOP ---
   'section.shop.badge':       'The Arsenal',
@@ -278,8 +278,8 @@ export const THEME_DEFAULTS: Record<string, string> = {
   'section.shop.subtitle':    'Nothing here ended up on the shelf by accident. Every product, every session, every membership is chosen because it works. Because the people here deserve that.',
   'section.shop.filterAll':   'All Items',
   'section.shop.bg':          '#ffffff',
-  'section.shop.text':        '#020617',
-  'section.shop.accent':      '#6366f1',
+  'section.shop.text':        '#0a0a0a',
+  'section.shop.accent':      '#f20d0d',
 
   // --- PRODUCT DETAILS PAGE (PDP) ---
   'section.pdp.badge1':       'Fast Delivery',
@@ -322,9 +322,9 @@ export const THEME_DEFAULTS: Record<string, string> = {
   'section.footer.email':     'sharersmall@gmail.com',
   'section.footer.copyright': '© 2024 - 2026 SHARERS GYM. All Rights Reserved.',
   'section.footer.logo':      '/logo.png',
-  'section.footer.bg':        '#020617',
+  'section.footer.bg':        '#0a0a0a',
   'section.footer.text':      '#ffffff',
-  'section.footer.accent':    '#6366f1',
+  'section.footer.accent':    '#f20d0d',
 
   // --- CONTACT ---
   'section.contact.badge':    'MEMBER SUPPORT',

@@ -8,8 +8,12 @@ import { Html5Qrcode } from 'html5-qrcode'
 type ScanResult = {
   status: 'idle' | 'scanning' | 'success' | 'denied' | 'duplicate' | 'error'
   message?: string
-  member?: { name?: string; email?: string; credits: number }
+  member?: { name?: string; email?: string; credits: number; memberId?: string }
   lowCredit?: boolean
+  isHourly?: boolean
+  passType?: string
+  planName?: string
+  unitLabel?: string
 }
 
 // Synth beep generator using Web Audio API
@@ -80,11 +84,21 @@ export default function QRScannerPage() {
   const [scan, setScan] = useState<ScanResult>({ status: 'idle' })
   const [cameraActive, setCameraActive] = useState(false)
   const [members, setMembers] = useState<any[]>([])
+  const [recentScans, setRecentScans] = useState<any[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [loadingMembers, setLoadingMembers] = useState(true)
   const autoDismissRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Load members for manual search
+  const fetchRecentScans = () => {
+    fetch('/api/admin/scanner/recent')
+      .then(res => res.json())
+      .then(data => {
+        if (data.checkIns) setRecentScans(data.checkIns)
+      })
+      .catch(() => {})
+  }
+
+  // Load members and recent scans
   useEffect(() => {
     fetch('/api/admin/users/list')
       .then(res => res.json())
@@ -93,6 +107,8 @@ export default function QRScannerPage() {
         setLoadingMembers(false)
       })
       .catch(() => setLoadingMembers(false))
+
+    fetchRecentScans()
   }, [])
 
   const processScan = async (rawCode: string) => {
@@ -119,14 +135,29 @@ export default function QRScannerPage() {
           status: 'success',
           member: data.user,
           lowCredit: data.lowCredit,
-          message: data.lowCredit ? `Only ${data.creditsRemaining} days left` : undefined
+          isHourly: data.isHourly,
+          passType: data.passType,
+          planName: data.planName,
+          unitLabel: data.unitLabel,
+          message: data.user?.credits === 0 
+            ? `Single-entry ${data.isHourly ? 'hourly session' : 'day pass'} activated. Cleared to enter!` 
+            : `Access approved (${data.planName}). ${data.user?.credits} ${data.unitLabel} remaining.`
         })
         playBeep('success')
+        fetchRecentScans() // Refresh live feed
       } else if (res.status === 409) {
-        setScan({ status: 'duplicate', message: data.error })
+        setScan({ 
+          status: 'duplicate', 
+          member: data.user,
+          message: data.error || 'Pass was already scanned just now.' 
+        })
         playBeep('duplicate')
       } else {
-        setScan({ status: 'denied', message: data.error || 'Access denied' })
+        setScan({ 
+          status: 'denied', 
+          member: data.user,
+          message: data.error || 'No active credits on this pass.' 
+        })
         playBeep('error')
       }
     } catch {
@@ -322,6 +353,40 @@ export default function QRScannerPage() {
         )}
       </div>
 
+      {/* Live Recent Check-in Activity Feed */}
+      {recentScans.length > 0 && (
+        <div className="w-full max-w-sm sm:max-w-md mt-12 border-t border-primary/5 pt-8 space-y-4">
+          <div className="flex items-center justify-between border-l-2 border-primary pl-4">
+            <div>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Live Scan Feed</h3>
+              <p className="text-[8px] text-text-muted uppercase tracking-widest mt-0.5">Today's verified member check-ins</p>
+            </div>
+            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[8px] font-black uppercase tracking-wider rounded">
+              {recentScans.length} recent
+            </span>
+          </div>
+
+          <div className="space-y-2">
+            {recentScans.map((cs) => (
+              <div key={cs.id} className="p-3 bg-white border border-primary/5 flex items-center justify-between shadow-xs">
+                <div className="space-y-0.5 min-w-0 max-w-[65%]">
+                  <p className="text-[11px] font-black text-primary uppercase truncate">{cs.user?.name || 'Gym Member'}</p>
+                  <p className="text-[8px] text-text-muted uppercase tracking-widest truncate">{cs.user?.email}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  <span className="inline-block text-[9px] font-black text-accent uppercase tracking-wider">
+                    {new Date(cs.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                  <p className="text-[8px] font-bold text-text-muted uppercase tracking-widest">
+                    {cs.user?.credits} left
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ═══════════ FULL-SCREEN FLASH ALERTS (ADMIN DX LEVEL UP) ═══════════ */}
       <AnimatePresence>
         {scan.status !== 'idle' && scan.status !== 'scanning' && (
@@ -347,53 +412,87 @@ export default function QRScannerPage() {
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: 'spring', damping: 10 }}
               >
-                {scan.status === 'success' && <CheckCircle2 className="w-36 h-36 drop-shadow-2xl" />}
-                {scan.status === 'duplicate' && <Clock className="w-36 h-36 drop-shadow-2xl" />}
-                {(scan.status === 'denied' || scan.status === 'error') && <XCircle className="w-36 h-36 drop-shadow-2xl" />}
+                {scan.status === 'success' && <CheckCircle2 className="w-32 h-32 drop-shadow-2xl" />}
+                {scan.status === 'duplicate' && <Clock className="w-32 h-32 drop-shadow-2xl" />}
+                {(scan.status === 'denied' || scan.status === 'error') && <XCircle className="w-32 h-32 drop-shadow-2xl" />}
               </motion.div>
 
               {/* Status Header */}
-              <div className="space-y-3">
-                <p className="text-[11px] font-black uppercase tracking-[0.5em] opacity-60">ACCESS VERDICT</p>
-                <h2 className="text-4xl sm:text-5xl font-black uppercase tracking-[0.08em] font-sans drop-shadow">
-                  {scan.status === 'success' && 'ACCESS GRANTED'}
-                  {scan.status === 'duplicate' && 'ALREADY IN'}
-                  {scan.status === 'denied' && 'ACCESS DENIED'}
-                  {scan.status === 'error' && 'SYSTEM ERROR'}
+              <div className="space-y-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-80">
+                  {scan.status === 'success' && (scan.passType ? `VERIFIED — ${scan.passType}` : 'VERIFIED SESSION')}
+                  {scan.status === 'duplicate' && 'ENTRY ALREADY APPROVED'}
+                  {scan.status === 'denied' && 'ACCESS RESTRICTED'}
+                  {scan.status === 'error' && 'SYSTEM NOTICE'}
+                </p>
+                <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-[0.06em] font-sans drop-shadow leading-tight">
+                  {scan.status === 'success' && (scan.isHourly ? 'HOURLY PASS VALIDATED' : 'ACCESS GRANTED')}
+                  {scan.status === 'duplicate' && 'ALREADY CHECKED IN'}
+                  {scan.status === 'denied' && (scan.member?.credits === 0 ? 'NO CREDITS LEFT' : 'ACCESS DENIED')}
+                  {scan.status === 'error' && 'CONNECTION ERROR'}
                 </h2>
               </div>
 
               {/* Detailed message or member statistics */}
-              <div className="bg-black/10 backdrop-blur-md p-6 border border-white/10 w-full rounded-none space-y-4 shadow-xl">
-                {scan.status === 'success' && scan.member && (
+              <div className="bg-black/20 backdrop-blur-md p-6 border border-white/15 w-full rounded-xl space-y-4 shadow-2xl">
+                {scan.member && (
                   <div className="space-y-1">
-                    <p className="text-xl font-bold uppercase tracking-wide truncate">{scan.member.name || 'Anonymous User'}</p>
-                    <p className="text-[9px] opacity-75 uppercase tracking-widest truncate">{scan.member.email}</p>
-                    <div className="h-[1px] bg-white/10 my-4" />
-                    <p className="text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2">
-                      <CreditCard className="w-4 h-4 text-white" /> {scan.member.credits} Days Remaining
+                    <p className="text-xl font-black uppercase tracking-wide truncate">{scan.member.name || 'Valued Member'}</p>
+                    <p className="text-[9px] opacity-80 uppercase tracking-widest truncate">{scan.member.email}</p>
+                    {scan.planName && (
+                      <span className="inline-block mt-2 px-3 py-0.5 bg-white/20 text-[10px] font-black uppercase tracking-widest rounded-full">
+                        {scan.planName}
+                      </span>
+                    )}
+                    <div className="h-[1px] bg-white/10 my-3" />
+                  </div>
+                )}
+
+                {scan.status === 'success' && (
+                  <div className="space-y-2">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/15 rounded-full text-xs font-black uppercase tracking-wider">
+                      <CreditCard className="w-4 h-4" /> 
+                      {scan.member?.credits === 0 
+                        ? `1 ${scan.isHourly ? 'Hour Session' : 'Day Pass'} Used (0 Remaining)` 
+                        : `${scan.member?.credits} ${scan.unitLabel || 'Credits'} Remaining`}
+                    </div>
+                    <p className="text-xs font-medium opacity-90">
+                      {scan.member?.credits === 0 
+                        ? `✓ 1 ${scan.isHourly ? 'hour workout' : 'day visit'} activated. Top-up required for next visit.` 
+                        : `✓ Member checked in for ${scan.isHourly ? 'hourly workout' : 'day session'}. Have a great workout!`}
                     </p>
                   </div>
                 )}
 
                 {scan.status === 'duplicate' && (
                   <div className="space-y-2">
-                    <p className="text-xs font-bold uppercase tracking-wider">{scan.message}</p>
-                    <p className="text-[9px] opacity-75 uppercase tracking-widest">Double tap scan cooldown is active</p>
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/15 rounded-full text-xs font-black uppercase tracking-wider">
+                      <Clock className="w-4 h-4" /> Scanned Seconds Ago
+                    </div>
+                    <p className="text-xs font-medium opacity-90">
+                      This pass was just validated. Member is already checked in and good to go inside!
+                    </p>
+                    <p className="text-[9px] opacity-70 uppercase tracking-widest">
+                      (No extra credits were deducted)
+                    </p>
                   </div>
                 )}
 
                 {(scan.status === 'denied' || scan.status === 'error') && (
                   <div className="space-y-2">
-                    <p className="text-sm font-bold uppercase tracking-widest">{scan.message}</p>
-                    <p className="text-[9px] opacity-75 uppercase tracking-widest">Verify membership status or top up pass days</p>
+                    <p className="text-xs font-bold uppercase tracking-wider">
+                      {scan.message || 'Pass cannot be validated.'}
+                    </p>
+                    <p className="text-[9px] opacity-80 uppercase tracking-widest">
+                      Please purchase an hourly pass or day pass at the desk or online.
+                    </p>
                   </div>
                 )}
               </div>
 
               {/* Action subtext */}
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 animate-pulse pt-8">
-                TAP ANYWHERE OR WAIT TO SCAN NEXT
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-50 animate-pulse pt-4">
+                TAP ANYWHERE TO SCAN NEXT
               </p>
             </div>
           </motion.div>

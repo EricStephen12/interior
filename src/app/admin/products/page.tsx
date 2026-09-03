@@ -88,63 +88,77 @@ export default function AdminProductsPage() {
                   <td colSpan={5} className="px-6 py-20 text-center text-gray-400 text-sm">No products yet. Add your first one.</td>
                 </tr>
               ) : (
-                products.map((product: any) => (
-                  <tr key={product.id} className="hover:bg-gray-50/50 transition-colors group">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg relative overflow-hidden flex-shrink-0">
-                          {(Array.isArray(product.images) && product.images.length > 0) ? (
-                            <Image src={product.images[0]} alt="" fill className="object-cover" />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <Package className="w-5 h-5 text-gray-300" />
-                            </div>
+                products.map((product: any) => {
+                  let firstImg: string | null = null
+                  if (Array.isArray(product.images) && product.images.length > 0 && typeof product.images[0] === 'string') {
+                    firstImg = product.images[0]
+                  } else if (typeof product.images === 'string' && product.images.trim()) {
+                    try {
+                      const parsed = JSON.parse(product.images)
+                      firstImg = Array.isArray(parsed) && parsed[0] ? parsed[0] : (typeof parsed === 'string' ? parsed : product.images)
+                    } catch {
+                      firstImg = product.images
+                    }
+                  }
+
+                  return (
+                    <tr key={product.id} className="hover:bg-gray-50/50 transition-colors group">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 bg-gray-100 rounded-lg relative overflow-hidden flex-shrink-0">
+                            {firstImg ? (
+                              <Image src={firstImg} alt="" fill unoptimized className="object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <Package className="w-5 h-5 text-gray-300" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-gray-900 truncate">{product.name}</p>
+                            <p className="text-xs text-gray-400">{product.type || 'Uncategorized'}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-xs font-semibold text-gray-600 bg-gray-100 px-2.5 py-1 rounded-full">
+                          {product.brand?.name || '—'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-bold text-gray-900 tabular-nums">₦{product.price?.toLocaleString()}</span>
+                          {product.promoPrice && (
+                            <span className="text-xs text-green-600 font-semibold tabular-nums">₦{product.promoPrice.toLocaleString()} promo</span>
                           )}
                         </div>
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-gray-900 truncate">{product.name}</p>
-                          <p className="text-xs text-gray-400">{product.type || 'Uncategorized'}</p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide ${product.isActive !== false ? 'bg-green-50 text-green-700 border border-green-200/60' : 'bg-red-50 text-red-700 border border-red-200/60'}`}>
+                          {product.isActive !== false ? '● In Stock' : '○ Out of Stock'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex justify-end items-center gap-3">
+                          {deletingId === product.id && <span className="text-[10px] font-bold text-gray-400 animate-pulse uppercase">Deleting</span>}
+                          <Link href={`/admin/products/${product.id}`} className={`p-2 text-gray-300 hover:text-accent transition-colors rounded-lg hover:bg-accent/5 ${deletingId === product.id ? 'opacity-20 pointer-events-none' : ''}`}>
+                            <Settings className="w-4 h-4" />
+                          </Link>
+                          <Link href={`/products/${product.id}`} className={`p-2 text-gray-300 hover:text-gray-700 transition-colors rounded-lg hover:bg-gray-100 ${deletingId === product.id ? 'opacity-20 pointer-events-none' : ''}`}>
+                            <Eye className="w-4 h-4" />
+                          </Link>
+                          <button 
+                            onClick={() => handleDelete(product.id)} 
+                            disabled={deletingId !== null}
+                            className={`p-2 transition-all rounded-lg ${deletingId === product.id ? 'text-red-500 bg-red-50' : 'text-gray-300 hover:text-red-500 hover:bg-red-50 disabled:opacity-30'}`}
+                          >
+                            {deletingId === product.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                          </button>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-xs font-semibold text-gray-600 bg-gray-100 px-2.5 py-1 rounded-full">
-                        {product.brand?.name || '—'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold text-gray-900 tabular-nums">₦{product.price?.toLocaleString()}</span>
-                        {product.promoPrice && (
-                          <span className="text-xs text-green-600 font-semibold tabular-nums">₦{product.promoPrice.toLocaleString()} promo</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide ${product.isActive !== false ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
-                        {product.isActive !== false ? 'Active' : 'Archived'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex justify-end items-center gap-3">
-                        {deletingId === product.id && <span className="text-[10px] font-bold text-gray-400 animate-pulse uppercase">Deleting</span>}
-                        <Link href={`/admin/products/${product.id}`} className={`p-2 text-gray-300 hover:text-accent transition-colors rounded-lg hover:bg-accent/5 ${deletingId === product.id ? 'opacity-20 pointer-events-none' : ''}`}>
-                          <Settings className="w-4 h-4" />
-                        </Link>
-                        <Link href={`/products/${product.id}`} className={`p-2 text-gray-300 hover:text-gray-700 transition-colors rounded-lg hover:bg-gray-100 ${deletingId === product.id ? 'opacity-20 pointer-events-none' : ''}`}>
-                          <Eye className="w-4 h-4" />
-                        </Link>
-                        <button 
-                          onClick={() => handleDelete(product.id)} 
-                          disabled={deletingId !== null}
-                          className={`p-2 transition-all rounded-lg ${deletingId === product.id ? 'text-red-500 bg-red-50' : 'text-gray-300 hover:text-red-500 hover:bg-red-50 disabled:opacity-30'}`}
-                        >
-                          {deletingId === product.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                    </tr>
+                  )
+                })
               )}
             </tbody>
           </table>

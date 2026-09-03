@@ -2,13 +2,14 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { useMembership } from '@/lib/membership-context'
-import { Shield } from 'lucide-react'
+import { useMembership, getActivePassInfo } from '@/lib/membership-context'
+import { Shield, Sparkles } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { t } from '@/lib/theme'
 
 export default function MemberPass() {
     const { state } = useMembership()
+    const activePlan = getActivePassInfo(state)
     
     // The value to be encoded in the QR code - unique to each member
     const passValue = `SHARERS_PASS_${state.memberId || 'PENDING'}`
@@ -47,14 +48,16 @@ export default function MemberPass() {
                     {/* Header */}
                     <div className="flex justify-between items-start mb-6 sm:mb-8">
                         <div className="space-y-1">
-                            <p className="text-xs font-black tracking-[0.3em] text-accent">OFFICIAL PASS</p>
-                            <h2 className="text-lg sm:text-2xl font-black tracking-tight">SHARERS GYM</h2>
+                            <span className="inline-block px-2.5 py-0.5 bg-accent/20 border border-accent/40 text-[9px] font-black tracking-[0.25em] text-accent uppercase">
+                                {activePlan.isHourly ? 'HOURLY ACCESS PASS' : activePlan.planType === 'MEMBERSHIP' ? 'VIP MEMBERSHIP' : 'DAY ACCESS PASS'}
+                            </span>
+                            <h2 className="text-lg sm:text-2xl font-black tracking-tight mt-1">SHARERS GYM</h2>
                         </div>
-                        <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-accent opacity-50" />
+                        <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-accent opacity-60" />
                     </div>
 
                     {/* QR Container */}
-                    <div className="flex flex-col items-center justify-center space-y-4 sm:space-y-6 py-6 sm:py-10">
+                    <div className="flex flex-col items-center justify-center space-y-4 sm:space-y-6 py-4 sm:py-8">
                         <motion.div
                             whileHover={{ scale: 1.05 }}
                             className="relative p-4 sm:p-6 bg-white shadow-2xl"
@@ -83,22 +86,33 @@ export default function MemberPass() {
                             />
                         </motion.div>
 
-                        <p className="text-xs font-bold tracking-[0.3em] text-white/50 uppercase">ID: {state.memberId}</p>
+                        <div className="text-center space-y-0.5">
+                            <p className="text-[11px] font-black uppercase tracking-wider text-white">
+                                {activePlan.planName}
+                            </p>
+                            <p className="text-[9px] font-bold tracking-[0.25em] text-white/50 uppercase">ID: {state.memberId}</p>
+                        </div>
                     </div>
 
                     {/* Footer Info */}
                     <div className="space-y-4 sm:space-y-6">
                         <div className="flex justify-between items-end border-t border-white/10 pt-4 sm:pt-6">
                             <div>
-                                <p className="text-xs font-bold tracking-wider text-accent uppercase mb-1">ACCESS CREDITS</p>
+                                <p className="text-[10px] font-bold tracking-wider text-accent uppercase mb-1">
+                                    ACCESS BALANCE
+                                </p>
                                 <div className="flex items-baseline gap-1.5 sm:gap-2">
                                     <span className="text-2xl sm:text-4xl font-black">{state.remainingCredits}</span>
-                                    <span className="text-xs sm:text-lg font-bold text-white/50 lowercase">/ {state.totalCredits} remaining</span>
+                                    <span className="text-xs sm:text-sm font-bold text-white/60 lowercase">
+                                        / {state.totalCredits} remaining
+                                    </span>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="text-xs font-bold tracking-wider text-white/50 mb-1 uppercase">MEMBER LEVEL</p>
-                                <p className="text-xs sm:text-sm font-black text-white uppercase">{state.tier === 'NONE' ? 'BASIC' : state.tier}</p>
+                                <p className="text-[10px] font-bold tracking-wider text-white/50 mb-1 uppercase">MEMBER TIER</p>
+                                <p className="text-xs sm:text-sm font-black text-white uppercase truncate max-w-[130px]">
+                                    {state.tier === 'NONE' ? 'STANDARD' : state.tier}
+                                </p>
                             </div>
                         </div>
 
@@ -109,7 +123,9 @@ export default function MemberPass() {
                                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                                 className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12"
                             />
-                            <span className="text-[10px] font-bold tracking-[0.3em] text-white/30">AUTHENTICATED DIGITAL ASSET</span>
+                            <span className="text-[9px] font-bold tracking-[0.3em] text-white/40 uppercase">
+                                AUTHENTICATED {activePlan.isHourly ? 'HOURLY' : 'DAY'} PASS
+                            </span>
                         </div>
                     </div>
                 </div>

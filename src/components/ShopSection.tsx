@@ -37,8 +37,8 @@ export default function ShopSection({
   const shopTitle2 = get('section.shop.title2', 'Stuff.')
   const shopSubtitle = get('section.shop.subtitle', 'Nothing here ended up on the shelf by accident. Every product, every session, every membership is chosen because it works. Because the people here deserve that.')
   const shopBg = get('section.shop.bg', '#ffffff')
-  const shopText = get('section.shop.text', '#020617')
-  const shopAccent = get('section.shop.accent', '#6366f1')
+  const shopText = get('section.shop.text', '#0a0a0a')
+  const shopAccent = get('section.shop.accent', '#f20d0d')
 
   const shopPadding = get('section.shop.padding', 'py-16 sm:py-24 md:py-32')
   const shopMaxWidth = get('section.shop.maxWidth', 'max-w-7xl')
@@ -174,16 +174,16 @@ export default function ShopSection({
               className="inline-block text-xs font-black tracking-[0.3em] uppercase mb-4 sm:mb-6"
               style={{ color: shopAccent }}
             >
-              {shopBadge}
+              {shopBadge === 'YOUR CART' ? 'THE ARSENAL' : shopBadge}
             </motion.span>
             <motion.h3
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.2 }}
-              className="text-4xl sm:text-6xl md:text-7xl font-black tracking-[-0.04em] leading-[0.9] font-heading"
+              className="text-4xl sm:text-6xl md:text-7xl font-black tracking-[-0.04em] leading-[0.9] text-primary font-sans"
             >
               {shopTitle1} <br />
-              <span className="font-heading" style={{ color: shopAccent }}>{shopTitle2}</span>
+              <span className="font-sans" style={{ color: shopAccent }}>{shopTitle2}</span>
             </motion.h3>
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -427,9 +427,16 @@ function ProductCard({ product, index }: { product: any, index: number }) {
     }
   }
 
+  const isOutOfStock = product.isActive === false || product.in_stock === false || (product.stock !== undefined && product.stock <= 0)
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+
+    if (isOutOfStock) {
+      showToast('This item is currently out of stock.', 'error', product.name)
+      return
+    }
 
     // Pass structured data matching what CartDrawer expects
     const productData = { id: product.id, name: product.name, images: product.images }
@@ -474,14 +481,14 @@ function ProductCard({ product, index }: { product: any, index: number }) {
                 brand: { name: product.brand },
                 size: { label: product.size },
                 type: product.category,
-                isActive: product.in_stock
+                isActive: !isOutOfStock
               };
               sessionStorage.setItem(`product_${product.id}`, JSON.stringify(detailsPageSchema));
             }
           }
         }}
       >
-          <div className={`relative aspect-square overflow-hidden mb-4 cursor-pointer transition-all duration-700`} style={{ backgroundColor: t.shop.imgPlaceholderBg }}>
+          <div className={`relative aspect-square overflow-hidden mb-4 cursor-pointer transition-all duration-700 ${isOutOfStock ? 'opacity-90' : ''}`} style={{ backgroundColor: t.shop.imgPlaceholderBg }}>
             {/* Shimmer Placeholder */}
             {!loaded && (
               <div className="absolute inset-0 animate-pulse" style={{ backgroundColor: t.shop.shimmerBg }} />
@@ -491,23 +498,32 @@ function ProductCard({ product, index }: { product: any, index: number }) {
               src={product.images[0]}
               alt={product.name}
               fill
+              unoptimized
               className={`object-cover mix-blend-multiply transition-transform duration-700 ease-out 
-              ${isHovered ? 'scale-105' : 'scale-100'} ${loaded ? 'opacity-100 blur-0' : 'opacity-0 blur-sm'}`}
+              ${isHovered ? 'scale-105' : 'scale-100'} ${loaded ? 'opacity-100 blur-0' : 'opacity-0 blur-sm'} ${isOutOfStock ? 'grayscale-[20%]' : ''}`}
               sizes="(max-width: 768px) 100vw, 50vw"
               onLoad={() => setLoaded(true)}
             />
 
             {/* Badges */}
             <div className="absolute top-3 left-3 z-20 flex flex-row items-center gap-1.5">
-              {product.promo_price && (
-                <span className="bg-accent text-white px-2.5 py-1 text-[10px] font-black uppercase tracking-widest rounded shadow-sm">
-                  SALE
+              {isOutOfStock ? (
+                <span className="bg-red-600 text-white px-2.5 py-1 text-[10px] font-black uppercase tracking-widest rounded shadow-sm">
+                  OUT OF STOCK
                 </span>
-              )}
-              {product.isBestseller && (
-                <span className="bg-primary/90 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black uppercase tracking-widest rounded shadow-sm">
-                  BESTSELLER
-                </span>
+              ) : (
+                <>
+                  {product.promo_price && (
+                    <span className="bg-accent text-white px-2.5 py-1 text-[10px] font-black uppercase tracking-widest rounded shadow-sm">
+                      SALE
+                    </span>
+                  )}
+                  {product.isBestseller && (
+                    <span className="bg-primary/90 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black uppercase tracking-widest rounded shadow-sm">
+                      BESTSELLER
+                    </span>
+                  )}
+                </>
               )}
             </div>
 
@@ -544,6 +560,12 @@ function ProductCard({ product, index }: { product: any, index: number }) {
                 >
                   JOIN NOW
                 </button>
+              ) : isOutOfStock ? (
+                <div
+                  className="w-full text-neutral-300 py-3 text-xs font-black tracking-widest uppercase text-center bg-neutral-900/90 backdrop-blur-md rounded shadow-lg"
+                >
+                  OUT OF STOCK
+                </div>
               ) : (
                 <button
                   type="button"

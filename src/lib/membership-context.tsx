@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { useUser } from '@clerk/nextjs'
+import { useUser, useAuth } from '@clerk/nextjs'
 
 interface CheckIn {
     id: string
@@ -15,6 +15,109 @@ interface Order {
     items: any
     status: string
     createdAt: string
+}
+
+export interface ActivePlanInfo {
+    hasPass: boolean
+    planName: string
+    planType: 'HOURLY' | 'DAILY' | 'MEMBERSHIP' | 'NONE'
+    unitLabel: string
+    remainingDisplay: string
+    isHourly: boolean
+}
+
+export function getActivePassInfo(state: MembershipState): ActivePlanInfo {
+    // Look through all orders
+    const orders = state.orderHistory || []
+    
+    let foundPlanName = ''
+    let isHourly = false
+
+    for (const order of orders) {
+        // Only inspect successful/active orders (or in review)
+        if (!['COMPLETED', 'PAID', 'DELIVERED', 'PENDING_VERIFICATION'].includes(order.status)) {
+            continue
+        }
+
+        let items: any[] = []
+        if (Array.isArray(order.items)) {
+            items = order.items
+        } else if (typeof order.items === 'string') {
+            try {
+                const parsed = JSON.parse(order.items)
+                items = Array.isArray(parsed) ? parsed : [parsed]
+            } catch {
+                items = [{ name: order.items }]
+            }
+        }
+
+        for (const item of items) {
+            const rawName = (item.name || '').trim()
+            const lower = rawName.toLowerCase()
+
+            if (lower.includes('hour') || lower.includes('hr') || lower.includes('session')) {
+                foundPlanName = rawName
+                isHourly = true
+                break
+            } else if (lower.includes('day') || lower.includes('month') || lower.includes('pass') || lower.includes('access')) {
+                foundPlanName = rawName
+                isHourly = false
+                break
+            }
+        }
+
+        if (foundPlanName) break
+    }
+
+    // Format clean plan title
+    let cleanPlanName = foundPlanName
+    if (cleanPlanName) {
+        // Example: "2 Hours (2 Hours Session)" -> "2 Hours Session"
+        // Example: "2 Hours (Silver Pack)" -> "2 Hours Session (Silver Pack)"
+        // Example: "1 Day (1 Day Pass)" -> "1 Day Pass"
+        if (cleanPlanName.includes('(') && cleanPlanName.includes(')')) {
+            const match = cleanPlanName.match(/^(.*?)\s*\((.*?)\)$/)
+            if (match) {
+                const prefix = match[1].trim() // e.g. "2 Hours" or "1 Day"
+                const inside = match[2].trim() // e.g. "2 Hours Session" or "Silver Pack"
+                if (inside.toLowerCase().includes('hour') || inside.toLowerCase().includes('day') || inside.toLowerCase().includes('pass') || inside.toLowerCase().includes('session')) {
+                    cleanPlanName = inside
+                } else {
+                    cleanPlanName = `${prefix} Pass`
+                }
+            }
+        }
+    }
+
+    const unitLabel = isHourly 
+        ? (state.remainingCredits === 1 ? 'Hour' : 'Hours') 
+        : (state.remainingCredits === 1 ? 'Day' : 'Days')
+
+    // If no order name was found but user has credits
+    if (!cleanPlanName && (state.remainingCredits > 0 || state.totalCredits > 0)) {
+        const total = state.totalCredits || state.remainingCredits
+        cleanPlanName = `${total} ${total === 1 ? (isHourly ? 'Hour' : 'Day') : (isHourly ? 'Hours' : 'Days')} Pass`
+    }
+
+    const hasPass = state.remainingCredits > 0 || state.totalCredits > 0 || state.hasActiveMembership
+
+    let planType: 'HOURLY' | 'DAILY' | 'MEMBERSHIP' | 'NONE' = 'NONE'
+    if (isHourly) {
+        planType = 'HOURLY'
+    } else if (cleanPlanName.toLowerCase().includes('month') || (state.totalCredits >= 20)) {
+        planType = 'MEMBERSHIP'
+    } else if (hasPass) {
+        planType = 'DAILY'
+    }
+
+    return {
+        hasPass,
+        planName: cleanPlanName || (hasPass ? `${state.remainingCredits} Pass Active` : 'No Active Pass'),
+        planType,
+        unitLabel,
+        remainingDisplay: `${state.remainingCredits} ${unitLabel}`,
+        isHourly
+    }
 }
 
 interface MembershipState {
@@ -64,10 +167,16 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
         return INITIAL_STATE
     })
     const { isSignedIn, user, isLoaded } = useUser()
+    const { getToken } = useAuth()
 
     const fetchMembership = async () => {
         try {
-            const res = await fetch('/api/membership')
+            const token = await getToken()
+            const headers: Record<string, string> = {}
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`
+            }
+            const res = await fetch('/api/membership', { headers })
             if (res.ok) {
                 const data = await res.json()
                 if (data.user) {
@@ -126,9 +235,14 @@ export function MembershipProvider({ children }: { children: React.ReactNode }) 
 
     const checkIn = async (protocol: string) => {
         try {
+            const token = await getToken()
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`
+            }
             const res = await fetch('/api/membership', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify({ action: 'CHECK_IN', protocol })
             })
 

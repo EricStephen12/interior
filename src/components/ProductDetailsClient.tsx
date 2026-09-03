@@ -26,7 +26,8 @@ import {
   Zap,
   Package,
   Layers,
-  CheckCircle2
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMembership } from '@/lib/membership-context';
@@ -138,13 +139,20 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
 
   const getImages = () => {
     if (!product) return [];
-    if (Array.isArray(product.images)) return product.images;
-    if (typeof product.images === 'string') {
+    if (Array.isArray(product.images)) {
+      return product.images.filter((img: any) => typeof img === 'string' && img.trim().length > 0);
+    }
+    if (typeof product.images === 'string' && product.images.trim().length > 0) {
       try {
         const parsed = JSON.parse(product.images);
-        return Array.isArray(parsed) ? parsed : [];
-      } catch (e) {
-        return [];
+        if (Array.isArray(parsed)) {
+          return parsed.filter((img: any) => typeof img === 'string' && img.trim().length > 0);
+        }
+        if (typeof parsed === 'string' && parsed.trim().length > 0) {
+          return [parsed.trim()];
+        }
+      } catch {
+        return [product.images.trim()];
       }
     }
     return [];
@@ -158,7 +166,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
   const discountPercent = hasDiscount ? Math.round((1 - selectedVariant.promo_price / selectedVariant.price) * 100) : 0;
 
   const handleAddToCart = () => {
-    if (product.name.toLowerCase().includes('membership') || product.categories?.some((c: any) => c.category.name === 'Memberships')) {
+    if (product.name?.toLowerCase().includes('membership') || product.categories?.some((c: any) => c.category?.name === 'Memberships')) {
       subscribe(30);
       router.push('/dashboard');
     } else {
@@ -229,23 +237,44 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
   const nextImage = () => setActiveIndex(i => (i + 1) % images.length);
   const prevImage = () => setActiveIndex(i => (i - 1 + images.length) % images.length);
 
+  const isOutOfStock = product?.isActive === false || product?.inStock === false || (product?.stock !== undefined && product.stock <= 0);
+
   return (
     <div className="bg-white min-h-screen selection:bg-accent/20">
 
       {/* ── LUXURY MINIMAL BREADCRUMB ── */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 pt-6 sm:pt-10 pb-4">
-        <nav className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-text-muted">
-          <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-          <span className="text-primary/20">/</span>
-          <Link href="/products" className="hover:text-primary transition-colors">Arsenal & Shop</Link>
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 pt-4 sm:pt-7 pb-3">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-text-muted font-medium overflow-x-auto scrollbar-hide py-1">
+          <Link 
+            href="/" 
+            className="hover:text-primary transition-colors whitespace-nowrap shrink-0 font-semibold tracking-wide"
+          >
+            Home
+          </Link>
+
+          <ChevronRight className="w-3 h-3 text-primary/30 shrink-0" />
+
+          <Link 
+            href="/products" 
+            className="hover:text-primary transition-colors whitespace-nowrap shrink-0 tracking-wide"
+          >
+            Arsenal & Shop
+          </Link>
+
           {product.brand?.name && (
             <>
-              <span className="text-primary/20">/</span>
-              <span className="hover:text-primary transition-colors">{product.brand.name}</span>
+              <ChevronRight className="w-3 h-3 text-primary/30 shrink-0" />
+              <span className="hover:text-primary transition-colors whitespace-nowrap shrink-0 tracking-wide">
+                {product.brand.name}
+              </span>
             </>
           )}
-          <span className="text-primary/20">/</span>
-          <span className="text-primary font-black truncate max-w-[220px]">{product.name}</span>
+
+          <ChevronRight className="w-3 h-3 text-primary/30 shrink-0" />
+
+          <span className="text-primary font-bold truncate max-w-[180px] sm:max-w-[280px] md:max-w-[400px] shrink-0 tracking-wide">
+            {product.name}
+          </span>
         </nav>
       </div>
 
@@ -258,37 +287,43 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
             
             {/* Vertical / Horizontal Thumbnails Strip */}
             {images.length > 1 && (
-              <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-y-auto lg:w-24 scrollbar-hide shrink-0 pb-2 lg:pb-0">
+              <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-y-auto lg:w-24 scrollbar-hide shrink-0 py-1 lg:py-0">
                 {(images as string[]).map((img: string, idx: number) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => setActiveIndex(idx)}
-                    className={`relative w-20 h-24 lg:w-full lg:h-28 rounded-lg overflow-hidden shrink-0 transition-all duration-300 border ${
+                    className={`relative w-20 h-24 lg:w-full lg:h-28 rounded-xl overflow-hidden shrink-0 transition-all duration-300 border ${
                       activeIndex === idx
                         ? 'border-accent ring-2 ring-accent/40 shadow-md scale-[1.02]'
                         : 'border-primary/10 opacity-60 hover:opacity-100 hover:border-primary/30'
                     }`}
                   >
-                    <Image src={img} alt="" fill className="object-cover" sizes="100px" />
+                    <Image src={img} alt="" fill unoptimized className="object-cover" sizes="100px" />
                   </button>
                 ))}
               </div>
             )}
 
             {/* Main Spotlight Image Container */}
-            <div className="relative aspect-[4/5] lg:aspect-auto lg:min-h-[640px] flex-1 bg-secondary/30 rounded-2xl overflow-hidden border border-primary/10 group shadow-sm flex items-center justify-center">
+            <div className="relative w-full aspect-[4/5] sm:aspect-square lg:aspect-auto min-h-[380px] sm:min-h-[460px] lg:min-h-[640px] lg:flex-1 bg-secondary/30 rounded-2xl overflow-hidden border border-primary/10 group shadow-sm flex items-center justify-center">
               
               {/* Image Index Overlay Counter */}
               {images.length > 1 && (
-                <div className="absolute top-4 left-4 z-20 px-3 py-1 bg-primary/80 backdrop-blur-md rounded-full text-[10px] font-mono font-black text-white uppercase tracking-widest">
+                <div className="absolute top-4 left-4 z-20 px-3 py-1 bg-primary/80 backdrop-blur-md rounded-full text-[10px] font-mono font-black text-white uppercase tracking-widest shadow-sm">
                   {String(activeIndex + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
                 </div>
               )}
 
-              {/* Discount / Bestseller Floating Badge */}
+              {/* Discount / Out of Stock / Bestseller Floating Badge */}
               <div className="absolute top-4 right-4 z-20 flex flex-row items-center gap-2">
-                {hasDiscount && (
+                {isOutOfStock && (
+                  <span className="px-3.5 py-1 bg-red-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                    OUT OF STOCK
+                  </span>
+                )}
+                {hasDiscount && !isOutOfStock && (
                   <span className="px-3.5 py-1 bg-accent text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
                     {discountPercent}% OFF
                   </span>
@@ -306,17 +341,34 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                   <button
                     type="button"
                     onClick={prevImage}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md text-primary border border-primary/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-md z-20"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md text-primary border border-primary/10 flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity hover:bg-white shadow-md z-20 active:scale-95"
+                    aria-label="Previous Image"
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
                   <button
                     type="button"
                     onClick={nextImage}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md text-primary border border-primary/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-md z-20"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md text-primary border border-primary/10 flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity hover:bg-white shadow-md z-20 active:scale-95"
+                    aria-label="Next Image"
                   >
                     <ChevronRight className="w-5 h-5" />
                   </button>
+
+                  {/* Mobile Dot Indicators */}
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 lg:hidden bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full shadow-md">
+                    {images.map((_: any, idx: number) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setActiveIndex(idx)}
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          activeIndex === idx ? 'w-5 bg-white' : 'w-1.5 bg-white/50'
+                        }`}
+                        aria-label={`Slide ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
                 </>
               )}
 
@@ -332,23 +384,24 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                     initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.25 }}
                     className="w-full h-full relative"
                   >
                     <Image
                       src={activeImage}
-                      alt={product.name}
+                      alt={product.name || 'Product Image'}
                       fill
-                      className={`object-cover transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-                      sizes="(max-width: 1024px) 100vw, 55vw"
+                      unoptimized
+                      className={`object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                      sizes="(max-width: 1024px) 100vw, 58vw"
                       priority
                       onLoad={() => setImageLoaded(true)}
                     />
                   </motion.div>
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center text-text-muted">
-                    <Package className="w-12 h-12 mb-2 opacity-30" />
-                    <p className="text-xs font-black uppercase tracking-widest">No Image Asset Available</p>
+                    <Package className="w-12 h-12 mb-2 opacity-30 text-primary" />
+                    <p className="text-xs font-black uppercase tracking-widest text-primary/60">No Image Asset Available</p>
                   </div>
                 )}
               </AnimatePresence>
@@ -433,10 +486,17 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                 </div>
               </div>
 
-              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                In Stock & Ready
-              </span>
+              {isOutOfStock ? (
+                <span className="text-[10px] font-black uppercase tracking-widest text-red-600 bg-red-50 px-3 py-1 rounded-full border border-red-200/80 flex items-center gap-1.5 shadow-2xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                  Out Of Stock
+                </span>
+              ) : (
+                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  In Stock & Ready
+                </span>
+              )}
             </div>
 
             {/* Description Lead */}
@@ -444,6 +504,19 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
               <p className="text-xs sm:text-sm text-text-muted leading-relaxed font-normal">
                 {product.description}
               </p>
+            )}
+
+            {/* Out of Stock Alert Notification Banner */}
+            {isOutOfStock && (
+              <div className="p-4 bg-red-50/90 border border-red-200 rounded-xl flex items-start gap-3 text-red-900 shadow-xs">
+                <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="text-xs font-bold uppercase tracking-wider text-red-900">Item Currently Unavailable</p>
+                  <p className="text-[11px] text-red-800 leading-relaxed">
+                    This item is currently sold out. Save it to your Wishlist to stay updated or message support for restock notices.
+                  </p>
+                </div>
+              </div>
             )}
 
             {/* Size / Spec Variant Selectors */}
@@ -469,19 +542,21 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
               <div className="flex gap-3">
                 
                 {/* Quantity Pill Counter */}
-                <div className="flex items-center justify-between border border-primary/15 bg-secondary/20 rounded-lg p-1 w-32 shrink-0">
+                <div className={`flex items-center justify-between border border-primary/15 bg-secondary/20 rounded-lg p-1 w-32 shrink-0 ${isOutOfStock ? 'opacity-40 pointer-events-none' : ''}`}>
                   <button
                     type="button"
+                    disabled={isOutOfStock}
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-8 h-8 rounded flex items-center justify-center text-primary hover:bg-white transition-colors"
+                    className="w-8 h-8 rounded flex items-center justify-center text-primary hover:bg-white transition-colors disabled:cursor-not-allowed"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
                   <span className="text-sm font-black text-primary font-mono">{quantity}</span>
                   <button
                     type="button"
+                    disabled={isOutOfStock}
                     onClick={() => setQuantity(quantity + 1)}
-                    className="w-8 h-8 rounded flex items-center justify-center text-primary hover:bg-white transition-colors"
+                    className="w-8 h-8 rounded flex items-center justify-center text-primary hover:bg-white transition-colors disabled:cursor-not-allowed"
                   >
                     <Plus className="w-3.5 h-3.5" />
                   </button>
@@ -490,16 +565,23 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                 {/* Primary Add To Bag Button */}
                 <button
                   type="button"
-                  onClick={handleAddToCart}
-                  disabled={added}
-                  className={`flex-1 py-4 px-6 text-xs font-black uppercase tracking-[0.25em] flex items-center justify-center gap-2 shadow-lg transition-all duration-300 active:scale-95 touch-manipulation cursor-pointer ${
-                    added
+                  onClick={isOutOfStock ? () => showToast('This item is currently out of stock.', 'error') : handleAddToCart}
+                  disabled={isOutOfStock || added}
+                  className={`flex-1 py-4 px-6 text-xs font-black uppercase tracking-[0.25em] flex items-center justify-center gap-2 shadow-lg transition-all duration-300 ${
+                    isOutOfStock
+                      ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed shadow-none'
+                      : added
                       ? 'bg-emerald-600 text-white'
-                      : 'bg-primary hover:bg-accent text-white hover:shadow-accent/25'
+                      : 'bg-primary hover:bg-accent text-white hover:shadow-accent/25 active:scale-95 touch-manipulation cursor-pointer'
                   }`}
                   style={{ borderRadius: 'var(--radius-brand-none, 0px)' }}
                 >
-                  {added ? (
+                  {isOutOfStock ? (
+                    <>
+                      <AlertCircle className="w-4 h-4 text-neutral-500" />
+                      <span>OUT OF STOCK</span>
+                    </>
+                  ) : added ? (
                     <>
                       <Check className="w-4 h-4" />
                       <span>ADDED TO BAG</span>
@@ -514,15 +596,17 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
               </div>
 
               {/* Express 1-Click Buy Now */}
-              <button
-                type="button"
-                onClick={handleInstantBuy}
-                className="w-full py-3.5 px-6 rounded-lg border border-primary/20 bg-secondary/40 hover:bg-primary hover:text-white text-primary text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 touch-manipulation cursor-pointer active:scale-95"
-                style={{ borderRadius: 'var(--radius-brand-none, 0px)' }}
-              >
-                <Zap className="w-3.5 h-3.5 text-accent" />
-                <span>Instant Checkout with KingsPay</span>
-              </button>
+              {!isOutOfStock && (
+                <button
+                  type="button"
+                  onClick={handleInstantBuy}
+                  className="w-full py-3.5 px-6 rounded-lg border border-primary/20 bg-secondary/40 hover:bg-primary hover:text-white text-primary text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 touch-manipulation cursor-pointer active:scale-95"
+                  style={{ borderRadius: 'var(--radius-brand-none, 0px)' }}
+                >
+                  <Zap className="w-3.5 h-3.5 text-accent" />
+                  <span>Instant Checkout with KingsPay</span>
+                </button>
+              )}
             </div>
 
             {/* Three-Pillar Atelier Guarantee Bar */}

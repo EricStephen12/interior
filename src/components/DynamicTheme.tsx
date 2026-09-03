@@ -57,8 +57,8 @@ export default async function DynamicTheme() {
       --font-outfit: "${bodyFont}", sans-serif;
       --radius-brand-none: ${brandRadius};
     }
-    h1, h2, h3, h4, h5, h6, .font-heading, .font-cormorant {
-      font-family: "${headingFont}", serif !important;
+    .font-cormorant {
+      font-family: "${headingFont}", serif;
       letter-spacing: ${headingTracking};
     }
     body, html, .font-body, .font-outfit {
@@ -139,7 +139,7 @@ export default async function DynamicTheme() {
             document.head.appendChild(styleEl);
           }
           styleEl.innerHTML = 
-            (hFont ? 'h1, h2, h3, h4, h5, h6, .font-heading, .font-cormorant { font-family: "' + hFont + '", serif !important; letter-spacing: ' + (tracking || '-0.04em') + ' !important; }' : '') +
+            (hFont ? '.font-cormorant { font-family: "' + hFont + '", serif !important; letter-spacing: ' + (tracking || '-0.04em') + ' !important; }' : '') +
             (bFont ? 'body, html, .font-body, .font-outfit { font-family: "' + bFont + '", sans-serif !important; }' : '');
         }
       });

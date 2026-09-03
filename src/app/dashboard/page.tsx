@@ -2,16 +2,17 @@
 
 import React, { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { useMembership } from '@/lib/membership-context'
+import { useMembership, getActivePassInfo } from '@/lib/membership-context'
 import { useCart } from '@/lib/cart-context'
 import MemberPass from '@/components/MemberPass'
-import { Activity, Clock, Award, ChevronRight, ShoppingBag } from 'lucide-react'
+import { Activity, Clock, Award, ChevronRight, ShoppingBag, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import TopupCredits from '@/components/TopupCredits'
 import { useUser } from '@clerk/nextjs'
 
 export default function DashboardPage() {
     const { state } = useMembership()
+    const activePlan = getActivePassInfo(state)
     const { isLoaded, isSignedIn, user } = useUser()
     const { clearCart } = useCart()
 
@@ -113,21 +114,22 @@ export default function DashboardPage() {
                             {/* Performance Meters */}
                             <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 <StatCard
-                                    label="SUBSCRIPTION STATUS"
-                                    value={`${state.remainingCredits} / ${state.totalCredits}`}
-                                    desc="Active credits remaining"
-                                    icon={Clock}
+                                    label="MEMBER STATUS"
+                                    value={state.remainingCredits > 0 ? 'ACTIVE' : (state.totalCredits > 0 ? 'EXPIRED' : 'INACTIVE')}
+                                    desc={state.remainingCredits > 0 ? 'Cleared for gym entrance' : 'Top-up needed for entry'}
+                                    icon={Award}
+                                    valueColor={state.remainingCredits > 0 ? 'text-emerald-600' : 'text-rose-500'}
                                 />
                                 <StatCard
-                                    label="ACCESS TIER"
-                                    value={state.tier === 'NONE' ? 'BASIC' : state.tier}
-                                    desc={`${state.tier} Member level`}
-                                    icon={Award}
+                                    label="PASS BALANCE"
+                                    value={`${state.remainingCredits} / ${state.totalCredits}`}
+                                    desc="Available check-ins"
+                                    icon={Clock}
                                 />
                                 <StatCard
                                     label="SESSIONS"
                                     value={state.checkInHistory.length.toString()}
-                                    desc="Sessions attended"
+                                    desc="Workouts completed"
                                     icon={Activity}
                                 />
                             </motion.div>
@@ -251,7 +253,7 @@ export default function DashboardPage() {
     )
 }
 
-function StatCard({ label, value, desc, icon: Icon }: { label: string, value: string, desc: string, icon: any }) {
+function StatCard({ label, value, desc, icon: Icon, valueColor }: { label: string, value: string, desc: string, icon: any, valueColor?: string }) {
     return (
         <div className="bg-white p-6 sm:p-10 border border-primary/5 shadow-sm group hover:border-accent/20 transition-all duration-700">
             <div className="flex justify-between items-start mb-8">
@@ -259,7 +261,7 @@ function StatCard({ label, value, desc, icon: Icon }: { label: string, value: st
                 <span className="text-[10px] font-black tracking-widest text-text-muted">{label}</span>
             </div>
             <div className="space-y-2">
-                <p className="text-2xl sm:text-4xl md:text-5xl font-black text-primary tracking-tighter">{value}</p>
+                <p className={`font-black tracking-tighter uppercase leading-tight ${value.length > 12 ? 'text-xl sm:text-2xl md:text-3xl' : 'text-2xl sm:text-4xl md:text-5xl'} ${valueColor || 'text-primary'}`}>{value}</p>
                 <p className="text-[10px] font-black text-text-muted tracking-widest uppercase">{desc}</p>
             </div>
         </div>

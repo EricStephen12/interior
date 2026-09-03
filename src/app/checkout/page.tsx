@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
-import { ShoppingBag, CreditCard, MessageCircle, MapPin, CheckCircle2, Shield, Truck, Building2, Copy, Check, ArrowRight, Clock, AlertCircle } from 'lucide-react';
+import Image from 'next/image';
+import { ShoppingBag, CreditCard, MessageCircle, MapPin, CheckCircle2, Shield, Truck, Building2, Copy, Check, ArrowRight, Clock, AlertCircle, Zap, Package } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import { useMembership } from '@/lib/membership-context';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -43,6 +44,21 @@ function CheckoutContent() {
   const [transferReference, setTransferReference] = useState('');
   const [copiedAccount, setCopiedAccount] = useState(false);
   const [manualOrderSuccess, setManualOrderSuccess] = useState<any>(null);
+
+  const getItemImage = (item: any) => {
+    if (item.variant?.image) return item.variant.image;
+    if (!item.product?.images) return null;
+    if (Array.isArray(item.product.images)) return item.product.images[0];
+    if (typeof item.product.images === 'string') {
+      try {
+        const parsed = JSON.parse(item.product.images);
+        if (Array.isArray(parsed)) return parsed[0];
+      } catch {
+        return item.product.images;
+      }
+    }
+    return null;
+  };
 
   const [paymentConfig, setPaymentConfig] = useState<any>({
     kingspayEnabled: true,
@@ -432,22 +448,22 @@ function CheckoutContent() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div className="space-y-4">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Full Name</label>
+                  <label className="text-[10px] font-black text-neutral-500 uppercase tracking-[0.3em] ml-1">Full Name</label>
                   <input
                     required
                     type="text"
-                    className="w-full px-0 py-4 bg-transparent border-b border-primary/10 focus:outline-none focus:border-accent transition-colors font-medium"
+                    className="w-full px-0 py-4 bg-transparent border-b border-primary/20 text-primary focus:outline-none focus:border-accent transition-colors font-semibold"
                     placeholder="Legal Name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
                 </div>
                 <div className="space-y-4">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Phone Number</label>
+                  <label className="text-[10px] font-black text-neutral-500 uppercase tracking-[0.3em] ml-1">Phone Number</label>
                   <input
                     required
                     type="tel"
-                    className="w-full px-0 py-4 bg-transparent border-b border-primary/10 focus:outline-none focus:border-accent transition-colors font-medium tabular-nums"
+                    className="w-full px-0 py-4 bg-transparent border-b border-primary/20 text-primary focus:outline-none focus:border-accent transition-colors font-semibold tabular-nums"
                     placeholder="+234..."
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -456,11 +472,11 @@ function CheckoutContent() {
               </div>
 
               <div className="space-y-4">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Shipping Address</label>
+                <label className="text-[10px] font-black text-neutral-500 uppercase tracking-[0.3em] ml-1">Shipping Address</label>
                 <textarea
                   required
                   rows={2}
-                  className="w-full px-0 py-4 bg-transparent border-b border-primary/10 focus:outline-none focus:border-accent transition-colors font-medium resize-none leading-relaxed"
+                  className="w-full px-0 py-4 bg-transparent border-b border-primary/20 text-primary focus:outline-none focus:border-accent transition-colors font-semibold resize-none leading-relaxed"
                   placeholder="Street, Suite, City..."
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
@@ -482,7 +498,7 @@ function CheckoutContent() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
                   {deliveryZones.map(zone => {
                     const isSelected = selectedZone?.id === zone.id;
                     return (
@@ -490,43 +506,44 @@ function CheckoutContent() {
                         key={zone.id}
                         type="button"
                         onClick={() => setSelectedZone(zone)}
-                        className={`p-5 text-left rounded transition-all relative flex flex-col justify-between gap-4 border ${
+                        className={`p-4 sm:p-5 text-left rounded-xl transition-all relative flex items-center justify-between gap-4 border ${
                           isSelected
-                            ? 'border-accent bg-accent/5 shadow-md ring-1 ring-accent/30'
-                            : 'border-primary/10 bg-secondary/10 hover:border-primary/30 hover:bg-secondary/20'
+                            ? 'border-primary bg-primary/[0.04] shadow-sm ring-1 ring-primary/20'
+                            : 'border-primary/10 bg-white hover:border-primary/30 hover:bg-neutral-50/60'
                         }`}
                       >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-center gap-2.5">
-                            <div className={`w-8 h-8 rounded flex items-center justify-center transition-colors ${
-                              isSelected ? 'bg-accent text-white' : 'bg-secondary text-primary'
-                            }`}>
-                              <Truck className="w-4 h-4" />
-                            </div>
-                            <div>
-                              <p className="font-black uppercase tracking-wider text-xs text-primary leading-tight">{zone.name}</p>
-                              <p className="text-[10px] text-text-muted mt-0.5">Express Dispatch</p>
-                            </div>
-                          </div>
-
-                          <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all ${
-                            isSelected ? 'border-accent bg-accent text-white' : 'border-primary/30 bg-transparent'
+                        <div className="flex items-center gap-3.5 min-w-0">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                            isSelected ? 'bg-primary text-white' : 'bg-neutral-100 text-neutral-600'
                           }`}>
-                            {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white block" />}
+                            <Truck className="w-5 h-5" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-xs text-primary leading-snug">
+                              {zone.name}
+                            </p>
+                            <p className="text-[11px] text-text-muted mt-0.5 flex items-center gap-1.5 font-medium">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                              Express Dispatch
+                            </p>
                           </div>
                         </div>
 
-                        <div className="pt-3 border-t border-primary/5 flex items-baseline justify-between">
-                          <span className="text-[9px] font-black uppercase tracking-wider text-text-muted">Courier Rate</span>
-                          <span className={`text-base font-black tabular-nums ${isSelected ? 'text-accent' : 'text-primary'}`}>
-                            ₦{zone.price.toLocaleString()}
+                        <div className="flex items-center gap-3 shrink-0">
+                          <span className={`text-sm font-bold tabular-nums ${isSelected ? 'text-primary' : 'text-neutral-600'}`}>
+                            {zone.price === 0 ? 'FREE' : `₦${zone.price.toLocaleString()}`}
                           </span>
+                          <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
+                            isSelected ? 'border-primary bg-primary text-white' : 'border-neutral-300 bg-white'
+                          }`}>
+                            {isSelected && <Check className="w-3 h-3 text-white stroke-[3]" />}
+                          </div>
                         </div>
                       </button>
                     );
                   })}
                   {deliveryZones.length === 0 && (
-                    <div className="col-span-full py-10 bg-secondary/10 border border-dashed border-primary/15 text-center rounded">
+                    <div className="col-span-full py-10 bg-secondary/10 border border-dashed border-primary/15 text-center rounded-xl">
                       <Truck className="w-6 h-6 mx-auto text-text-muted/40 mb-2" />
                       <p className="text-xs font-bold text-text-muted">No delivery zones configured yet</p>
                     </div>
@@ -534,8 +551,8 @@ function CheckoutContent() {
                 </div>
 
                 {checkoutDeliveryNote && (
-                  <p className="text-[10px] text-text-muted/70 italic flex items-center gap-1.5 pt-1">
-                    <Shield className="w-3 h-3 text-accent shrink-0" />
+                  <p className="text-[11px] text-text-muted italic flex items-center gap-1.5 pt-1">
+                    <Shield className="w-3.5 h-3.5 text-accent shrink-0" />
                     {checkoutDeliveryNote}
                   </p>
                 )}
@@ -641,120 +658,193 @@ function CheckoutContent() {
             </div>
           </div>
 
-          <div className="space-y-12">
-            {/* Order Summary */}
-            <div className="bg-primary text-white rounded-2xl p-8 sm:p-12 shadow-[0_50px_100px_rgba(0,0,0,0.3)] lg:sticky lg:top-32 relative overflow-hidden">
-              <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-
-              <h2 className="text-3xl text-luxury mb-12 flex items-center gap-4 relative z-10 font-heading">
-                <ShoppingBag className="w-8 h-8 text-accent" />
-                {checkoutSummaryTitle}
-              </h2>
-
-              <div className="space-y-8 mb-12 max-h-[400px] overflow-auto pr-4 custom-scrollbar relative z-10">
-                {isCreditTopup ? (
-                    <div className="flex justify-between items-start gap-6 pb-6 border-b border-white/5">
-                      <div className="flex-1">
-                        <p className="font-bold text-sm tracking-tight mb-2">SHARERS GYM ACCESS PASS</p>
-                        <p className="text-accent text-[10px] font-black uppercase tracking-widest leading-none opacity-80">
-                          {creditPack?.amount} {creditPack?.unit === 'hours' ? (creditPack?.amount === 1 ? 'HOUR' : 'HOURS') : (creditPack?.amount === 1 ? 'DAY' : 'DAYS')} • {creditPack?.label}
-                        </p>
-                      </div>
-                      <p className="font-light tabular-nums text-lg font-mono">₦{creditPack?.price.toLocaleString()}</p>
-                    </div>
-                ) : state.items.length > 0 ? state.items.map((item, idx) => {
-                  const variant = item.variant as any;
-                  const itemPrice = variant?.promo_price || variant?.promoPrice || variant?.price || 0;
-                  return (
-                    <div key={idx} className="flex justify-between items-start gap-6 pb-6 border-b border-white/5 last:border-0 last:pb-0">
-                      <div className="flex-1">
-                        <p className="font-bold text-sm tracking-tight mb-2 uppercase">{item.product?.name}</p>
-                        <p className="text-accent text-[10px] font-black uppercase tracking-widest leading-none opacity-80">
-                          {item.variant?.size?.name} • Qty: {item.quantity}
-                        </p>
-                      </div>
-                      <p className="font-light tabular-nums text-lg font-mono">₦{(itemPrice * item.quantity).toLocaleString()}</p>
-                    </div>
-                  );
-                }) : (
-                  <p className="text-slate-500 text-sm italic">Your cart is empty.</p>
+          <div className="space-y-6">
+            {/* ── LUXURY ATELIER ORDER SUMMARY CARD ── */}
+            <div className="bg-white rounded-2xl p-6 sm:p-8 border border-primary/10 shadow-xl lg:sticky lg:top-28 space-y-6">
+              
+              {/* Header */}
+              <div className="flex items-center justify-between pb-5 border-b border-primary/10">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/5 text-primary flex items-center justify-center">
+                    <ShoppingBag className="w-5 h-5 text-accent" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-primary font-heading uppercase tracking-tight">
+                      {checkoutSummaryTitle}
+                    </h2>
+                    <p className="text-[11px] text-text-muted">Review your selected items</p>
+                  </div>
+                </div>
+                {!isCreditTopup && state.items.length > 0 && (
+                  <span className="text-[11px] font-bold uppercase tracking-wider bg-neutral-100 text-neutral-700 px-3 py-1 rounded-full border border-neutral-200/60">
+                    {state.items.reduce((acc, item) => acc + item.quantity, 0)} {state.items.reduce((acc, item) => acc + item.quantity, 0) === 1 ? 'item' : 'items'}
+                  </span>
                 )}
               </div>
 
-              <div className="space-y-6 pt-10 border-t border-white/10 relative z-10">
-                <div className="flex justify-between text-slate-400 text-xs font-black uppercase tracking-widest">
-                  <span>Subtotal</span>
-                  <span className="tabular-nums font-light text-white text-lg font-mono">₦{cartTotal.toLocaleString()}</span>
-                </div>
-                {activePromo && (
-                  <div className="flex justify-between text-green-400 text-xs font-black uppercase tracking-widest">
-                    <span>Discount ({activePromo.code})</span>
-                    <span className="tabular-nums font-light text-green-400 text-lg font-mono">-₦{discountAmount.toLocaleString()}</span>
-                  </div>
-                )}
-                {!isCreditTopup && (
-                    <div className="flex justify-between text-slate-400 text-xs font-black uppercase tracking-widest leading-tight">
-                        <span className="max-w-[150px]">Shipping ({selectedZone?.name || '...'})</span>
-                        <span className="tabular-nums font-light text-white text-lg font-mono">₦{selectedZone?.price?.toLocaleString() || 0}</span>
+              {/* Items List with Product Thumbnails */}
+              <div className="space-y-4 max-h-[340px] overflow-y-auto pr-1 custom-scrollbar">
+                {isCreditTopup ? (
+                  <div className="flex items-center justify-between gap-4 p-4 bg-neutral-50 rounded-xl border border-neutral-200/60">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
+                        <Zap className="w-6 h-6 text-accent" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-bold text-xs text-primary truncate">SHARERS GYM ACCESS PASS</p>
+                        <p className="text-[11px] text-accent font-semibold mt-0.5">
+                          {creditPack?.amount} {creditPack?.unit === 'hours' ? (creditPack?.amount === 1 ? 'Hour' : 'Hours') : (creditPack?.amount === 1 ? 'Day' : 'Days')} • {creditPack?.label}
+                        </p>
+                      </div>
                     </div>
+                    <p className="font-bold tabular-nums text-sm text-primary shrink-0">₦{creditPack?.price.toLocaleString()}</p>
+                  </div>
+                ) : state.items.length > 0 ? (
+                  state.items.map((item, idx) => {
+                    const variant = item.variant as any;
+                    const itemPrice = variant?.promo_price || variant?.promoPrice || variant?.price || 0;
+                    const itemImg = getItemImage(item);
+
+                    return (
+                      <div key={idx} className="flex items-center justify-between gap-3.5 pb-4 border-b border-neutral-100 last:border-0 last:pb-0">
+                        <div className="flex items-center gap-3.5 min-w-0">
+                          <div className="w-14 h-14 rounded-xl bg-neutral-100 border border-neutral-200/80 relative overflow-hidden shrink-0 flex items-center justify-center shadow-2xs">
+                            {itemImg ? (
+                              <Image src={itemImg} alt="" fill unoptimized className="object-cover" />
+                            ) : (
+                              <Package className="w-6 h-6 text-neutral-400" />
+                            )}
+                            <span className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-primary/90 backdrop-blur-xs text-white text-[9px] font-bold rounded-md">
+                              x{item.quantity}
+                            </span>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-xs sm:text-sm text-primary leading-snug line-clamp-1">
+                              {item.product?.name}
+                            </p>
+                            {item.variant?.size?.name && (
+                              <p className="text-[11px] text-text-muted mt-0.5 font-medium">
+                                Option: <span className="text-primary font-semibold">{item.variant.size.name}</span>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="text-right shrink-0">
+                          <p className="font-bold text-xs sm:text-sm text-primary tabular-nums font-mono">
+                            ₦{(itemPrice * item.quantity).toLocaleString()}
+                          </p>
+                          {item.quantity > 1 && (
+                            <p className="text-[10px] text-text-muted tabular-nums">
+                              ₦{itemPrice.toLocaleString()} each
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p className="text-text-muted text-xs italic py-6 text-center">Your cart is empty.</p>
                 )}
-                <div className="flex justify-between text-3xl font-light pt-8 border-t border-white/5">
-                  <span className="uppercase tracking-tighter font-heading">Total</span>
-                  <span className="text-accent tabular-nums font-mono font-bold">₦{total.toLocaleString()}</span>
-                </div>
               </div>
 
               {/* Promo Code Input */}
               {!isCreditTopup && !activePromo && (
-                <div className="mt-8 relative z-10 px-2">
+                <div className="pt-2">
                   <div className="flex gap-2">
                     <input 
                       type="text"
                       value={promoCode}
                       onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                       placeholder="PROMO CODE"
-                      className="flex-1 bg-white/5 border border-white/10 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-white outline-none focus:border-accent transition-colors rounded"
+                      className="flex-1 bg-neutral-50 border border-neutral-200 px-3.5 py-2.5 text-xs font-bold uppercase tracking-wider text-primary placeholder:text-neutral-400 outline-none focus:border-primary focus:bg-white transition-all rounded-xl"
                     />
                     <button 
                       type="button"
                       onClick={applyPromoCode}
                       disabled={applyingPromo || !promoCode}
-                      className="bg-accent text-white px-6 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-primary transition-all disabled:opacity-30 rounded"
-                      style={{ borderRadius: 'var(--radius-brand-none, 0px)' }}
+                      className="bg-primary hover:bg-accent text-white px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-30 rounded-xl shadow-sm cursor-pointer"
                     >
-                      {applyingPromo ? '...' : 'APPLY'}
+                      {applyingPromo ? '...' : 'Apply'}
                     </button>
                   </div>
-                  {promoError && <p className="text-red-400 text-[8px] font-black uppercase mt-2 tracking-widest">{promoError}</p>}
+                  {promoError && <p className="text-red-500 text-[10px] font-bold mt-1.5">{promoError}</p>}
                 </div>
               )}
 
+              {/* Breakdown */}
+              <div className="space-y-3 pt-4 border-t border-primary/10 text-xs">
+                <div className="flex justify-between text-text-muted">
+                  <span className="font-medium">Subtotal</span>
+                  <span className="font-bold text-primary tabular-nums font-mono text-sm">₦{cartTotal.toLocaleString()}</span>
+                </div>
+
+                {activePromo && (
+                  <div className="flex justify-between text-emerald-600 font-medium">
+                    <span>Discount ({activePromo.code})</span>
+                    <span className="font-bold tabular-nums font-mono text-sm">-₦{discountAmount.toLocaleString()}</span>
+                  </div>
+                )}
+
+                {!isCreditTopup && (
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-text-muted">
+                      <span className="font-medium">Courier Shipping</span>
+                      <span className="font-bold text-primary tabular-nums font-mono text-sm">
+                        {selectedZone?.price === 0 ? (
+                          <span className="text-emerald-600 font-bold uppercase">FREE</span>
+                        ) : (
+                          `₦${selectedZone?.price?.toLocaleString() || 0}`
+                        )}
+                      </span>
+                    </div>
+                    {selectedZone?.name && (
+                      <p className="text-[10px] text-text-muted/80 truncate">
+                        📍 {selectedZone.name}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Total Highlight Row */}
+                <div className="flex justify-between items-baseline pt-4 border-t border-primary/10">
+                  <div>
+                    <span className="text-xs font-black uppercase tracking-wider text-primary block font-heading">Total Due</span>
+                    <span className="text-[10px] text-text-muted">Including all taxes & duties</span>
+                  </div>
+                  <span className="text-2xl sm:text-3xl font-black font-heading text-primary tabular-nums">
+                    ₦{total.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+
+              {/* Pay Button */}
               <button
                 type="submit"
                 disabled={isProcessing || (!isCreditTopup && state.items.length === 0)}
-                className="w-full mt-12 group relative h-20 bg-white text-primary overflow-hidden transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
-                style={{ borderRadius: 'var(--radius-brand-none, 0px)' }}
+                className="w-full h-14 sm:h-16 bg-primary hover:bg-accent text-white font-bold uppercase tracking-[0.2em] text-xs sm:text-sm rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl active:scale-[0.99] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-3 cursor-pointer"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                
-                <div className="relative z-10 flex items-center justify-center gap-4">
-                  {isProcessing && (
-                    <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                  )}
-                  <span className="text-[11px] font-black uppercase tracking-[0.4em]">
-                    {isProcessing 
-                      ? 'RECORDING TRANSACTION...' 
-                      : paymentMethod === 'manual_transfer'
-                      ? `PLACE TRANSFER ORDER • ₦${total.toLocaleString()}`
-                      : `${checkoutPayBtn} • ₦${total.toLocaleString()}`}
-                  </span>
-                </div>
+                {isProcessing && (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                )}
+                <span>
+                  {isProcessing 
+                    ? 'RECORDING TRANSACTION...' 
+                    : paymentMethod === 'manual_transfer'
+                    ? `PLACE TRANSFER ORDER • ₦${total.toLocaleString()}`
+                    : `${checkoutPayBtn} • ₦${total.toLocaleString()}`}
+                </span>
               </button>
 
-              <div className="text-center mt-8 relative z-10">
-                <p className="text-[10px] text-accent font-black uppercase tracking-[0.5em] opacity-40">
-                  SHARERS GYM • AUTHENTICATED
-                </p>
+              {/* Trust Badges */}
+              <div className="pt-1 flex items-center justify-center gap-4 text-[10px] font-semibold text-text-muted uppercase tracking-wider">
+                <span className="flex items-center gap-1">
+                  <Shield className="w-3.5 h-3.5 text-emerald-600" /> SSL Encrypted
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1">
+                  <Truck className="w-3.5 h-3.5 text-primary" /> Express Dispatch
+                </span>
               </div>
             </div>
           </div>
