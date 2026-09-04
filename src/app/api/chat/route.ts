@@ -66,25 +66,41 @@ RULES:
 3. If a customer is frustrated or the query is complex, tell them you are opening a support ticket for the admin and direct them to /contact.
 4. Never make up data.`
 
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          ...(history || []).slice(-8),
-          { role: 'user', content: message }
-        ],
-        temperature: 0.5,
-        max_tokens: 200,
-      })
-    })
+    const candidateModels = ['groq/compound-mini', 'openai/gpt-oss-20b', 'openai/gpt-oss-120b']
+    let reply = ''
 
-    if (!res.ok) return NextResponse.json({ reply: "I'm having trouble right now. Please try again or reach us at sharersmall@gmail.com." })
+    for (const model of candidateModels) {
+      try {
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              ...(history || []).slice(-8),
+              { role: 'user', content: message }
+            ],
+            temperature: 0.5,
+            max_tokens: 200,
+          })
+        })
 
-    const data = await res.json()
-    return NextResponse.json({ reply: data.choices?.[0]?.message?.content?.trim() || "Sorry, try again." })
+        if (res.ok) {
+          const data = await res.json()
+          reply = data.choices?.[0]?.message?.content?.trim() || ''
+          if (reply) break
+        }
+      } catch (err) {
+        console.warn(`[Chat AI] Model ${model} failed, trying next:`, err)
+      }
+    }
+
+    if (!reply) {
+      return NextResponse.json({ reply: "I'm having trouble right now. Please try again or reach us at sharersmall@gmail.com." })
+    }
+
+    return NextResponse.json({ reply })
   } catch (error) {
     console.error('Chat error:', error);
     return NextResponse.json({ reply: "Something went wrong. Contact us at sharersmall@gmail.com." })

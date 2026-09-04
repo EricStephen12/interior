@@ -67,7 +67,7 @@ model Category {
 
 model Size {
   id       String    @id @default(uuid())
-  label    String    @unique // e.g., King, Double
+  label    String    @unique // e.g., S, M, L, XL, Standard
   products Product[]
 }
 
@@ -79,15 +79,15 @@ model Product {
   brand        Brand    @relation(fields: [brandId], references: [id])
   sizeId       String
   size         Size     @relation(fields: [sizeId], references: [id])
-  type        String?  // Mattress, Pillow, etc.
+  type        String?  // Apparel, Gear, Membership Pass, Accessories
   description String?  @db.Text
-  materials   String?
-  firmness    String?
-  finishing   String?
+  materials   String?  // Fabric / material specs
+  firmness    String?  // Optional specification attribute
+  finishing   String?  // Color / finish specification
   price       Float
   promoPrice  Float?
   isNegotiable Boolean  @default(false)
-  warranty    String?
+  warranty    String?  // Guarantee / return policy
   images      Json?
   isActive    Boolean  @default(true)
   isBestseller Boolean @default(false)

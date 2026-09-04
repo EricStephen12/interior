@@ -245,27 +245,6 @@ export default function Header() {
         </motion.div>
       </div>
 
-      {/* Floating Quick Mobile Cart Bar (when cart has items on mobile) */}
-      {cartState.items.length > 0 && (
-        <motion.button
-          initial={{ scale: 0, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0, opacity: 0, y: 20 }}
-          whileTap={{ scale: 0.92 }}
-          type="button"
-          onClick={toggleCart}
-          aria-label="View Shopping Cart"
-          className="sm:hidden fixed bottom-6 left-6 z-40 bg-primary text-white pl-4 pr-5 py-3.5 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.35)] flex items-center gap-3 border border-white/20 touch-manipulation cursor-pointer hover:bg-accent transition-colors"
-        >
-          <div className="relative">
-            <ShoppingCartIcon className="w-5 h-5 text-white" />
-            <span className="absolute -top-1.5 -right-2 bg-accent text-white text-[9px] font-black rounded-full min-w-[17px] h-[17px] px-1 flex items-center justify-center ring-2 ring-primary">
-              {cartState.items.reduce((t, i) => t + i.quantity, 0)}
-            </span>
-          </div>
-          <span className="text-[10px] font-black uppercase tracking-widest text-white">Cart</span>
-        </motion.button>
-      )}
 
       {/* Cart Drawer */}
       <CartDrawer isOpen={cartState.isOpen} onClose={toggleCart} />

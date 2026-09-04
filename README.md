@@ -1,216 +1,178 @@
-# 🏗 FurniLux - Luxury Furniture Ecommerce Website
+# 🏋️ SHARERS GYM — Web Platform & Membership System
 
-A modern, responsive furniture ecommerce website built with Next.js, Supabase, and Framer Motion. Features a luxury design system with warm colors, elegant typography, and smooth animations.
+A modern, production-grade e-commerce and gym membership management platform built with **Next.js 16**, **Prisma ORM**, **Neon PostgreSQL**, **Clerk Authentication**, **KingsPay Payment Gateway**, and **Resend**.
 
-## ✨ Features
+---
 
-### 🎨 Design & UI
-- **Luxury Design System**: Warm browns, beige/cream, muted gold accents
-- **Typography**: Playfair Display (serif) for headings, Inter (sans-serif) for body
-- **Responsive Layout**: Mobile-first design with clean, minimalist spacing
-- **Custom Scrollbar**: Branded scrollbar styling
+## ⚡ Key Features
 
-### 🚀 Functionality
-- **Product Catalog**: Grid layout with filtering and sorting
-- **Product Details**: Image gallery, specifications, and interactive features
-- **Shopping Cart**: Slide-out cart drawer with item management
-- **Wishlist**: Heart icon toggle for favorite items
-- **Contact Form**: Full contact page with form validation
-- **Story Section**: Company story with image layouts
+### 🛍️ Storefront & E-Commerce
+* **Product Catalog:** Premium fitness apparel, gym accessories, and credit packs with instant filtering.
+* **Shopping Cart & Checkout:** Persistent cart, promo code engine, and zone-based delivery fee calculation.
+* **Dual Payment Processing:**
+  * **KingsPay Gateway:** Automated online card & mobile payment verification.
+  * **Manual Bank Transfer:** Automatic transfer instructions, unique payment reference codes, and admin 1-click approval.
 
-### 🎭 Animations (Framer Motion)
-- **Hero Section**: Fade-in + slide-up text animations
-- **Story Images**: Scroll-triggered fade-in effects
-- **Product Grid**: Staggered card animations
-- **Hover Effects**: Image zoom & button color changes
-- **Cart Drawer**: Smooth slide-in from right
-- **Scroll Indicators**: Animated scroll prompts
+### 🪪 Digital Membership & QR Access System
+* **Dynamic Member Pass:** Automatic plan detection (VIP Membership, Day Passes, Hourly Sessions).
+* **ID Card Download:** In-browser high-resolution Canvas renderer generates branded member ID cards (`.png`) for phone storage or printing.
+* **Clean QR Export:** Dedicated QR image download for quick access.
+* **Pass Email Delivery:** Members can email their scannable access QR code to their inbox with one click.
+* **Staff QR Scanner (`/admin/scanner`):** In-browser camera scanner using Web Audio chime feedback for front-desk member check-in and session deduction.
 
-## 🛠 Tech Stack
+### ✉️ Transactional Notifications & Resend Automations
+* **Customer Receipts:** Instant dark-mode order confirmation and delivery summaries.
+* **Bank Transfer Instructions:** Clear bank details, narration code, and amount.
+* **Admin Alerts:** Instant new order notifications delivered directly to `sharersmall@gmail.com`.
+* **Resend Automations:** Native event triggers (`order.paid`, `order.created`, `member.pass_purchased`, `order.delivered`) ready for onboarding drips and review sequences.
 
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS
-- **Database**: Supabase (PostgreSQL)
-- **Animations**: Framer Motion
-- **Icons**: Heroicons
-- **UI Components**: Headless UI
-- **TypeScript**: Full type safety
+### 🛠️ Admin Management Suite (`/admin`)
+* **Orders Management (`/admin/orders`):** Filter by status, verify bank transfers, dispatch packages, and auto-credit passes.
+* **Members & Credits (`/admin/users`):** View member profiles, adjust credit balances, and inspect check-in histories.
+* **Product Catalog (`/admin/products`):** Manage inventory, pricing, sizing, and images.
+* **Visual CMS & Theme Customizer (`/admin/theme`):** Live preview and editor for banners, buttons, copy, and brand styling stored in PostgreSQL.
+
+---
+
+## 🏗️ Tech Stack
+
+* **Framework:** [Next.js 16](https://nextjs.org/) (App Router, Server Components & Route Handlers)
+* **Language:** TypeScript
+* **Styling:** Tailwind CSS (v4) with custom theme tokens
+* **Database & ORM:** PostgreSQL ([Neon Serverless](https://neon.tech/)) with [Prisma ORM](https://www.prisma.io/)
+* **Authentication:** [Clerk](https://clerk.com/) (Clerk Middleware + PostgreSQL database role linking)
+* **Payments:** KingsPay API (Goods & Services) + Manual Bank Transfer Engine
+* **Transactional Email:** [Resend](https://resend.com/) + Resend Automations
+* **Media & Storage:** [Cloudinary](https://cloudinary.com/)
+
+---
 
 ## 📁 Project Structure
 
 ```
-src/
-├── app/
-│   ├── layout.tsx          # Root layout with fonts
-│   ├── page.tsx            # Homepage
-│   ├── products/
-│   │   ├── page.tsx        # Products listing
-│   │   └── [id]/
-│   │       └── page.tsx    # Product detail
-│   ├── our-story/
-│   │   └── page.tsx        # Company story
-│   ├── contact/
-│   │   └── page.tsx        # Contact page
-│   └── globals.css         # Global styles
-├── components/
-│   ├── Header.tsx          # Navigation header
-│   ├── Footer.tsx          # Site footer
-│   ├── Layout.tsx          # Main layout wrapper
-│   ├── HeroSection.tsx     # Hero banner
-│   ├── StorySection.tsx    # Company story
-│   ├── ShopSection.tsx     # Product grid
-│   └── CartDrawer.tsx      # Shopping cart
-└── lib/
-    └── supabase.ts         # Database client & types
+├── prisma/
+│   └── schema.prisma           # Relational schema (User, Order, Product, StoreSetting, etc.)
+├── src/
+│   ├── app/
+│   │   ├── admin/              # Admin dashboard (orders, users, products, theme, scanner)
+│   │   ├── api/
+│   │   │   ├── admin/          # Protected admin API endpoints
+│   │   │   ├── checkout/       # KingsPay initialize & callback handlers
+│   │   │   ├── membership/     # Pass delivery & credit sync
+│   │   │   └── products/       # Catalog API
+│   │   ├── checkout/           # Checkout page (delivery zones & payments)
+│   │   ├── dashboard/          # Customer dashboard & Member Pass view
+│   │   ├── layout.tsx          # Root layout & global providers
+│   │   └── page.tsx            # Storefront homepage
+│   ├── components/
+│   │   ├── MemberPass.tsx      # Pass component with Canvas ID download & QR export
+│   │   ├── Header.tsx          # Store header with profile menu & cart trigger
+│   │   ├── CartDrawer.tsx      # Slide-out shopping cart
+│   │   └── Layout.tsx          # Global shell wrapper
+│   └── lib/
+│       ├── prisma.ts           # Centralized Prisma client instance
+│       ├── services/
+│       │   ├── email.ts        # Resend email templates & automation event triggers
+│       │   └── user.ts         # Clerk-to-database user synchronization
+│       ├── cart-context.tsx    # Cart state & localStorage persistence
+│       └── membership-context.tsx # Member pass calculation & credit balance
 ```
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-- Supabase account
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd furni
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up Supabase**
-   - Create a new Supabase project
-   - Run the SQL schema from `supabase-schema.sql`
-   - Copy your project URL and anon key
-
-4. **Configure environment variables**
-   ```bash
-   cp .env.local.example .env.local
-   ```
-   
-   Update `.env.local` with your Supabase credentials:
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
-
-5. **Run the development server**
-```bash
-npm run dev
-   ```
-
-6. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-## 🗄 Database Schema
-
-The application uses the following Supabase tables:
-
-### Products Table
-- `id` (UUID, Primary Key)
-- `name` (VARCHAR)
-- `price` (DECIMAL)
-- `description` (TEXT)
-- `category` (VARCHAR)
-- `images` (TEXT[])
-- `specifications` (JSONB)
-- `in_stock` (BOOLEAN)
-- `created_at` (TIMESTAMP)
-
-### Cart Items Table
-- `id` (UUID, Primary Key)
-- `user_id` (UUID, Foreign Key)
-- `product_id` (UUID, Foreign Key)
-- `quantity` (INTEGER)
-- `created_at` (TIMESTAMP)
-
-### Wishlist Table
-- `id` (UUID, Primary Key)
-- `user_id` (UUID, Foreign Key)
-- `product_id` (UUID, Foreign Key)
-- `created_at` (TIMESTAMP)
-
-## 🎨 Design System
-
-### Colors
-- **Primary**: Amber-600 (#D97706)
-- **Secondary**: Amber-100 (#FEF3C7)
-- **Background**: Amber-50 (#FFFBEB)
-- **Text**: Amber-900 (#78350F)
-- **Accent**: Amber-300 (#FCD34D)
-
-### Typography
-- **Headings**: Playfair Display (serif)
-- **Body**: Inter (sans-serif)
-- **Sizes**: Responsive scale from 14px to 72px
-
-### Components
-- **Buttons**: Primary (amber-600) and Secondary (amber-100)
-- **Cards**: White background with subtle shadows
-- **Forms**: Rounded inputs with amber focus states
-
-## 🔧 Customization
-
-### Adding New Products
-1. Update the mock data in `ShopSection.tsx`
-2. Add real product data to Supabase
-3. Implement data fetching with Supabase client
-
-### Styling Changes
-- Modify `globals.css` for global styles
-- Update Tailwind classes in components
-- Customize color palette in `tailwind.config.js`
-
-### Animation Tweaks
-- Adjust Framer Motion variants in components
-- Modify transition durations and delays
-- Add new animation triggers
-
-## 📱 Responsive Design
-
-The website is fully responsive with breakpoints:
-- **Mobile**: < 768px
-- **Tablet**: 768px - 1024px  
-- **Desktop**: > 1024px
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-1. Connect your GitHub repository to Vercel
-2. Set environment variables in Vercel dashboard
-3. Deploy automatically on push to main branch
-
-### Other Platforms
-- **Netlify**: Use `npm run build` and deploy `out` folder
-- **Railway**: Connect GitHub repo and set environment variables
-- **DigitalOcean**: Use App Platform with Node.js buildpack
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Next.js** team for the amazing framework
-- **Supabase** for the backend infrastructure
-- **Framer Motion** for smooth animations
-- **Tailwind CSS** for utility-first styling
-- **Heroicons** for beautiful icons
 
 ---
 
-Built with ❤️ for luxury furniture lovers everywhere.
+## 🚀 Getting Started
+
+### 1. Prerequisites
+* Node.js 18+ or 20+
+* PostgreSQL database (e.g. Neon serverless)
+* Clerk account
+* Resend account
+* KingsPay account
+
+### 2. Environment Variables Setup
+Create a `.env` file in the root directory:
+
+```bash
+# App Base URL
+APP_URL="https://sharersgym.com"
+
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
+CLERK_SECRET_KEY="sk_test_..."
+NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
+NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
+
+# Neon PostgreSQL Database
+DATABASE_URL="postgresql://user:password@endpoint-pooler.neon.tech/neondb?sslmode=require&pgbouncer=true"
+DIRECT_URL="postgresql://user:password@endpoint.neon.tech/neondb?sslmode=require"
+
+# Resend Email Service
+RESEND_API_KEY="re_..."
+EMAIL_FROM="SHARERS GYM <support@sharersgym.com>"
+CONTACT_EMAIL="sharersmall@gmail.com"
+
+# KingsPay Payment Gateway
+KINGSPAY_CLIENT_ID="..."
+KINGSPAY_SECRET_KEY="..."
+KINGSPAY_ENVIRONMENT="production"
+
+# Cloudinary Media
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="..."
+CLOUDINARY_API_KEY="..."
+CLOUDINARY_API_SECRET="..."
+```
+
+### 3. Install & Generate Database
+```bash
+# Install dependencies
+npm install
+
+# Generate Prisma client
+npx prisma generate
+
+# Synchronize database schema (if setting up a fresh database)
+npx prisma db push
+```
+
+### 4. Run Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## 🔑 Architecture Details for New Developers
+
+### 1. How User Roles Work
+* **Authentication:** Handled entirely by Clerk (`useUser`, `auth()`).
+* **Role & Business Data:** Stored in the PostgreSQL `User` table (`role: 'ADMIN' | 'CUSTOMER'`).
+* **Admin Verification:** The header and `/admin` routes verify whether `User.role === 'ADMIN'` directly against PostgreSQL.
+* **Granting Admin:**
+  ```sql
+  UPDATE "User" SET role = 'ADMIN' WHERE email = 'admin-email@domain.com';
+  ```
+
+### 2. Order Processing Flow
+1. **Initialization:** Customer submits `/api/checkout/initialize`.
+2. **KingsPay Payment:** User is redirected to KingsPay. Upon success, KingsPay returns to `/api/checkout/callback`.
+3. **Fulfillment:** `fulfillPayment()` updates order status to `PAID`, increments member credits/tier in the database, sends the customer confirmation email, and alerts `sharersmall@gmail.com`.
+4. **Manual Transfer:** Creates an order marked `PENDING_VERIFICATION` and emails bank details to the user. When verified in `/admin/orders`, it auto-credits the account.
+
+### 3. Dynamic CMS Customizer
+* Text, colors, and button labels can be updated in `/admin/theme`.
+* All values are saved to the `StoreSetting` database table and accessed on the frontend via `useCustomization()`.
+
+---
+
+## 🚢 Production Deployment Checklist
+
+1. **Clerk Keys:** Switch from development (`pk_test_...`) to production keys (`pk_live_...`).
+2. **Domain Verification:** Ensure `sharersgym.com` has DNS records (SPF, DKIM) configured in Resend.
+3. **KingsPay Webhook:** Set KingsPay callback URL to `https://sharersgym.com/api/checkout/callback`.
+4. **Database Connection:** Neon pooled connection string is configured in `DATABASE_URL`.
+
+---
+
+## 📄 License
+Private & Proprietary — Sharers Gym. All rights reserved.

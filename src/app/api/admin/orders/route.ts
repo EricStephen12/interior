@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { auth } from '@clerk/nextjs/server'
+import { emailService } from '@/lib/services/email'
 
 export async function GET() {
   try {
@@ -77,6 +78,56 @@ export async function PATCH(req: Request) {
         })
         console.log(`Auto-credited ${addCredits} passes to ${email} upon bank transfer verification.`)
       }
+
+      // Send Order Confirmation email to customer now that bank payment is confirmed
+      let parsedItems: any[] = []
+      if (Array.isArray(existingOrder.items)) {
+        parsedItems = existingOrder.items
+      } else if (typeof existingOrder.items === 'string') {
+        try {
+          const parsed = JSON.parse(existingOrder.items)
+          parsedItems = Array.isArray(parsed) ? parsed : [parsed]
+        } catch {
+          parsedItems = [{ name: 'Order Items', quantity: 1, price: existingOrder.totalAmount }]
+        }
+      }
+
+      emailService.sendOrderConfirmationEmail({
+        orderId: existingOrder.id,
+        userEmail: existingOrder.userEmail,
+        userName: shipping?.name || 'Valued Member',
+        items: parsedItems,
+        totalAmount: existingOrder.totalAmount,
+        shippingAddress: shipping?.address,
+        paymentMethod: 'Bank Transfer (Verified)',
+      }).catch((err) => console.error('[Email Error] Order verification email:', err))
+
+      emailService.triggerResendEvent({
+        name: 'order.paid',
+        email: existingOrder.userEmail,
+        data: {
+          orderId: existingOrder.id,
+          totalAmount: existingOrder.totalAmount,
+          verifiedByAdmin: true,
+        },
+      }).catch(() => {})
+    } else if (['SHIPPED', 'DELIVERED', 'CANCELLED'].includes(status)) {
+      // Send Order Status Update Email
+      emailService.sendOrderStatusUpdateEmail({
+        orderId: existingOrder.id,
+        userEmail: existingOrder.userEmail,
+        userName: (existingOrder.shippingDetails as any)?.name || 'Valued Member',
+        newStatus: status,
+      }).catch((err) => console.error('[Email Error] Status update email:', err))
+
+      emailService.triggerResendEvent({
+        name: `order.${status.toLowerCase()}`,
+        email: existingOrder.userEmail,
+        data: {
+          orderId: existingOrder.id,
+          newStatus: status,
+        },
+      }).catch(() => {})
     }
 
     return NextResponse.json({ success: true, order: updatedOrder })

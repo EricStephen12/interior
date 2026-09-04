@@ -102,8 +102,14 @@ export async function POST(req: Request) {
       const callerUser = await prisma.user.findUnique({ where: { clerkId: userId } })
       if (callerUser?.role !== 'ADMIN') return NextResponse.json({ error: 'Unauthorized Admin' }, { status: 403 })
       
-      user = await prisma.user.findUnique({
-        where: { memberId },
+      user = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { memberId },
+            { id: memberId },
+            { email: { equals: memberId, mode: 'insensitive' as const } }
+          ]
+        },
         include: { checkIns: { orderBy: { date: 'desc' }, take: 1 } }
       })
     } else {

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { auth } from '@clerk/nextjs/server'
+import { emailService } from '@/lib/services/email'
 
 // Explicitly define the supported payment types
 const SUPPORTED_PAYMENT_METHODS = ['kingspay', 'espees', 'manual_transfer'] as const
@@ -100,6 +101,43 @@ export async function POST(req: Request) {
           }
         } as any
       })
+
+      // Dispatch Customer Instructions & Admin Alert via Resend
+      const bankDetails = {
+        bankName: dbSettings['payment_manual_bank_name'] || 'Zenith Bank',
+        accountName: dbSettings['payment_manual_account_name'] || 'SHARERS GYM ATELIER LTD',
+        accountNumber: dbSettings['payment_manual_account_number'] || '1223456789',
+      }
+
+      emailService.sendBankTransferInstructionsEmail({
+        orderId: order.id,
+        userEmail: email,
+        userName: name || 'Valued Member',
+        totalAmount,
+        bankDetails,
+        transferReference: transferReference || order.id.slice(-8).toUpperCase(),
+      }).catch((err) => console.error('[Email Error] Bank transfer instructions:', err))
+
+      emailService.sendAdminNewOrderAlert({
+        orderId: order.id,
+        userEmail: email,
+        userName: name,
+        totalAmount,
+        paymentType: 'MANUAL_BANK_TRANSFER',
+        items,
+        shippingDetails: { phone, address: shippingAddress },
+        status: 'PENDING_VERIFICATION',
+      }).catch((err) => console.error('[Email Error] Admin alert:', err))
+
+      emailService.triggerResendEvent({
+        name: 'order.created',
+        email,
+        data: {
+          orderId: order.id,
+          totalAmount,
+          paymentMethod: 'MANUAL_BANK_TRANSFER',
+        },
+      }).catch(() => {})
 
       return NextResponse.json({
         success: true,

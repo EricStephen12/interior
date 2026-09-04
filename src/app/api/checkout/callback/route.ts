@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { emailService } from '@/lib/services/email'
 
 export async function GET(req: Request) {
   const reqUrl = new URL(req.url)
@@ -166,6 +167,67 @@ async function fulfillPayment(orderId: string, metadata: any, userEmail: string)
       where: { id: dbOrderId },
       data: { status: finalStatus }
     })
+
+    // Parse order items for notification
+    let parsedItems: any[] = []
+    if (Array.isArray(order.items)) {
+      parsedItems = order.items
+    } else if (typeof order.items === 'string') {
+      try {
+        const parsed = JSON.parse(order.items)
+        parsedItems = Array.isArray(parsed) ? parsed : [parsed]
+      } catch {
+        parsedItems = [{ name: 'Gym Apparel / Access Pass', quantity: 1, price: order.totalAmount }]
+      }
+    }
+
+    const shipping = order.shippingDetails as any
+
+    // 1. Send Order Confirmation Email to Customer via Resend
+    emailService.sendOrderConfirmationEmail({
+      orderId: dbOrderId,
+      userEmail,
+      userName: name,
+      items: parsedItems,
+      totalAmount: order.totalAmount,
+      shippingAddress: shipping?.address,
+      paymentMethod: 'KingsPay Online',
+    }).catch((err) => console.error('[Email Error] Order confirmation:', err))
+
+    // 2. Alert Admin
+    emailService.sendAdminNewOrderAlert({
+      orderId: dbOrderId,
+      userEmail,
+      userName: name,
+      totalAmount: order.totalAmount,
+      paymentType: 'KINGSPAY',
+      items: parsedItems,
+      shippingDetails: shipping,
+      status: 'PAID',
+    }).catch((err) => console.error('[Email Error] Admin alert:', err))
+
+    // 3. Trigger Resend Automation Events
+    emailService.triggerResendEvent({
+      name: 'order.paid',
+      email: userEmail,
+      data: {
+        orderId: dbOrderId,
+        totalAmount: order.totalAmount,
+        paymentMethod: 'KINGSPAY',
+      },
+    }).catch(() => {})
+
+    if (hasMembership || creditAmount > 0) {
+      emailService.triggerResendEvent({
+        name: 'member.pass_purchased',
+        email: userEmail,
+        data: {
+          orderId: dbOrderId,
+          credits: creditAmount || 30,
+          tier: 'BLACK',
+        },
+      }).catch(() => {})
+    }
   }).catch((err) => {
     console.error('Fulfillment transaction failed:', err)
   })
