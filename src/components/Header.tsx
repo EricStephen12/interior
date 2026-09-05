@@ -91,7 +91,7 @@ export default function Header() {
                     className="flex items-center gap-3 p-2 hover:bg-secondary transition-colors"
                   >
                     <div className="w-8 h-8 bg-primary flex items-center justify-center text-[10px] font-black text-white">
-                      {user?.firstName?.[0] || user?.emailAddresses[0].emailAddress[0].toUpperCase()}
+                      {user?.firstName?.[0] || user?.primaryEmailAddress?.emailAddress?.[0]?.toUpperCase() || user?.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() || 'M'}
                     </div>
                     <ChevronDown className={`w-3 h-3 text-primary transition-transform duration-500 ${isProfileOpen ? 'rotate-180' : ''}`} />
                   </button>

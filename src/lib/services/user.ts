@@ -3,7 +3,9 @@ import prisma from '@/lib/prisma'
 export async function syncUserWithClerk(clerkUser: any) {
   if (!clerkUser) return null
 
-  const email = clerkUser.emailAddresses[0].emailAddress
+  const email = clerkUser?.emailAddresses?.[0]?.emailAddress || clerkUser?.primaryEmailAddress?.emailAddress || ''
+  if (!email) return null
+
   const userCount = await prisma.user.count()
   const role = userCount === 0 ? 'ADMIN' : 'CUSTOMER'
 
