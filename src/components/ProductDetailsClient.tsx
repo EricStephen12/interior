@@ -372,19 +372,14 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                 </>
               )}
 
-              {/* Shimmer Pulse */}
-              {!imageLoaded && activeImage && (
-                <div className="absolute inset-0 bg-secondary/80 animate-pulse flex items-center justify-center z-10" />
-              )}
-              
               <AnimatePresence mode="wait">
                 {activeImage ? (
                   <motion.div
                     key={activeIndex}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.25 }}
+                    transition={{ duration: 0.2 }}
                     className="w-full h-full relative"
                   >
                     <Image
@@ -392,10 +387,9 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                       alt={product.name || 'Product Image'}
                       fill
                       unoptimized
-                      className={`object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                      className="object-cover"
                       sizes="(max-width: 1024px) 100vw, 58vw"
                       priority
-                      onLoad={() => setImageLoaded(true)}
                     />
                   </motion.div>
                 ) : (

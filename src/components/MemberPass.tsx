@@ -271,7 +271,7 @@ export default function MemberPass() {
             }
 
             setEmailSent(true)
-            showToast('Pass Emailed Successfully', 'success', `Delivered to your email via Resend`)
+            showToast('Pass Emailed Successfully', 'success', 'Check your inbox for your QR access pass')
             setTimeout(() => setEmailSent(false), 5000)
         } catch (err: any) {
             console.error('Email pass error:', err)
@@ -461,7 +461,7 @@ export default function MemberPass() {
                     {isEmailing ? (
                         <>
                             <Loader2 className="w-3.5 h-3.5 animate-spin text-accent" />
-                            <span>Sending via Resend...</span>
+                            <span>Sending to Email...</span>
                         </>
                     ) : emailSent ? (
                         <>
