@@ -417,4 +417,62 @@
   animation: border-glow-hsl 8s infinite ease-in-out;
 }
 
+/* ── Clerk Seamless Single-Card Integration ────────────────────────────── */
+.auth-card .cl-rootBox,
+.auth-card .cl-cardBox,
+.auth-card .cl-card {
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.auth-card .cl-headerTitle,
+.auth-card .cl-headerSubtitle {
+  display: none !important;
+}
+
+.auth-card .cl-socialButtonsBlockButton {
+  border-radius: 9999px !important;
+  border: 1px solid #e5e7eb !important;
+  height: 44px !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.auth-card .cl-socialButtonsBlockButton:hover {
+  background-color: #f9fafb !important;
+  border-color: #d1d5db !important;
+}
+
+.auth-card .cl-formButtonPrimary {
+  border-radius: 9999px !important;
+  background-color: #2D3139 !important;
+  height: 44px !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+  transition: all 0.2s ease !important;
+}
+
+.auth-card .cl-formButtonPrimary:hover {
+  background-color: #0a0a0a !important;
+}
+
+.auth-card .cl-formFieldInput {
+  border-radius: 12px !important;
+  border: 1px solid #e5e7eb !important;
+  height: 44px !important;
+}
+
+.auth-card .cl-footer {
+  background: transparent !important;
+  border-top: 1px solid #f3f4f6 !important;
+  margin-top: 20px !important;
+  padding-top: 14px !important;
+}
+
 

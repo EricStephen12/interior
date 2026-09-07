@@ -41,9 +41,9 @@ const nextConfig: NextConfig = {
               "worker-src 'self' blob:",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com data:",
-              "img-src 'self' data: blob: https://images.unsplash.com https://res.cloudinary.com https://images.cloudinary.com https://*.cloudinary.com https://img.clerk.com https://www.transparenttextures.com https://*.transparenttextures.com",
-              "connect-src 'self' https://api.kingspay-gs.com https://*.kingspay-gs.com https://api.groq.com https://api.resend.com https://clerk.sharersgym.com https://*.clerk.accounts.dev https://*.neon.tech wss://*.pusher.com",
-              "frame-src 'self' https://kingspay-gs.com https://*.kingspay-gs.com https://clerk.sharersgym.com https://*.clerk.accounts.dev",
+              "img-src 'self' data: blob: https://images.unsplash.com https://res.cloudinary.com https://images.cloudinary.com https://*.cloudinary.com https://img.clerk.com https://www.transparenttextures.com https://*.transparenttextures.com https://*.kingsch.at https://*.kingschat.online",
+              "connect-src 'self' https://api.kingspay-gs.com https://*.kingspay-gs.com https://api.groq.com https://api.resend.com https://clerk.sharersgym.com https://*.clerk.accounts.dev https://*.neon.tech wss://*.pusher.com https://*.kingsch.at https://connect.kingsch.at https://accounts.kingsch.at https://*.kingschat.online",
+              "frame-src 'self' https://kingspay-gs.com https://*.kingspay-gs.com https://clerk.sharersgym.com https://*.clerk.accounts.dev https://*.kingsch.at https://*.kingschat.online",
               "frame-ancestors 'self'",
             ].join('; ')
           },

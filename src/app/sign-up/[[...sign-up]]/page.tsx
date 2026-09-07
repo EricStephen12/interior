@@ -1,29 +1,28 @@
 import { SignUp } from "@clerk/nextjs";
+import KingsChatButton from "@/components/KingsChatButton";
 
 export default function Page() {
   return (
-    <div className="min-h-screen bg-secondary flex flex-col justify-center items-center pt-36 pb-24 px-4">
-      <div className="w-full max-w-md flex flex-col items-center">
-        <div className="text-center mb-12">
-          <p className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-4">GET STARTED</p>
-          <h1 className="text-4xl text-luxury text-primary">JOIN NOW.</h1>
+    <div className="min-h-screen bg-secondary flex flex-col justify-center items-center pt-32 pb-24 px-4 sm:px-6">
+      <div className="w-full max-w-[440px] flex flex-col items-center">
+        {/* Luxury Header */}
+        <div className="text-center mb-8">
+          <p className="text-[10px] font-black tracking-[0.8em] text-accent uppercase mb-3">
+            GET STARTED
+          </p>
+          <h1 className="text-4xl sm:text-5xl text-luxury text-primary tracking-tight">
+            JOIN NOW.
+          </h1>
         </div>
-        <div className="flex justify-center w-full">
-          <SignUp appearance={{
-            elements: {
-              rootBox: "mx-auto w-full flex justify-center",
-              cardBox: "mx-auto w-full flex justify-center",
-              card: "mx-auto w-full bg-white rounded-none border border-primary/5 shadow-2xl p-8",
-              formButtonPrimary: "bg-primary hover:bg-accent text-[10px] font-black uppercase tracking-widest transition-all duration-500 rounded-none h-12",
-              headerTitle: "hidden",
-              headerSubtitle: "hidden",
-              socialButtonsBlockButton: "rounded-none border-primary/10 hover:bg-secondary/50 transition-all",
-              formFieldInput: "rounded-none border-primary/10 focus:border-accent transition-all",
-              footerActionLink: "text-accent hover:text-primary transition-colors font-bold uppercase text-[10px] tracking-widest",
-              identityPreviewText: "text-primary font-bold",
-              formFieldLabel: "text-[10px] font-black text-text-muted uppercase tracking-widest mb-2"
-            }
-          }} />
+
+        {/* Single Seamless Card */}
+        <div className="auth-card w-full bg-white rounded-3xl border border-gray-200/80 shadow-xl p-7 sm:p-8">
+          {/* KingsChat Button directly on top of social buttons */}
+          <div className="mb-3">
+            <KingsChatButton label="Sign up with KingsChat" />
+          </div>
+
+          <SignUp />
         </div>
       </div>
     </div>

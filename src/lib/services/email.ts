@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 're_placeholder_for_build');
 const DEFAULT_FROM = process.env.EMAIL_FROM || 'SHARERS GYM <support@sharersgym.com>';
 const ADMIN_EMAIL = 'sharersmall@gmail.com';
 
