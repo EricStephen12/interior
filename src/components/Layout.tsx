@@ -17,15 +17,17 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const pathname = usePathname()
   const isAdmin = pathname.startsWith('/admin')
+  const isReceipt = pathname.startsWith('/receipt')
+  const isStandalone = isAdmin || isReceipt
 
   return (
-    <div className="min-h-screen bg-white relative">
+    <div className={`min-h-screen relative ${isReceipt ? 'bg-[#f4f6fa]' : 'bg-white'}`}>
       <AmbientBackground />
       {/* Global Grain Texture Overlay */}
       <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03] grain-overlay"></div>
 
-      {!isAdmin && <PromoBanner />}
-      {!isAdmin && <Header />}
+      {!isStandalone && <PromoBanner />}
+      {!isStandalone && <Header />}
       <AnimatePresence mode="wait">
         <motion.main
           key={pathname}
@@ -38,8 +40,8 @@ export default function Layout({ children }: LayoutProps) {
           {children}
         </motion.main>
       </AnimatePresence>
-      {!isAdmin && <Footer />}
-      {!isAdmin && <SupportChat />}
+      {!isStandalone && <Footer />}
+      {!isStandalone && <SupportChat />}
     </div>
   )
 }

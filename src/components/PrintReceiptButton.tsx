@@ -24,7 +24,7 @@ export default function PrintReceiptButton({ className = '' }: PrintReceiptButto
       onClick={handlePrint}
       id="print-receipt-btn"
       title="Print or Save as PDF (Ctrl + P)"
-      className={`inline-flex items-center gap-2 bg-[#f20d0d] hover:bg-red-600 active:scale-95 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all duration-200 shadow-lg hover:shadow-red-600/25 cursor-pointer select-none print:hidden ${className}`}
+      className={`inline-flex items-center gap-2 bg-[#f20d0d] hover:bg-red-700 active:scale-95 text-white px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-200 shadow-md hover:shadow-red-600/20 cursor-pointer select-none print:hidden ${className}`}
     >
       {printed ? (
         <>
