@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Users, Shield, Search, Mail, ArrowLeft, Plus } from 'lucide-react'
+import { Users, Shield, Search, Mail, ArrowLeft, Plus, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -73,6 +73,30 @@ export default function UserManagement() {
       } else {
         const data = await res.json()
         alert(data.error || 'Failed to add days')
+      }
+    } catch (err) {
+      alert('Network error')
+    } finally {
+      setUpdating(null)
+    }
+  }
+
+  const deleteUser = async (userId: string, userName: string) => {
+    if (!confirm(`Are you sure you want to permanently remove "${userName || 'this member'}"? Their account, check-in history, and gym pass will be completely deleted.`)) {
+      return
+    }
+
+    setUpdating(userId)
+    try {
+      const res = await fetch(`/api/admin/users?userId=${userId}`, {
+        method: 'DELETE'
+      })
+
+      if (res.ok) {
+        setUsers(prev => prev.filter(u => u.id !== userId))
+      } else {
+        const data = await res.json()
+        alert(data.error || 'Failed to remove member')
       }
     } catch (err) {
       alert('Network error')
@@ -211,6 +235,17 @@ export default function UserManagement() {
                         >
                           {updating === user.id ? 'Processing...' : user.role === 'ADMIN' ? 'Revoke Auth' : 'Grant Auth'}
                         </button>
+
+                        {user.role !== 'ADMIN' && (
+                          <button
+                            onClick={() => deleteUser(user.id, user.name || user.email)}
+                            disabled={updating === user.id}
+                            className="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 border border-slate-200 hover:border-red-200 transition-all disabled:opacity-50 cursor-pointer"
+                            title="Permanently remove customer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </motion.tr>
