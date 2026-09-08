@@ -126,6 +126,13 @@ export default async function ReceiptPage({
 
         <div className="flex items-center gap-3">
           <Link
+            href={`/track/${order.id}`}
+            className="inline-flex items-center gap-1.5 px-3 py-2 bg-red-50 hover:bg-red-100 text-[#f20d0d] text-xs font-bold rounded-xl transition-colors border border-red-200 uppercase tracking-wider"
+          >
+            <Truck className="w-3.5 h-3.5" />
+            <span>Track Package</span>
+          </Link>
+          <Link
             href="/"
             className="text-xs font-bold text-slate-500 hover:text-slate-800 px-3 py-2 transition-colors uppercase tracking-wider"
           >

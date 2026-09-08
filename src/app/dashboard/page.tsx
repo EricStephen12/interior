@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { useMembership, getActivePassInfo } from '@/lib/membership-context'
 import { useCart } from '@/lib/cart-context'
 import MemberPass from '@/components/MemberPass'
-import { Activity, Clock, Award, ChevronRight, ShoppingBag, Sparkles, Printer, Trophy } from 'lucide-react'
+import { Activity, Clock, Award, ChevronRight, ShoppingBag, Sparkles, Printer, Trophy, Truck } from 'lucide-react'
 import Link from 'next/link'
 import TopupCredits from '@/components/TopupCredits'
 import { useUser } from '@clerk/nextjs'
@@ -297,6 +297,16 @@ export default function DashboardPage() {
                                                             {order.status}
                                                         </div>
                                                     )}
+
+                                                    {/* Visual Package Tracking Link */}
+                                                    <Link
+                                                        href={`/track/${order.id}`}
+                                                        className="px-3 py-2 bg-secondary hover:bg-primary hover:text-white text-primary text-[9px] font-black tracking-widest uppercase flex items-center gap-1.5 transition-colors border border-primary/10 rounded"
+                                                        title="Track Package Live"
+                                                    >
+                                                        <Truck className="w-3 h-3 text-accent" />
+                                                        <span>Track</span>
+                                                    </Link>
 
                                                     {/* Printable Official Receipt Link */}
                                                     <Link

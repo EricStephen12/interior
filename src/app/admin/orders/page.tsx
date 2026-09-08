@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Package, Truck, CheckCircle, Clock, MapPin, Search, ChevronDown, Bell, BellOff, Printer, Trash2 } from 'lucide-react'
+import { Package, Truck, CheckCircle, Clock, MapPin, Search, ChevronDown, Bell, BellOff, Printer, Trash2, Mail } from 'lucide-react'
 import Link from 'next/link'
 import { playCashChime, isChimeMuted, toggleChimeMute } from '@/lib/audio'
 
@@ -89,6 +89,28 @@ export default function AdminOrders() {
     } catch (err) {
       console.error('Failed to delete order', err)
       alert('Error deleting order')
+    } finally {
+      setUpdating(null)
+    }
+  }
+
+  const sendAbandonedCartReminder = async (orderId: string) => {
+    setUpdating(orderId)
+    try {
+      const res = await fetch('/api/admin/abandoned-carts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId })
+      })
+      const data = await res.json()
+      if (res.ok) {
+        alert(data.message || 'Cart reminder email dispatched successfully!')
+      } else {
+        alert(data.error || 'Failed to dispatch cart reminder email')
+      }
+    } catch (err) {
+      console.error('Failed to send abandoned cart reminder', err)
+      alert('Error sending abandoned cart reminder')
     } finally {
       setUpdating(null)
     }
@@ -348,11 +370,33 @@ export default function AdminOrders() {
                     </button>
                   )}
 
+                  {order.status === 'PENDING' && (
+                    <button
+                      onClick={() => sendAbandonedCartReminder(order.id)}
+                      disabled={updating === order.id}
+                      className="w-full px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50 shadow-xs mt-1 cursor-pointer"
+                      title="Send abandoned cart reservation reminder email to customer"
+                    >
+                      <Mail className="w-3 h-3" />
+                      <span>{updating === order.id ? 'Sending...' : 'Send Cart Reminder'}</span>
+                    </button>
+                  )}
+
+                  {/* Visual Package Tracking Link */}
+                  <Link
+                    href={`/track/${order.id}`}
+                    target="_blank"
+                    className="w-full px-4 py-2 bg-red-50 hover:bg-red-100 text-[#f20d0d] border border-red-200 text-[9px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors mt-2"
+                  >
+                    <Truck className="w-3 h-3" />
+                    <span>Track Package Live</span>
+                  </Link>
+
                   {/* Print / View Official Receipt */}
                   <Link
                     href={`/receipt/${order.id}`}
                     target="_blank"
-                    className="w-full px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 text-[9px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors mt-2"
+                    className="w-full px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 text-[9px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors mt-1"
                   >
                     <Printer className="w-3 h-3 text-accent" />
                     <span>View / Print Receipt</span>

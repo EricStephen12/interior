@@ -27,7 +27,8 @@ import {
   Package,
   Layers,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Flame
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMembership } from '@/lib/membership-context';
@@ -238,6 +239,7 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
   const prevImage = () => setActiveIndex(i => (i - 1 + images.length) % images.length);
 
   const isOutOfStock = product?.isActive === false || product?.inStock === false || (product?.stock !== undefined && product.stock <= 0);
+  const isLowStock = !isOutOfStock && typeof product?.stock === 'number' && product.stock > 0 && product.stock <= 3;
 
   return (
     <div className="bg-white min-h-screen selection:bg-accent/20">
@@ -321,6 +323,12 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                   <span className="px-3.5 py-1 bg-red-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                     OUT OF STOCK
+                  </span>
+                )}
+                {isLowStock && (
+                  <span className="px-3.5 py-1 bg-gradient-to-r from-amber-600 to-red-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg flex items-center gap-1.5 animate-pulse">
+                    <Flame className="w-3 h-3 fill-white text-white" />
+                    ONLY {product.stock} LEFT
                   </span>
                 )}
                 {hasDiscount && !isOutOfStock && (
@@ -485,6 +493,11 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
                   Out Of Stock
                 </span>
+              ) : isLowStock ? (
+                <span className="text-[10px] font-black uppercase tracking-widest text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-300 flex items-center gap-1.5 shadow-xs">
+                  <Flame className="w-3.5 h-3.5 text-amber-600 fill-amber-500 animate-pulse" />
+                  Only {product.stock} Left!
+                </span>
               ) : (
                 <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60 flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -498,6 +511,23 @@ export default function ProductDetailsClient({ product: initialProduct }: Produc
               <p className="text-xs sm:text-sm text-text-muted leading-relaxed font-normal">
                 {product.description}
               </p>
+            )}
+
+            {/* Scarcity Urgency Banner */}
+            {isLowStock && (
+              <div className="p-3.5 bg-gradient-to-r from-amber-500/10 via-red-500/5 to-amber-500/10 border border-amber-300/80 rounded-xl flex items-center gap-3 text-amber-950 shadow-xs">
+                <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-400/50 flex items-center justify-center shrink-0">
+                  <Flame className="w-4 h-4 text-red-600 fill-amber-500 animate-bounce" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-black uppercase tracking-wider text-red-700">
+                    High Demand Atelier Item
+                  </p>
+                  <p className="text-[11px] text-amber-900 font-medium">
+                    Only <span className="font-black text-red-600 underline decoration-red-400">{product.stock} piece{product.stock > 1 ? 's' : ''} remaining</span> in stock. Reserve yours now before allocation is exhausted.
+                  </p>
+                </div>
+              </div>
             )}
 
             {/* Out of Stock Alert Notification Banner */}

@@ -152,6 +152,24 @@ export async function PATCH(req: Request) {
         items: existingOrder.items,
       }).catch((err) => console.error('[Email Error] Status update email:', err))
 
+      // Trigger Verified Review Invitation on delivery
+      if (status === 'DELIVERED') {
+        let parsedItems: any[] = []
+        if (Array.isArray(existingOrder.items)) {
+          parsedItems = existingOrder.items
+        } else if (typeof existingOrder.items === 'string') {
+          try {
+            parsedItems = JSON.parse(existingOrder.items)
+          } catch {}
+        }
+        emailService.sendReviewInvitationEmail({
+          userEmail: existingOrder.userEmail,
+          userName: (existingOrder.shippingDetails as any)?.name || 'Valued Member',
+          items: parsedItems,
+          orderId: existingOrder.id,
+        }).catch((err) => console.error('[Email Error] Review invitation email:', err))
+      }
+
       emailService.triggerResendEvent({
         name: `order.${status.toLowerCase()}`,
         email: existingOrder.userEmail,

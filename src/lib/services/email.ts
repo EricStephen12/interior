@@ -202,8 +202,8 @@ export const emailService = {
           ` : ''}
 
           <div style="text-align: center; margin: 36px 0 16px;">
-            <a href="https://sharersgym.com/dashboard" style="display: inline-block; background: #ffffff; color: #0b0c10; padding: 14px 28px; font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; margin-right: 8px; margin-bottom: 8px;">
-              VIEW IN DASHBOARD
+            <a href="https://sharersgym.com/track/${orderId}" style="display: inline-block; background: #ffffff; color: #0b0c10; padding: 14px 28px; font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; margin-right: 8px; margin-bottom: 8px;">
+              TRACK PACKAGE 🚚
             </a>
             <a href="https://sharersgym.com/receipt/${orderId}" style="display: inline-block; background: #f20d0d; color: #ffffff; padding: 14px 28px; font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; margin-bottom: 8px;">
               DOWNLOAD RECEIPT (PDF)
@@ -513,8 +513,8 @@ export const emailService = {
           ` : ''}
 
           <div style="text-align: center; margin-top: 32px;">
-            <a href="https://sharersgym.com/dashboard" style="display: inline-block; background: #ffffff; color: #000; padding: 12px 24px; font-weight: 900; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; margin-right: 8px; margin-bottom: 8px;">
-              VIEW MY ORDERS
+            <a href="https://sharersgym.com/track/${orderId}" style="display: inline-block; background: #38bdf8; color: #0b0c10; padding: 12px 24px; font-weight: 900; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; margin-right: 8px; margin-bottom: 8px;">
+              TRACK LIVE STATUS 🚚
             </a>
             <a href="https://sharersgym.com/receipt/${orderId}" style="display: inline-block; background: #f20d0d; color: #ffffff; padding: 12px 24px; font-weight: 900; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; margin-bottom: 8px;">
               OFFICIAL RECEIPT
@@ -894,6 +894,181 @@ export const emailService = {
     return this.sendEmail({
       to: userEmail,
       subject: `🏆 Milestone Unlocked: ${milestoneCount} Workouts at Sharers Gym! (${tierTitle})`,
+      html,
+    });
+  },
+
+  /**
+   * 9. Customer: Abandoned Cart Recovery (No unauthorized discounts)
+   * High-conversion reminder alerting the customer that their items are held in atelier cart.
+   */
+  async sendAbandonedCartEmail({
+    userEmail,
+    userName = 'Athlete',
+    items = [],
+    totalAmount,
+    checkoutUrl = 'https://sharersgym.com/checkout',
+  }: {
+    userEmail: string;
+    userName?: string;
+    items: OrderEmailItem[];
+    totalAmount?: number;
+    checkoutUrl?: string;
+  }) {
+    const formattedTotal = totalAmount ? `₦${Number(totalAmount).toLocaleString()}` : '';
+    const itemsHtml = items.map((item) => `
+      <tr style="border-bottom: 1px solid #22252e;">
+        <td style="padding: 14px 0; color: #ffffff; font-size: 13px; font-weight: 600;">
+          ${item.name}
+          ${item.variant || item.size ? `<span style="display: block; font-size: 11px; color: #8a93a5; text-transform: uppercase;">${item.variant || item.size}</span>` : ''}
+        </td>
+        <td style="padding: 14px 0; color: #8a93a5; font-size: 13px; text-align: center;">x${item.quantity || 1}</td>
+        <td style="padding: 14px 0; color: #ffffff; font-size: 13px; font-weight: 700; text-align: right;">₦${Number(item.price * (item.quantity || 1)).toLocaleString()}</td>
+      </tr>
+    `).join('');
+
+    const html = `
+      <div style="background-color: #0b0c10; font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #ffffff; border: 1px solid #1f232e; overflow: hidden;">
+        <div style="padding: 32px 24px; background: radial-gradient(circle at top right, #1f2430 0%, #0b0c10 70%); text-align: center; border-bottom: 1px solid #1f232e;">
+          <div style="display: inline-block; padding: 4px 12px; background: rgba(242, 13, 13, 0.15); border: 1px solid rgba(242, 13, 13, 0.4); color: #f20d0d; font-size: 10px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px;">
+            CART RESERVATION HOLD ⏳
+          </div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 900; letter-spacing: 1px; color: #ffffff;">SHARERS GYM</h1>
+          <p style="margin: 8px 0 0; color: #8a93a5; font-size: 13px;">Your Atelier Equipment Is Reserved</p>
+        </div>
+
+        <div style="padding: 32px 24px;">
+          <p style="font-size: 15px; color: #ffffff; margin-top: 0;">
+            Hello <strong>${userName}</strong>,
+          </p>
+          <p style="font-size: 14px; color: #cbd5e1; line-height: 1.6;">
+            You left high-performance gear in your cart at Sharers Gym. Because atelier inventory is produced in strictly limited runs, your selected items have been temporarily reserved for your order.
+          </p>
+
+          <div style="margin: 28px 0; background: #12141a; border: 1px solid #1f232e; padding: 20px 24px; border-radius: 6px;">
+            <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #8a93a5; display: block; margin-bottom: 12px; font-weight: 800;">Reserved Cart Items</span>
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="border-bottom: 1px solid #2a2f3d; text-transform: uppercase; font-size: 10px; letter-spacing: 2px; color: #8a93a5;">
+                  <th style="padding-bottom: 10px; text-align: left;">Item</th>
+                  <th style="padding-bottom: 10px; text-align: center;">Qty</th>
+                  <th style="padding-bottom: 10px; text-align: right;">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsHtml}
+              </tbody>
+              ${formattedTotal ? `
+                <tfoot>
+                  <tr>
+                    <td colspan="2" style="padding-top: 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #ffffff;">Cart Subtotal</td>
+                    <td style="padding-top: 16px; font-size: 15px; font-weight: 900; color: #ffffff; text-align: right;">${formattedTotal}</td>
+                  </tr>
+                </tfoot>
+              ` : ''}
+            </table>
+          </div>
+
+          <div style="padding: 16px 20px; background: rgba(242, 13, 13, 0.08); border-left: 3px solid #f20d0d; margin-bottom: 28px; border-radius: 0 6px 6px 0;">
+            <p style="margin: 0; font-size: 12px; color: #e2e8f0; line-height: 1.5;">
+              ⚡ <strong>Fast Express Dispatch:</strong> Complete your order today to secure priority atelier packing and express dispatch directly to your doorstep.
+            </p>
+          </div>
+
+          <div style="text-align: center; margin: 32px 0 16px;">
+            <a href="${checkoutUrl}" style="display: inline-block; background: #f20d0d; color: #ffffff; padding: 14px 36px; font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; border-radius: 4px; box-shadow: 0 4px 20px rgba(242, 13, 13, 0.35);">
+              RESUME & COMPLETE ORDER →
+            </a>
+          </div>
+
+          <p style="text-align: center; font-size: 12px; color: #8a93a5; margin-top: 16px;">
+            Questions regarding sizing, specs, or payment methods? Reply directly to this email for personal concierge assistance.
+          </p>
+        </div>
+
+        <div style="padding: 16px 24px; background: #08090c; border-top: 1px solid #1f232e; text-align: center; font-size: 11px; color: #626a7a;">
+          <p style="margin: 0;">Sharers Gym Atelier • Lagos, Nigeria • support@sharersgym.com</p>
+        </div>
+      </div>
+    `;
+
+    return this.sendEmail({
+      to: userEmail,
+      subject: `Your Sharers Gym Cart is Reserved (${items.length} item${items.length > 1 ? 's' : ''}) ⏳`,
+      html,
+    });
+  },
+
+  /**
+   * 10. Customer: Post-Delivery Review & Feedback Invitation
+   * High-conversion review request sent after order delivery to collect verified athlete reviews.
+   */
+  async sendReviewInvitationEmail({
+    userEmail,
+    userName = 'Athlete',
+    items = [],
+    orderId,
+  }: {
+    userEmail: string;
+    userName?: string;
+    items: Array<{ name: string; productId?: string; variant?: string }>;
+    orderId: string;
+  }) {
+    const firstProduct = items[0];
+    const reviewUrl = firstProduct?.productId
+      ? `https://sharersgym.com/products/${firstProduct.productId}#reviews-section`
+      : `https://sharersgym.com/dashboard`;
+
+    const html = `
+      <div style="background-color: #0b0c10; font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #ffffff; border: 1px solid #1f232e; overflow: hidden;">
+        <div style="padding: 32px 24px; background: radial-gradient(circle at top right, #1f2430 0%, #0b0c10 70%); text-align: center; border-bottom: 1px solid #1f232e;">
+          <div style="display: inline-block; padding: 4px 12px; background: rgba(250, 204, 21, 0.15); border: 1px solid rgba(250, 204, 21, 0.4); color: #facc15; font-size: 10px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px;">
+            VERIFIED ATHLETE REVIEW ⭐
+          </div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 900; letter-spacing: 1px; color: #ffffff;">SHARERS GYM</h1>
+          <p style="margin: 8px 0 0; color: #8a93a5; font-size: 13px;">How is your gear performing?</p>
+        </div>
+
+        <div style="padding: 32px 24px; text-align: center;">
+          <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0 0 12px;">
+            HOW IS YOUR NEW GEAR PERFORMING?
+          </h2>
+          <p style="font-size: 14px; color: #cbd5e1; line-height: 1.6; margin: 0 auto 24px; max-width: 480px;">
+            Hello <strong>${userName}</strong>, your package for Order #${orderId.slice(-8).toUpperCase()} was recently delivered. We engineer our equipment for peak physical excellence and would value your authentic feedback.
+          </p>
+
+          <!-- Star Rating Preview Box -->
+          <div style="background: #12141c; border: 1px solid #2a2f3d; padding: 24px; margin: 0 auto 28px; max-width: 420px; border-radius: 8px;">
+            <div style="font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #8a93a5; margin-bottom: 12px;">
+              RATE YOUR EXPERIENCE
+            </div>
+            <div style="font-size: 32px; letter-spacing: 8px; margin-bottom: 16px; color: #facc15;">
+              ★★★★★
+            </div>
+            <p style="font-size: 12px; color: #94a3b8; margin: 0 0 16px;">
+              Takes less than 30 seconds to post your review on our atelier product page.
+            </p>
+            <a href="${reviewUrl}" style="display: inline-block; background: #f20d0d; color: #ffffff; padding: 12px 32px; font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; border-radius: 4px;">
+              LEAVE A VERIFIED REVIEW
+            </a>
+          </div>
+
+          <div style="text-align: center; margin-top: 24px;">
+            <a href="https://sharersgym.com/receipt/${orderId}" style="display: inline-block; color: #8a93a5; font-size: 11px; text-decoration: underline;">
+              View Original Receipt #${orderId.slice(-8).toUpperCase()}
+            </a>
+          </div>
+        </div>
+
+        <div style="padding: 16px 24px; background: #08090c; border-top: 1px solid #1f232e; text-align: center; font-size: 11px; color: #626a7a;">
+          <p style="margin: 0;">Sharers Gym Atelier • Discipline • Power • Excellence</p>
+        </div>
+      </div>
+    `;
+
+    return this.sendEmail({
+      to: userEmail,
+      subject: `How is your new gear? Share your review with Sharers Gym ⭐`,
       html,
     });
   },

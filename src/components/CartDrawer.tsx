@@ -7,7 +7,7 @@ import { XMarkIcon, ShoppingCartIcon, PlusIcon, MinusIcon } from '@heroicons/rea
 import { useCart } from '@/lib/cart-context'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Plus } from 'lucide-react'
+import { Plus, Truck, Sparkles, CheckCircle2 } from 'lucide-react'
 import { useToast } from '@/components/ToastProvider'
 import { useCustomization } from '@/lib/customization-context'
 
@@ -50,6 +50,10 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     const price = item.variant?.promo_price || item.variant?.price || 0
     return sum + (price * item.quantity)
   }, 0)
+
+  const freeDeliveryThreshold = 35000
+  const deliveryDiff = Math.max(0, freeDeliveryThreshold - subtotal)
+  const deliveryProgress = Math.min(100, Math.round((subtotal / freeDeliveryThreshold) * 100))
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -101,6 +105,41 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         <XMarkIcon className="h-5 w-5" />
                       </button>
                     </div>
+
+                    {/* Free Lagos Express Delivery Tier Progress Bar */}
+                    {cartItems.length > 0 && (
+                      <div className="px-4 sm:px-6 py-3 bg-gradient-to-r from-red-50/60 via-slate-50 to-red-50/30 border-b border-primary/10 shrink-0">
+                        <div className="flex items-center justify-between text-xs mb-1.5">
+                          <div className="flex items-center gap-1.5 font-bold">
+                            {deliveryDiff > 0 ? (
+                              <span className="text-slate-600 text-[11px] sm:text-xs">
+                                Add <span className="text-primary font-black">₦{deliveryDiff.toLocaleString()}</span> for <span className="text-accent font-black uppercase">Free Lagos Express</span>
+                              </span>
+                            ) : (
+                              <span className="text-emerald-700 font-black text-[11px] sm:text-xs flex items-center gap-1">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                                <span>Unlocked FREE Lagos Express Delivery!</span>
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-[10px] font-black font-mono text-slate-500 tabular-nums">
+                            {deliveryProgress}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-slate-200/80 rounded-full h-1.5 overflow-hidden">
+                          <motion.div
+                            className={`h-full rounded-full transition-all duration-500 ease-out ${
+                              deliveryProgress >= 100
+                                ? 'bg-emerald-500'
+                                : 'bg-gradient-to-r from-red-500 to-accent'
+                            }`}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${deliveryProgress}%` }}
+                            transition={{ duration: 0.4, ease: 'easeOut' }}
+                          />
+                        </div>
+                      </div>
+                    )}
 
                     {/* Scrollable Cart Body */}
                     <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 overscroll-contain">
