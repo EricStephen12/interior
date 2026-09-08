@@ -1,7 +1,8 @@
 import prisma from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { CheckCircle2, Printer, ArrowLeft, ShieldCheck } from 'lucide-react'
+import { CheckCircle2, ArrowLeft, ShieldCheck } from 'lucide-react'
+import PrintReceiptButton from '@/components/PrintReceiptButton'
 
 export default async function ReceiptPage({
   params,
@@ -65,15 +66,7 @@ export default async function ReceiptPage({
           <span>Back to Dashboard</span>
         </Link>
 
-        <button
-          // @ts-ignore
-          onClick="window.print()"
-          id="print-btn"
-          className="flex items-center gap-2 bg-[#f20d0d] text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider hover:bg-red-600 transition-colors shadow-lg cursor-pointer"
-        >
-          <Printer className="w-4 h-4" />
-          <span>Print / Save as PDF</span>
-        </button>
+        <PrintReceiptButton />
       </div>
 
       {/* Official Receipt Paper Card */}
@@ -196,19 +189,6 @@ export default async function ReceiptPage({
         </div>
       </div>
 
-      {/* Script to trigger window.print on print-btn click */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            document.addEventListener('DOMContentLoaded', function() {
-              var btn = document.getElementById('print-btn');
-              if (btn) {
-                btn.addEventListener('click', function() { window.print(); });
-              }
-            });
-          `,
-        }}
-      />
     </div>
   )
 }

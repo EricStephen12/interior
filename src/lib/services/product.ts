@@ -1,10 +1,15 @@
 import prisma from '@/lib/prisma'
 
 export async function getProducts() {
-  return prisma.product.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: { brand: true, size: true, categories: { include: { category: true } } }
-  })
+  try {
+    return await prisma.product.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: { brand: true, size: true, categories: { include: { category: true } } }
+    })
+  } catch (err) {
+    console.warn('[Product] Could not fetch products from DB:', err)
+    return []
+  }
 }
 
 export async function createProduct(data: any) {
@@ -30,11 +35,21 @@ export async function deleteProduct(id: string) {
 }
 
 export async function getBrands() {
-  const brands = await prisma.brand.findMany({ where: { isActive: true }, orderBy: { name: 'asc' } })
-  return ['All', ...brands.map(b => b.name)]
+  try {
+    const brands = await prisma.brand.findMany({ where: { isActive: true }, orderBy: { name: 'asc' } })
+    return ['All', ...brands.map(b => b.name)]
+  } catch (err) {
+    console.warn('[Product] Could not fetch brands from DB:', err)
+    return ['All']
+  }
 }
 
 export async function getCategories() {
-  const categories = await prisma.category.findMany({ orderBy: { name: 'asc' } })
-  return ['All', ...categories.map(c => c.name)]
+  try {
+    const categories = await prisma.category.findMany({ orderBy: { name: 'asc' } })
+    return ['All', ...categories.map(c => c.name)]
+  } catch (err) {
+    console.warn('[Product] Could not fetch categories from DB:', err)
+    return ['All']
+  }
 }

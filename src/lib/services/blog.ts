@@ -1,17 +1,27 @@
 import prisma from '@/lib/prisma'
 
 export async function getBlogs() {
-  return prisma.blogPost.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: { author: true }
-  })
+  try {
+    return await prisma.blogPost.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: { author: true }
+    })
+  } catch (err) {
+    console.warn('[Blog] Could not fetch blogs from DB:', err)
+    return []
+  }
 }
 
 export async function getBlogBySlug(slug: string) {
-  return prisma.blogPost.findUnique({
-    where: { slug },
-    include: { author: true }
-  })
+  try {
+    return await prisma.blogPost.findUnique({
+      where: { slug },
+      include: { author: true }
+    })
+  } catch (err) {
+    console.warn(`[Blog] Could not fetch blog ${slug} from DB:`, err)
+    return null
+  }
 }
 
 export async function createBlog(data: any) {

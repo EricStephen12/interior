@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { emailService } from '@/lib/services/email'
 
 export async function GET(req: Request) {
   try {
@@ -141,6 +142,79 @@ async function fulfillPayment(orderId: string, metadata: any, userEmail: string)
       where: { id: orderId },
       data: { status: 'COMPLETED' }
     })
+
+    // Parse order items for inventory decrement and email notification
+    let parsedItems: any[] = []
+    if (Array.isArray(order.items)) {
+      parsedItems = order.items
+    } else if (typeof order.items === 'string') {
+      try {
+        const parsed = JSON.parse(order.items)
+        parsedItems = Array.isArray(parsed) ? parsed : [parsed]
+      } catch {
+        parsedItems = [{ name: 'Gym Apparel / Access Pass', quantity: 1, price: order.totalAmount }]
+      }
+    }
+
+    // Decrement physical product stock
+    for (const item of parsedItems) {
+      const pId = item.productId || item.id
+      if (pId) {
+        try {
+          const updatedProduct = await tx.product.update({
+            where: { id: pId },
+            data: { stock: { decrement: item.quantity || 1 } }
+          })
+          if (updatedProduct && updatedProduct.stock <= 3) {
+            emailService.sendLowStockAlert({
+              productName: updatedProduct.name,
+              remainingStock: updatedProduct.stock,
+              productId: updatedProduct.id,
+            }).catch(() => {})
+          }
+        } catch (stockErr) {
+          console.warn(`Could not update stock for product ${pId}:`, stockErr)
+        }
+      }
+    }
+
+    const shipping = order.shippingDetails as any
+
+    // 1. Send Order Confirmation Email to Customer via Resend
+    emailService.sendOrderConfirmationEmail({
+      orderId: order.id,
+      userEmail,
+      userName: name,
+      items: parsedItems,
+      totalAmount: order.totalAmount,
+      shippingAddress: shipping?.address,
+      paymentMethod: 'KingsPay Online',
+    }).catch((err) => console.error('[Email Error] Order confirmation:', err))
+
+    // 2. Alert Admin
+    emailService.sendAdminNewOrderAlert({
+      orderId: order.id,
+      userEmail,
+      userName: name,
+      totalAmount: order.totalAmount,
+      paymentType: 'KINGSPAY',
+      items: parsedItems,
+      shippingDetails: shipping,
+      status: 'PAID',
+    }).catch((err) => console.error('[Email Error] Admin alert:', err))
+
+    // 3. Trigger Resend Automation Events
+    emailService.triggerResendEvent({
+      name: 'order.paid',
+      email: userEmail,
+      data: {
+        orderId: order.id,
+        totalAmount: order.totalAmount,
+        paymentMethod: 'KingsPay Online',
+        hasMembership,
+        creditAmount,
+      }
+    }).catch(() => {})
   }).catch((err) => {
     console.error('Fulfillment transaction failed:', err)
   })

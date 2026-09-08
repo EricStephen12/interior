@@ -75,6 +75,8 @@ async function handleKingsChatAuth(code: string, req: NextRequest) {
   const firstName = fullName.split(' ')[0] || username;
   const lastName = fullName.split(' ').slice(1).join(' ') || '';
 
+  const avatarUrl = profile.avatar_url || profile.avatar || profile.profile_picture_url || profile.picture || null;
+
   // 3. Find or create Clerk user
   const client = await clerkClient();
   let clerkUser: any = null;
@@ -88,7 +90,24 @@ async function handleKingsChatAuth(code: string, req: NextRequest) {
     console.warn('[KingsChat] Checking existing Clerk user:', err);
   }
 
-  if (!clerkUser) {
+  if (clerkUser) {
+    try {
+      await client.users.updateUser(clerkUser.id, {
+        firstName: firstName || clerkUser.firstName,
+        lastName: lastName || clerkUser.lastName,
+        publicMetadata: {
+          ...(clerkUser.publicMetadata || {}),
+          kingschatId: kingsChatId,
+          kingschatUsername: username,
+          kingschatAvatar: avatarUrl,
+          provider: 'kingschat',
+          lastKingsChatSync: new Date().toISOString(),
+        },
+      });
+    } catch (updateErr) {
+      console.warn('[KingsChat] Updating existing Clerk user metadata:', updateErr);
+    }
+  } else {
     try {
       clerkUser = await client.users.createUser({
         emailAddress: [emailToUse],
@@ -96,6 +115,13 @@ async function handleKingsChatAuth(code: string, req: NextRequest) {
         firstName,
         lastName,
         skipPasswordRequirement: true,
+        publicMetadata: {
+          kingschatId: kingsChatId,
+          kingschatUsername: username,
+          kingschatAvatar: avatarUrl,
+          provider: 'kingschat',
+          lastKingsChatSync: new Date().toISOString(),
+        },
       });
     } catch (createErr) {
       const fallbackEmail = `${username}_${Date.now()}@kingschat.users.sharersgym.com`;
@@ -104,6 +130,13 @@ async function handleKingsChatAuth(code: string, req: NextRequest) {
         firstName,
         lastName,
         skipPasswordRequirement: true,
+        publicMetadata: {
+          kingschatId: kingsChatId,
+          kingschatUsername: username,
+          kingschatAvatar: avatarUrl,
+          provider: 'kingschat',
+          lastKingsChatSync: new Date().toISOString(),
+        },
       });
     }
   }
