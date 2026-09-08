@@ -109,7 +109,13 @@ export default function DashboardPage() {
         }
     }, [clearCart])
 
-    if (!isLoaded) return (
+    useEffect(() => {
+        if (isLoaded && !isSignedIn) {
+            window.location.href = '/sign-in?redirect_url=/dashboard'
+        }
+    }, [isLoaded, isSignedIn])
+
+    if (!isLoaded || !isSignedIn) return (
         <div className="min-h-screen bg-secondary flex items-center justify-center">
             <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
         </div>
