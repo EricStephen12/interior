@@ -141,38 +141,34 @@ async function handleKingsChatAuth(code: string, req: NextRequest) {
     }
   }
 
-  // 4. Sync into database
-  const userCount = await prisma.user.count();
-  const role = userCount === 0 ? 'ADMIN' : 'CUSTOMER';
+  // 4. Sync into database & generate Clerk sign-in ticket in parallel
+  const [_, signInToken] = await Promise.all([
+    prisma.user.upsert({
+      where: { clerkId: clerkUser.id },
+      update: {
+        name: fullName,
+        email: emailToUse,
+        phone: profile.phone_number || undefined,
+      },
+      create: {
+        clerkId: clerkUser.id,
+        name: fullName,
+        email: emailToUse,
+        phone: profile.phone_number || undefined,
+        role: 'CUSTOMER',
+        credits: 0,
+        tier: 'NONE',
+      },
+    }),
+    client.signInTokens.createSignInToken({
+      userId: clerkUser.id,
+      expiresInSeconds: 300,
+    }),
+  ]);
 
-  await prisma.user.upsert({
-    where: { clerkId: clerkUser.id },
-    update: {
-      name: fullName,
-      email: emailToUse,
-      phone: profile.phone_number || undefined,
-    },
-    create: {
-      clerkId: clerkUser.id,
-      name: fullName,
-      email: emailToUse,
-      phone: profile.phone_number || undefined,
-      role,
-      credits: 0,
-      tier: 'NONE',
-    },
-  });
-
-  // 5. Generate Clerk sign-in token ticket
-  const signInToken = await client.signInTokens.createSignInToken({
-    userId: clerkUser.id,
-    expiresInSeconds: 300,
-  });
-
-  // Redirect to sign-in page with both ticket params for seamless client SSO consumption
-  const redirectUrl = new URL('/sign-in', req.url);
+  // Redirect to lightweight SSO callback handler to eliminate form loading & bot reCAPTCHA delays
+  const redirectUrl = new URL('/auth/callback', req.url);
   redirectUrl.searchParams.set('ticket', signInToken.token);
-  redirectUrl.searchParams.set('__clerk_ticket', signInToken.token);
   return NextResponse.redirect(redirectUrl);
 }
 
