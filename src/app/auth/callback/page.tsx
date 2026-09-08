@@ -1,48 +1,64 @@
 'use client'
 
 import { useEffect, useRef, useState, Suspense } from 'react'
-import { useClerk } from '@clerk/nextjs'
+import { useSignIn } from '@clerk/nextjs/legacy'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 function CallbackHandler() {
-  const clerk = useClerk()
+  const { isLoaded, signIn, setActive } = useSignIn()
   const router = useRouter()
   const searchParams = useSearchParams()
   const [error, setError] = useState<string | null>(null)
   const processedRef = useRef(false)
 
   useEffect(() => {
-    if (!clerk.loaded || processedRef.current) return
+    const dest = searchParams.get('redirect_url') || '/dashboard'
 
-    const ticket = searchParams.get('ticket') || searchParams.get('__clerk_ticket')
-    if (!ticket) {
+    if (!isLoaded || processedRef.current) return
+
+    const ticketParam = searchParams.get('ticket') || searchParams.get('__clerk_ticket')
+    if (!ticketParam) {
       router.replace('/sign-in')
       return
     }
 
+    const ticket: string = ticketParam
     processedRef.current = true
 
-    // Direct, instant ticket exchange avoiding the heavy <SignIn /> component and bot reCAPTCHA
-    clerk.client.signIn
-      .create({
-        strategy: 'ticket',
-        ticket,
-      })
-      .then(async (res: any) => {
+    async function handleSignIn() {
+      try {
+        if (!signIn) {
+          throw new Error('SignIn not available')
+        }
+
+        const res = await signIn.create({
+          strategy: 'ticket',
+          ticket,
+        })
+
         if (res.status === 'complete' && res.createdSessionId) {
-          await clerk.setActive({ session: res.createdSessionId })
-          const dest = searchParams.get('redirect_url') || '/dashboard'
+          await setActive({ session: res.createdSessionId })
           window.location.href = dest
         } else {
-          router.replace('/sign-in?error=sso_incomplete')
+          // Fallback to sign-in page with ticket
+          window.location.href = `/sign-in?__clerk_ticket=${encodeURIComponent(ticket)}&redirect_url=${encodeURIComponent(dest)}`
         }
-      })
-      .catch((err: any) => {
-        console.error('[KingsChat SSO Ticket Error]:', err)
-        setError('Authentication ticket could not be validated.')
-        setTimeout(() => router.replace('/sign-in'), 1500)
-      })
-  }, [clerk, router, searchParams])
+      } catch (err: any) {
+        console.warn('[KingsChat SSO Ticket Handler Error]:', err)
+        if (
+          err?.errors?.[0]?.code === 'session_exists' ||
+          err?.message?.includes('session_exists')
+        ) {
+          window.location.href = dest
+          return
+        }
+        // Direct seamless fallback to native Clerk sign in
+        window.location.href = `/sign-in?__clerk_ticket=${encodeURIComponent(ticket)}&redirect_url=${encodeURIComponent(dest)}`
+      }
+    }
+
+    handleSignIn()
+  }, [isLoaded, signIn, setActive, router, searchParams])
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center p-6 text-white text-center">

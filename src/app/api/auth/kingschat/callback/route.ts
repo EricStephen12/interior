@@ -156,6 +156,7 @@ async function handleKingsChatAuth(code: string, req: NextRequest, originParam?:
   // Redirect to lightweight SSO callback handler to eliminate form loading & bot reCAPTCHA delays
   const redirectUrl = new URL('/auth/callback', req.url);
   redirectUrl.searchParams.set('ticket', signInToken.token);
+  redirectUrl.searchParams.set('__clerk_ticket', signInToken.token);
   if (originParam && originParam.startsWith('/') && !originParam.startsWith('//')) {
     redirectUrl.searchParams.set('redirect_url', originParam);
   }
