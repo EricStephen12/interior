@@ -39,7 +39,8 @@ import {
   Square,
   Newspaper,
   Plus,
-  Trash2
+  Trash2,
+  Trophy
 } from 'lucide-react'
 import { THEME_DEFAULTS, THEME_KEYS, ThemeKey } from '@/app/api/theme/route'
 import { useToast } from '@/components/ToastProvider'
@@ -162,6 +163,7 @@ const PAGE_SECTIONS_MAP: Record<string, { id: string; label: string; icon: any; 
     { id: 'footer', label: 'Global Footer & Logo', icon: Anchor, descKey: 'section.footer.address' },
   ],
   '/dashboard': [
+    { id: 'milestones', label: 'Athlete Milestones & Rewards', icon: Trophy, descKey: 'milestone.tier1.name' },
     { id: 'hero', label: 'Portal Welcome Accent', icon: CreditCard, descKey: 'section.hero.tagline' },
     { id: 'cart', label: 'Cart Drawer & Upsells', icon: ShoppingBag, descKey: 'section.cart.title' },
     { id: 'footer', label: 'Global Footer & Logo', icon: Anchor, descKey: 'section.footer.address' },
@@ -2416,6 +2418,185 @@ export default function ThemeStudioPage() {
                               onChange={e => update('section.refund.sec1Body', e.target.value)}
                               className="w-full p-2 bg-secondary/30 border border-primary/10 text-xs rounded"
                               placeholder="Clause 1 Body"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* SECTION: ATHLETE MILESTONES & REWARDS */}
+                    {selectedSection === 'milestones' && (
+                      <div className="space-y-6">
+                        <div className="p-3.5 bg-accent/5 border border-accent/20 rounded-lg">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Trophy className="w-4 h-4 text-accent" />
+                            <span className="text-xs font-black uppercase tracking-wider text-accent">Milestone Loyalty Rewards</span>
+                          </div>
+                          <p className="text-[11px] text-text-muted leading-relaxed">
+                            Customize workout goals, athlete tier titles, and exclusive reward perks shown on athlete member dashboards.
+                          </p>
+                        </div>
+
+                        {/* Tier 1 */}
+                        <div className="p-4 bg-secondary/30 rounded-lg border border-primary/10 space-y-3">
+                          <div className="flex items-center justify-between border-b border-primary/5 pb-2">
+                            <span className="text-xs font-black uppercase tracking-wider text-primary flex items-center gap-1.5">
+                              <span>🥉</span> Tier 1 (Entry Milestone)
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-bold text-primary uppercase tracking-wider block">Tier Title</label>
+                              <input
+                                type="text"
+                                value={v('milestone.tier1.name')}
+                                onChange={e => update('milestone.tier1.name', e.target.value)}
+                                className="w-full p-2 bg-white border border-primary/10 text-xs font-bold text-primary rounded focus:outline-none focus:border-accent uppercase"
+                                placeholder="ROOKIE ATHLETE"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-bold text-primary uppercase tracking-wider block">Target Workouts</label>
+                              <input
+                                type="number"
+                                value={v('milestone.tier1.target')}
+                                onChange={e => update('milestone.tier1.target', e.target.value)}
+                                className="w-full p-2 bg-white border border-primary/10 text-xs font-bold text-primary rounded focus:outline-none focus:border-accent"
+                                placeholder="10"
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-primary uppercase tracking-wider block">Reward Perk Description</label>
+                            <input
+                              type="text"
+                              value={v('milestone.tier1.perk')}
+                              onChange={e => update('milestone.tier1.perk', e.target.value)}
+                              className="w-full p-2 bg-white border border-primary/10 text-xs font-medium text-primary rounded focus:outline-none focus:border-accent"
+                              placeholder="Complimentary Energy Drink at Reception"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Tier 2 */}
+                        <div className="p-4 bg-secondary/30 rounded-lg border border-primary/10 space-y-3">
+                          <div className="flex items-center justify-between border-b border-primary/5 pb-2">
+                            <span className="text-xs font-black uppercase tracking-wider text-primary flex items-center gap-1.5">
+                              <span>🥈</span> Tier 2 (Dedicated Member)
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-bold text-primary uppercase tracking-wider block">Tier Title</label>
+                              <input
+                                type="text"
+                                value={v('milestone.tier2.name')}
+                                onChange={e => update('milestone.tier2.name', e.target.value)}
+                                className="w-full p-2 bg-white border border-primary/10 text-xs font-bold text-primary rounded focus:outline-none focus:border-accent uppercase"
+                                placeholder="IRON MEMBER"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-bold text-primary uppercase tracking-wider block">Target Workouts</label>
+                              <input
+                                type="number"
+                                value={v('milestone.tier2.target')}
+                                onChange={e => update('milestone.tier2.target', e.target.value)}
+                                className="w-full p-2 bg-white border border-primary/10 text-xs font-bold text-primary rounded focus:outline-none focus:border-accent"
+                                placeholder="25"
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-primary uppercase tracking-wider block">Reward Perk Description</label>
+                            <input
+                              type="text"
+                              value={v('milestone.tier2.perk')}
+                              onChange={e => update('milestone.tier2.perk', e.target.value)}
+                              className="w-full p-2 bg-white border border-primary/10 text-xs font-medium text-primary rounded focus:outline-none focus:border-accent"
+                              placeholder="Complimentary Recovery & Protein Shake"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Tier 3 */}
+                        <div className="p-4 bg-secondary/30 rounded-lg border border-primary/10 space-y-3">
+                          <div className="flex items-center justify-between border-b border-primary/5 pb-2">
+                            <span className="text-xs font-black uppercase tracking-wider text-primary flex items-center gap-1.5">
+                              <span>🥇</span> Tier 3 (Elite Titan)
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-bold text-primary uppercase tracking-wider block">Tier Title</label>
+                              <input
+                                type="text"
+                                value={v('milestone.tier3.name')}
+                                onChange={e => update('milestone.tier3.name', e.target.value)}
+                                className="w-full p-2 bg-white border border-primary/10 text-xs font-bold text-primary rounded focus:outline-none focus:border-accent uppercase"
+                                placeholder="ELITE TITAN"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-bold text-primary uppercase tracking-wider block">Target Workouts</label>
+                              <input
+                                type="number"
+                                value={v('milestone.tier3.target')}
+                                onChange={e => update('milestone.tier3.target', e.target.value)}
+                                className="w-full p-2 bg-white border border-primary/10 text-xs font-bold text-primary rounded focus:outline-none focus:border-accent"
+                                placeholder="50"
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-primary uppercase tracking-wider block">Reward Perk Description</label>
+                            <input
+                              type="text"
+                              value={v('milestone.tier3.perk')}
+                              onChange={e => update('milestone.tier3.perk', e.target.value)}
+                              className="w-full p-2 bg-white border border-primary/10 text-xs font-medium text-primary rounded focus:outline-none focus:border-accent"
+                              placeholder="VIP Protein Smoothie + Guest Day Pass"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Tier 4 */}
+                        <div className="p-4 bg-secondary/30 rounded-lg border border-primary/10 space-y-3">
+                          <div className="flex items-center justify-between border-b border-primary/5 pb-2">
+                            <span className="text-xs font-black uppercase tracking-wider text-primary flex items-center gap-1.5">
+                              <span>👑</span> Tier 4 (Sharers Legend)
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-bold text-primary uppercase tracking-wider block">Tier Title</label>
+                              <input
+                                type="text"
+                                value={v('milestone.tier4.name')}
+                                onChange={e => update('milestone.tier4.name', e.target.value)}
+                                className="w-full p-2 bg-white border border-primary/10 text-xs font-bold text-primary rounded focus:outline-none focus:border-accent uppercase"
+                                placeholder="SHARERS LEGEND"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-bold text-primary uppercase tracking-wider block">Target Workouts</label>
+                              <input
+                                type="number"
+                                value={v('milestone.tier4.target')}
+                                onChange={e => update('milestone.tier4.target', e.target.value)}
+                                className="w-full p-2 bg-white border border-primary/10 text-xs font-bold text-primary rounded focus:outline-none focus:border-accent"
+                                placeholder="100"
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-primary uppercase tracking-wider block">Reward Perk Description</label>
+                            <input
+                              type="text"
+                              value={v('milestone.tier4.perk')}
+                              onChange={e => update('milestone.tier4.perk', e.target.value)}
+                              className="w-full p-2 bg-white border border-primary/10 text-xs font-medium text-primary rounded focus:outline-none focus:border-accent"
+                              placeholder="Free 1-Month VIP Black Pass Top-Up"
                             />
                           </div>
                         </div>

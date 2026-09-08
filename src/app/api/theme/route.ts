@@ -202,6 +202,20 @@ export const THEME_KEYS = [
 
   // --- GLOBAL MEDIA ---
   'theme.media.logo',
+
+  // --- ATHLETE MILESTONES & REWARDS ---
+  'milestone.tier1.name',
+  'milestone.tier1.target',
+  'milestone.tier1.perk',
+  'milestone.tier2.name',
+  'milestone.tier2.target',
+  'milestone.tier2.perk',
+  'milestone.tier3.name',
+  'milestone.tier3.target',
+  'milestone.tier3.perk',
+  'milestone.tier4.name',
+  'milestone.tier4.target',
+  'milestone.tier4.perk',
 ] as const
 
 export type ThemeKey = typeof THEME_KEYS[number]
@@ -408,6 +422,20 @@ export const THEME_DEFAULTS: Record<string, string> = {
   'section.refund.sec3Body':  'Day passes purchased via the platform are non-refundable and hold no direct fiat cash value.',
   'section.refund.bg':        '#ffffff',
   'section.refund.text':      '#020617',
+
+  // --- ATHLETE MILESTONES & REWARDS ---
+  'milestone.tier1.name':     'ROOKIE ATHLETE',
+  'milestone.tier1.target':   '10',
+  'milestone.tier1.perk':     'Complimentary Energy Drink at Reception',
+  'milestone.tier2.name':     'IRON MEMBER',
+  'milestone.tier2.target':   '25',
+  'milestone.tier2.perk':     'Complimentary Recovery & Protein Shake',
+  'milestone.tier3.name':     'ELITE TITAN',
+  'milestone.tier3.target':   '50',
+  'milestone.tier3.perk':     'VIP Protein Smoothie + Guest Day Pass',
+  'milestone.tier4.name':     'SHARERS LEGEND',
+  'milestone.tier4.target':   '100',
+  'milestone.tier4.perk':     'Free 1-Month VIP Black Pass Top-Up',
 }
 
 /** GET /api/theme — returns merged defaults + DB overrides */

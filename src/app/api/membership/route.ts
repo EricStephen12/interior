@@ -72,11 +72,15 @@ export async function GET() {
 
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
-    const email = user.email
+    const userEmails = Array.from(new Set([
+      user.email,
+      clerkEmail,
+      ...(clerkUser?.emailAddresses?.map(e => e.emailAddress.toLowerCase()) || [])
+    ].filter(Boolean))) as string[]
 
     const orders = await prisma.order.findMany({
       where: { 
-        userEmail: { equals: email, mode: 'insensitive' }
+        userEmail: { in: userEmails, mode: 'insensitive' }
       },
       orderBy: { createdAt: 'desc' }
     })

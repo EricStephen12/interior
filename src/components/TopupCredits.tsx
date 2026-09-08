@@ -56,7 +56,7 @@ export default function TopupCredits() {
         <>
             <button 
                 onClick={() => setIsOpen(true)}
-                className="flex items-center gap-3 bg-accent text-white px-8 py-4 text-xs font-black uppercase tracking-[0.25em] hover:bg-primary transition-all shadow-2xl active:scale-95 shimmer-btn rounded"
+                className="w-full sm:w-auto flex items-center justify-center gap-2.5 bg-accent text-white px-6 sm:px-8 py-3.5 sm:py-4 text-[11px] sm:text-xs font-black uppercase tracking-[0.15em] sm:tracking-[0.25em] hover:bg-primary transition-all shadow-xl active:scale-95 shimmer-btn rounded"
                 style={{ borderRadius: 'var(--radius-brand-none, 0px)' }}
             >
                 <Plus className="w-4 h-4" />
@@ -65,52 +65,53 @@ export default function TopupCredits() {
 
             <AnimatePresence>
                 {isOpen && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4">
                         <motion.div 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsOpen(false)}
-                            className="absolute inset-0 backdrop-blur-md bg-black/60"
+                            className="absolute inset-0 backdrop-blur-md bg-black/70"
                         />
                         
                         <motion.div 
                             initial={{ opacity: 0, scale: 0.95, y: 10 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                            className="relative w-full max-w-2xl bg-white p-6 sm:p-10 rounded-2xl overflow-hidden shadow-2xl border border-primary/10"
+                            className="relative w-full max-w-xl sm:max-w-2xl max-h-[90dvh] bg-white p-4 sm:p-8 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-primary/10 flex flex-col z-10"
                         >
                             <button 
                                 onClick={() => setIsOpen(false)}
-                                className="absolute top-6 right-6 p-2 text-primary/30 hover:text-primary transition-colors"
+                                className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 text-primary/40 hover:text-primary transition-colors z-20"
+                                aria-label="Close"
                             >
-                                <X className="w-6 h-6" />
+                                <X className="w-5 h-5 sm:w-6 sm:h-6" />
                             </button>
 
-                            <div className="text-center mb-8">
-                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-accent block mb-2">Sharers Official Passes</span>
-                                <h2 className="text-3xl sm:text-4xl font-black text-primary uppercase tracking-tight font-heading">
+                            <div className="text-center mb-4 sm:mb-6 shrink-0 pt-2 sm:pt-0">
+                                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] text-accent block mb-1.5">Sharers Official Passes</span>
+                                <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-primary uppercase tracking-tight font-heading">
                                     Gym Access <span className="text-accent italic font-light lowercase">Passes.</span>
                                 </h2>
-                                <p className="text-xs font-medium text-text-muted mt-1">
+                                <p className="text-[11px] sm:text-xs font-medium text-text-muted mt-1 max-w-md mx-auto">
                                     Choose an hourly training session or full day/monthly membership pass.
                                 </p>
                             </div>
 
-                            {/* Filter Tabs */}
-                            <div className="flex items-center justify-center gap-2 mb-6">
+                            {/* Filter Tabs - Horizontal Scroll on Narrow Viewports */}
+                            <div className="flex items-center justify-start sm:justify-center gap-1.5 sm:gap-2 mb-4 overflow-x-auto pb-1 no-scrollbar shrink-0">
                                 {[
                                     { id: 'ALL', label: 'All Passes' },
-                                    { id: 'HOURS', label: '⏱️ Hourly Sessions' },
-                                    { id: 'DAYS', label: '📅 Day & Month Passes' },
+                                    { id: 'HOURS', label: '⏱️ Hourly' },
+                                    { id: 'DAYS', label: '📅 Day & Month' },
                                 ].map(f => (
                                     <button
                                         key={f.id}
                                         onClick={() => setFilter(f.id as any)}
-                                        className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${
+                                        className={`px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-lg transition-all shrink-0 ${
                                             filter === f.id
                                                 ? 'bg-primary text-white shadow-sm'
-                                                : 'bg-secondary/40 text-text-muted hover:text-primary hover:bg-secondary'
+                                                : 'bg-secondary/60 text-text-muted hover:text-primary hover:bg-secondary'
                                         }`}
                                     >
                                         {f.label}
@@ -118,13 +119,13 @@ export default function TopupCredits() {
                                 ))}
                             </div>
 
-                            <div className="space-y-3.5 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar">
+                            <div className="space-y-2.5 sm:space-y-3.5 overflow-y-auto pr-1 custom-scrollbar flex-1 min-h-0">
                                 {loading ? (
-                                    <div className="py-20 flex justify-center">
+                                    <div className="py-16 flex justify-center">
                                         <Loader2 className="w-8 h-8 text-accent animate-spin" />
                                     </div>
                                 ) : filteredPacks.length === 0 ? (
-                                    <div className="text-center py-16 bg-secondary/10 rounded-xl border border-dashed border-primary/10">
+                                    <div className="text-center py-12 bg-secondary/10 rounded-xl border border-dashed border-primary/10">
                                         <p className="text-xs font-bold text-text-muted uppercase tracking-widest">No passes found in this category.</p>
                                     </div>
                                 ) : (
@@ -134,34 +135,34 @@ export default function TopupCredits() {
                                             <button
                                                 key={pack.id}
                                                 onClick={() => handleSelect(pack)}
-                                                className={`w-full group flex items-center justify-between p-5 border-2 rounded-xl transition-all relative overflow-hidden text-left
+                                                className={`w-full group flex items-center justify-between p-3.5 sm:p-5 border-2 rounded-xl transition-all relative overflow-hidden text-left
                                                     ${pack.isPopular 
-                                                        ? 'border-accent bg-accent/5 shadow-sm' 
+                                                        ? 'border-accent bg-accent/5 shadow-xs' 
                                                         : 'border-primary/10 bg-white hover:border-accent/40 hover:bg-secondary/20'}`}
                                             >
-                                                <div className="relative z-10 space-y-1">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-xs font-black text-primary uppercase tracking-wider">{pack.name}</span>
-                                                        <span className={`text-[9px] font-black px-2 py-0.5 uppercase rounded ${
+                                                <div className="relative z-10 space-y-0.5 sm:space-y-1 min-w-0 pr-3">
+                                                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                                                        <span className="text-[11px] sm:text-xs font-black text-primary uppercase tracking-wider">{pack.name}</span>
+                                                        <span className={`text-[8px] sm:text-[9px] font-black px-1.5 sm:px-2 py-0.5 uppercase rounded shrink-0 ${
                                                             isHourly ? 'bg-amber-100 text-amber-800' : 'bg-indigo-100 text-indigo-800'
                                                         }`}>
-                                                            {isHourly ? '⏱️ Hourly Session' : '📅 Day Pass'}
+                                                            {isHourly ? '⏱️ Hourly' : '📅 Day'}
                                                         </span>
                                                         {pack.isPopular && (
-                                                            <span className="text-[9px] font-black bg-accent text-white px-2 py-0.5 uppercase rounded">
+                                                            <span className="text-[8px] sm:text-[9px] font-black bg-accent text-white px-1.5 sm:px-2 py-0.5 uppercase rounded shrink-0">
                                                                 Featured
                                                             </span>
                                                         )}
                                                     </div>
-                                                    <h3 className="text-xl font-black text-primary tabular-nums">
+                                                    <h3 className="text-base sm:text-xl font-black text-primary tabular-nums">
                                                         {pack.credits} {isHourly ? (pack.credits === 1 ? 'Hour Access' : 'Hours Access') : (pack.credits === 1 ? 'Day Pass' : 'Days Pass')}
                                                     </h3>
-                                                    <p className="text-[11px] font-medium text-text-muted">{pack.description || 'Full Arena & Biomechanics Access'}</p>
+                                                    <p className="text-[10px] sm:text-[11px] font-medium text-text-muted truncate max-w-[240px] sm:max-w-none">{pack.description || 'Full Arena & Biomechanics Access'}</p>
                                                 </div>
                                                 <div className="text-right relative z-10 shrink-0">
-                                                    <p className="text-lg font-black text-primary tabular-nums font-mono">₦{pack.price.toLocaleString()}</p>
-                                                    <div className="flex items-center justify-end gap-1.5 text-xs font-bold text-accent uppercase tracking-wider mt-1 group-hover:translate-x-1 transition-transform">
-                                                        Select <ArrowRight className="w-3.5 h-3.5" />
+                                                    <p className="text-base sm:text-lg font-black text-primary tabular-nums font-mono">₦{pack.price.toLocaleString()}</p>
+                                                    <div className="flex items-center justify-end gap-1 text-[10px] sm:text-xs font-bold text-accent uppercase tracking-wider mt-1 group-hover:translate-x-1 transition-transform">
+                                                        Select <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                                                     </div>
                                                 </div>
                                             </button>
@@ -170,12 +171,12 @@ export default function TopupCredits() {
                                 )}
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-primary/5 flex items-center justify-between text-[11px] text-text-muted font-medium">
+                            <div className="mt-4 pt-3 border-t border-primary/5 flex items-center justify-between text-[10px] sm:text-[11px] text-text-muted font-medium shrink-0">
                                 <span className="flex items-center gap-1.5">
-                                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                                    Instant Digital QR Pass Activation
+                                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                                    Instant QR Pass Activation
                                 </span>
-                                <span>Verified Payment Gateway</span>
+                                <span className="hidden xs:inline">Verified Payment Gateway</span>
                             </div>
                         </motion.div>
                     </div>
