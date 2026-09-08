@@ -5,11 +5,13 @@ import React, { useState } from 'react';
 interface KingsChatButtonProps {
   label?: string;
   className?: string;
+  origin?: string;
 }
 
 export default function KingsChatButton({
   label = 'Continue with KingsChat',
   className = '',
+  origin = '/dashboard',
 }: KingsChatButtonProps) {
   const [loading, setLoading] = useState(false);
 
@@ -18,12 +20,10 @@ export default function KingsChatButton({
 
   const handleKingsChatLogin = () => {
     setLoading(true);
-    // Reliable official KingsChat OAuth portal (renders form immediately without blue spinner)
-    const callbackUrl = 'https://www.sharersgym.com/api/auth/kingschat/callback';
-
+    // Official KingsChat OAuth2 flow (https://developers.kingschat.online/docs/login#step-4)
     const params = new URLSearchParams({
-      client_id: clientId,
-      redirect_uri: callbackUrl,
+      clientId: clientId,
+      origin: origin,
     });
     window.location.href = `https://accounts.kingschat.online/log-in?${params.toString()}`;
   };

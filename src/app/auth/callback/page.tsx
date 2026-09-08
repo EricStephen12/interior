@@ -31,7 +31,8 @@ function CallbackHandler() {
       .then(async (res: any) => {
         if (res.status === 'complete' && res.createdSessionId) {
           await clerk.setActive({ session: res.createdSessionId })
-          window.location.href = '/dashboard'
+          const dest = searchParams.get('redirect_url') || '/dashboard'
+          window.location.href = dest
         } else {
           router.replace('/sign-in?error=sso_incomplete')
         }
