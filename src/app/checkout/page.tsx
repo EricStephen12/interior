@@ -108,7 +108,7 @@ function CheckoutContent() {
       try {
         const res = await fetch(`/api/checkout/status?orderId=${pendingOrderId}`);
         const data = await res.json();
-        if (data.success && data.status === 'COMPLETED') {
+        if (data.success && (data.status === 'COMPLETED' || data.status === 'PAID')) {
           clearInterval(intervalId);
           clearCart();
           router.push('/dashboard?payment=success');

@@ -20,7 +20,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 })
     }
 
-    if (order.status === 'COMPLETED') {
+    if (order.status === 'COMPLETED' || order.status === 'PAID') {
       return NextResponse.json({ success: true, status: 'COMPLETED' })
     }
 
@@ -105,8 +105,8 @@ async function fulfillPayment(orderId: string, metadata: any, userEmail: string)
       throw new Error(`Order ${orderId} not found`)
     }
 
-    if (order.status === 'COMPLETED') {
-      console.log(`Order ${orderId} is already COMPLETED. Skipping status check fulfillment.`)
+    if (order.status === 'COMPLETED' || order.status === 'PAID') {
+      console.log(`Order ${orderId} is already ${order.status}. Skipping status check fulfillment.`)
       return
     }
 
@@ -140,7 +140,7 @@ async function fulfillPayment(orderId: string, metadata: any, userEmail: string)
     // Update order status
     await tx.order.update({
       where: { id: orderId },
-      data: { status: 'COMPLETED' }
+      data: { status: 'PAID' }
     })
 
     // Parse order items for inventory decrement and email notification

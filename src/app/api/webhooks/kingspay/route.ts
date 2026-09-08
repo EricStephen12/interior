@@ -6,10 +6,20 @@ export async function POST(req: Request) {
   try {
     const body = await req.text()
     const signature = req.headers.get('x-kingspay-signature')
-    const secret = process.env.KINGSPAY_SECRET_KEY
+    let secret = process.env.KINGSPAY_SECRET_KEY
+    if (!secret) {
+      try {
+        const secretKeyRow = await prisma.storeSetting.findUnique({
+          where: { key: 'payment_kingspay_secret_key' }
+        })
+        secret = secretKeyRow?.value
+      } catch (err) {
+        console.error('Error fetching secret key from store settings in webhook:', err)
+      }
+    }
 
     if (!secret) {
-      console.error('KINGSPAY_SECRET_KEY is not defined')
+      console.error('KINGSPAY_SECRET_KEY is not defined in environment variables or store settings')
       return NextResponse.json({ error: 'Configuration error' }, { status: 500 })
     }
 
@@ -85,8 +95,8 @@ async function fulfillPayment(paymentId: string, metadata: any, userEmail: strin
 
     const dbOrderId = order.id
 
-    if (order.status === 'COMPLETED') {
-      console.log(`Order ${dbOrderId} is already COMPLETED. Skipping webhook fulfillment.`)
+    if (order.status === 'COMPLETED' || order.status === 'PAID') {
+      console.log(`Order ${dbOrderId} is already ${order.status}. Skipping webhook fulfillment.`)
       return
     }
 
@@ -120,7 +130,7 @@ async function fulfillPayment(paymentId: string, metadata: any, userEmail: strin
     // Update order status
     await tx.order.update({
       where: { id: dbOrderId },
-      data: { status: 'COMPLETED' }
+      data: { status: 'PAID' }
     })
   }).catch((err) => {
     console.error('Fulfillment transaction failed:', err)

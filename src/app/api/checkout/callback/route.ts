@@ -47,9 +47,20 @@ export async function GET(req: Request) {
     return NextResponse.redirect(`${origin}/checkout?error=missing_payment_id`)
   }
 
-  const secretKey = process.env.KINGSPAY_SECRET_KEY
+  let secretKey = process.env.KINGSPAY_SECRET_KEY
   if (!secretKey) {
-    console.error('KINGSPAY_SECRET_KEY is not defined in environment variables')
+    try {
+      const secretKeyRow = await prisma.storeSetting.findUnique({
+        where: { key: 'payment_kingspay_secret_key' }
+      })
+      secretKey = secretKeyRow?.value
+    } catch (err) {
+      console.error('Error fetching secret key from store settings:', err)
+    }
+  }
+
+  if (!secretKey) {
+    console.error('KINGSPAY_SECRET_KEY is not defined in environment variables or store settings')
     return NextResponse.redirect(`${origin}/checkout?error=config_error`)
   }
 
