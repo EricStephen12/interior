@@ -49,6 +49,56 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing customer email' }, { status: 400 })
     }
 
+    // ─────────────────────────────────────────────────────────────
+    // PRE-FLIGHT REAL-TIME STOCK VERIFICATION
+    // Prevents customer charges if another buyer claims the stock
+    // ─────────────────────────────────────────────────────────────
+    if (Array.isArray(items)) {
+      for (const item of items) {
+        const pId = item.productId || item.id
+        const qty = item.quantity || 1
+        const itemName = item.name || 'Selected product'
+
+        // Skip non-inventory digital items (memberships, hour/day credit packs)
+        const isDigital = itemName.toLowerCase().includes('hour') || 
+                          itemName.toLowerCase().includes('day') || 
+                          itemName.toLowerCase().includes('membership')
+        if (isDigital) continue
+
+        let product = null
+        if (pId) {
+          product = await prisma.product.findUnique({
+            where: { id: pId },
+            select: { id: true, name: true, stock: true }
+          })
+        } else if (item.name) {
+          product = await prisma.product.findFirst({
+            where: { name: item.name },
+            select: { id: true, name: true, stock: true }
+          })
+        }
+
+        if (product) {
+          if (product.stock <= 0) {
+            return NextResponse.json({
+              error: `Sorry, "${product.name}" just sold out while you were in checkout. Please remove it from your cart.`,
+              code: 'OUT_OF_STOCK',
+              productId: product.id,
+            }, { status: 400 })
+          }
+
+          if (product.stock < qty) {
+            return NextResponse.json({
+              error: `Sorry, only ${product.stock} unit${product.stock > 1 ? 's' : ''} of "${product.name}" remain in stock. Please adjust your cart quantity.`,
+              code: 'INSUFFICIENT_STOCK',
+              productId: product.id,
+              availableStock: product.stock,
+            }, { status: 400 })
+          }
+        }
+      }
+    }
+
     // Load store payment settings from DB with fallback
     const settingsRows = await prisma.storeSetting.findMany({
       where: {

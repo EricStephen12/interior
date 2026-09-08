@@ -679,6 +679,59 @@ export const emailService = {
   },
 
   /**
+   * Admin: Simultaneous Inventory Purchase Collision Alert
+   */
+  async sendInventoryCollisionAlert({
+    orderId,
+    productName,
+    customerName,
+    customerEmail,
+  }: {
+    orderId: string;
+    productName: string;
+    customerName: string;
+    customerEmail: string;
+  }) {
+    const html = `
+      <div style="background-color: #0b0c10; font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 580px; margin: 0 auto; color: #ffffff; border: 1px solid #1f232e;">
+        <div style="padding: 28px 24px; border-bottom: 1px solid #1f232e; text-align: center;">
+          <div style="display: inline-block; padding: 4px 12px; background: rgba(242, 13, 13, 0.2); border: 1px solid #f20d0d; color: #f20d0d; font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;">
+            SIMULTANEOUS PURCHASE COLLISION
+          </div>
+          <h1 style="margin: 0; font-size: 22px; font-weight: 900; color: #ffffff;">INVENTORY GUARD ALERT</h1>
+        </div>
+        <div style="padding: 28px 24px;">
+          <p style="font-size: 14px; color: #e1e4ea; margin-top: 0;">
+            A purchase collision occurred on Order <strong>#${orderId.slice(-8).toUpperCase()}</strong>.
+          </p>
+          <div style="margin: 20px 0; background: #12141c; border: 1px solid #2a2f3d; padding: 20px;">
+            <p style="margin: 0 0 8px; font-size: 12px; color: #8a93a5;">Product: <span style="color: #ffffff; font-weight: 700;">${productName}</span></p>
+            <p style="margin: 0 0 8px; font-size: 12px; color: #8a93a5;">Customer: <span style="color: #ffffff; font-weight: 700;">${customerName} (${customerEmail})</span></p>
+            <p style="margin: 0; font-size: 12px; color: #8a93a5;">Inventory Guard Action: <span style="color: #10b981; font-weight: 700;">Protected (Stock held at 0, negative overselling prevented)</span></p>
+          </div>
+          <p style="font-size: 13px; color: #8a93a5; line-height: 1.5;">
+            Two customers completed payment within seconds of each other for the final physical unit. Please allocate this item from reserve inventory or issue a refund.
+          </p>
+          <div style="text-align: center; margin-top: 24px;">
+            <a href="https://sharersgym.com/admin/orders" style="display: inline-block; background: #f20d0d; color: #ffffff; padding: 12px 28px; font-weight: 900; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; text-decoration: none;">
+              REVIEW ORDER IN ADMIN
+            </a>
+          </div>
+        </div>
+        <div style="padding: 16px 24px; background: #08090c; border-top: 1px solid #1f232e; text-align: center; font-size: 11px; color: #626a7a;">
+          <p style="margin: 0;">Sharers Gym • Real-Time Concurrency Protection</p>
+        </div>
+      </div>
+    `;
+
+    return this.sendEmail({
+      to: ADMIN_EMAIL,
+      subject: `🚨 [Urgent Collision Alert] Simultaneous purchase on #${orderId.slice(-8).toUpperCase()}`,
+      html,
+    });
+  },
+
+  /**
    * 7. Admin: Daily Executive Briefing
    */
   async sendDailyExecutiveDigest({

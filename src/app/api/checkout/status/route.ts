@@ -156,20 +156,38 @@ async function fulfillPayment(orderId: string, metadata: any, userEmail: string)
       }
     }
 
-    // Decrement physical product stock
+    // Decrement physical product stock with atomic non-negative floor
     for (const item of parsedItems) {
       const pId = item.productId || item.id
+      const qty = item.quantity || 1
       if (pId) {
         try {
-          const updatedProduct = await tx.product.update({
-            where: { id: pId },
-            data: { stock: { decrement: item.quantity || 1 } }
+          // Atomic update: only decrement if stock >= requested quantity
+          const updateResult = await tx.product.updateMany({
+            where: { id: pId, stock: { gte: qty } },
+            data: { stock: { decrement: qty } }
           })
-          if (updatedProduct && updatedProduct.stock <= 3) {
-            emailService.sendLowStockAlert({
-              productName: updatedProduct.name,
-              remainingStock: updatedProduct.stock,
-              productId: updatedProduct.id,
+
+          if (updateResult.count > 0) {
+            const product = await tx.product.findUnique({
+              where: { id: pId },
+              select: { id: true, name: true, stock: true }
+            })
+            if (product && product.stock <= 3) {
+              emailService.sendLowStockAlert({
+                productName: product.name,
+                remainingStock: product.stock,
+                productId: product.id,
+              }).catch(() => {})
+            }
+          } else {
+            // Simultaneous payment collision intercepted: stock kept at 0
+            console.warn(`[Stock Collision Guard] Order ${order.id}: Item ${item.name} (${pId}) had insufficient inventory to decrement. Oversell prevented.`)
+            emailService.sendInventoryCollisionAlert({
+              orderId: order.id,
+              productName: item.name,
+              customerName: name,
+              customerEmail: userEmail,
             }).catch(() => {})
           }
         } catch (stockErr) {

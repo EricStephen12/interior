@@ -92,21 +92,30 @@ export async function PATCH(req: Request) {
         }
       }
 
-      // Decrement physical product stock
+      // Decrement physical product stock with atomic non-negative floor
       for (const item of parsedItems) {
         const pId = item.productId || item.id
+        const qty = item.quantity || 1
         if (pId) {
           try {
-            const updatedProduct = await prisma.product.update({
-              where: { id: pId },
-              data: { stock: { decrement: item.quantity || 1 } }
+            const updateResult = await prisma.product.updateMany({
+              where: { id: pId, stock: { gte: qty } },
+              data: { stock: { decrement: qty } }
             })
-            if (updatedProduct && updatedProduct.stock <= 3) {
-              emailService.sendLowStockAlert({
-                productName: updatedProduct.name,
-                remainingStock: updatedProduct.stock,
-                productId: updatedProduct.id,
-              }).catch(() => {})
+            if (updateResult.count > 0) {
+              const product = await prisma.product.findUnique({
+                where: { id: pId },
+                select: { id: true, name: true, stock: true }
+              })
+              if (product && product.stock <= 3) {
+                emailService.sendLowStockAlert({
+                  productName: product.name,
+                  remainingStock: product.stock,
+                  productId: product.id,
+                }).catch(() => {})
+              }
+            } else {
+              console.warn(`[Stock Collision Guard] Admin approving order ${orderId}: Item ${item.name} (${pId}) had insufficient inventory to decrement.`)
             }
           } catch (stockErr) {
             console.warn(`Could not update stock for product ${pId}:`, stockErr)

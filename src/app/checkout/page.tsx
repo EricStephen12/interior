@@ -234,7 +234,14 @@ function CheckoutContent() {
           totalAmount: total,
           items: isCreditTopup 
             ? [{ name: `${creditPack?.amount} ${creditPack?.unit === 'hours' ? (creditPack?.amount === 1 ? 'Hour' : 'Hours') : (creditPack?.amount === 1 ? 'Day' : 'Days')} (${creditPack?.label})`, quantity: 1, price: creditPack?.price }]
-            : state.items.map(i => ({ name: i.product?.name, quantity: i.quantity, price: i.variant?.price })),
+            : state.items.map(i => ({
+                id: i.product?.id,
+                productId: i.product?.id,
+                name: i.product?.name,
+                quantity: i.quantity,
+                price: i.variant?.promo_price || i.variant?.price || 0,
+                variant: i.variant?.size?.name || undefined,
+              })),
           hasMembership: hasMembership || isCreditTopup,
           creditAmount: isCreditTopup ? (creditPack?.amount || 0) : (hasMembership ? 30 : 0),
           name: formData.name,
