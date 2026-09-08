@@ -18,18 +18,14 @@ export default function KingsChatButton({
 
   const handleKingsChatLogin = () => {
     setLoading(true);
-    const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://www.sharersgym.com';
+    // Direct navigation to the NEW official KingsChat auth portal
+    const origin = 'https://www.sharersgym.com';
     const callbackUrl = 'https://www.sharersgym.com/api/auth/kingschat/callback';
-    const originToUse = currentOrigin.includes('localhost') ? currentOrigin : 'https://www.sharersgym.com';
 
-    // Direct navigation to the official KingsChat login portal with approved callback and origin
     const params = new URLSearchParams({
       clientId,
-      client_id: clientId,
-      origin: originToUse,
+      origin,
       redirect_uri: callbackUrl,
-      redirectUri: callbackUrl,
-      scopes: '["profile"]',
     });
     window.location.href = `https://accounts.kingschat.online/log-in?${params.toString()}`;
   };
