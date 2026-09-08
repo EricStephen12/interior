@@ -9,11 +9,18 @@ export async function POST(req: NextRequest) {
     const code = body.code;
 
     const apiKey = process.env.KINGSCHAT_API_KEY;
-    const clientId = process.env.KINGSCHAT_CLIENT_ID || 'e1d4e49c-ae48-4b0a-b7ea-bf451fccc203';
+    const clientId = process.env.KINGSCHAT_CLIENT_ID || process.env.NEXT_PUBLIC_KINGSCHAT_CLIENT_ID;
 
     if (!apiKey || apiKey === 'YOUR_KINGSCHAT_API_KEY_HERE') {
       return NextResponse.json(
         { error: 'KingsChat API Key is missing. Please add your KINGSCHAT_API_KEY in .env file.' },
+        { status: 500 }
+      );
+    }
+
+    if (!clientId) {
+      return NextResponse.json(
+        { error: 'KingsChat Client ID is missing. Please add your KINGSCHAT_CLIENT_ID in .env file.' },
         { status: 500 }
       );
     }

@@ -15,10 +15,13 @@ export default function KingsChatButton({
 }: KingsChatButtonProps) {
   const [loading, setLoading] = useState(false);
 
-  const clientId =
-    process.env.NEXT_PUBLIC_KINGSCHAT_CLIENT_ID || 'e1d4e49c-ae48-4b0a-b7ea-bf451fccc203';
+  const clientId = process.env.NEXT_PUBLIC_KINGSCHAT_CLIENT_ID || '';
 
   const handleKingsChatLogin = () => {
+    if (!clientId) {
+      console.error('NEXT_PUBLIC_KINGSCHAT_CLIENT_ID is not configured');
+      return;
+    }
     setLoading(true);
     // Official KingsChat OAuth2 flow (https://developers.kingschat.online/docs/login#step-4)
     const params = new URLSearchParams({

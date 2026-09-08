@@ -4,11 +4,15 @@ import prisma from '@/lib/prisma';
 
 async function handleKingsChatAuth(code: string, req: NextRequest, originParam?: string) {
   const apiKey = process.env.KINGSCHAT_API_KEY;
-  const clientId = process.env.KINGSCHAT_CLIENT_ID || 'e1d4e49c-ae48-4b0a-b7ea-bf451fccc203';
+  const clientId = process.env.KINGSCHAT_CLIENT_ID || process.env.NEXT_PUBLIC_KINGSCHAT_CLIENT_ID;
   const appUrl = process.env.APP_URL || 'https://sharersgym.com';
 
   if (!apiKey || apiKey === 'YOUR_KINGSCHAT_API_KEY_HERE') {
     return NextResponse.redirect(new URL('/sign-in?error=kingschat_api_key_missing', req.url), 303);
+  }
+
+  if (!clientId) {
+    return NextResponse.redirect(new URL('/sign-in?error=kingschat_client_id_missing', req.url), 303);
   }
 
   // 1. Exchange code for access_token (Step 6 of official docs)
