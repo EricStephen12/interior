@@ -168,3 +168,34 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: 'Failed to update order' }, { status: 500 })
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const { userId } = await auth()
+    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+    const { searchParams } = new URL(req.url)
+    let orderId = searchParams.get('orderId')
+
+    if (!orderId) {
+      try {
+        const body = await req.json()
+        orderId = body.orderId
+      } catch {}
+    }
+
+    if (!orderId) {
+      return NextResponse.json({ error: 'Missing orderId' }, { status: 400 })
+    }
+
+    await prisma.order.delete({
+      where: { id: orderId }
+    })
+
+    return NextResponse.json({ success: true, message: 'Order permanently deleted' })
+  } catch (error) {
+    console.error('Error deleting order:', error)
+    return NextResponse.json({ error: 'Failed to delete order' }, { status: 500 })
+  }
+}
+

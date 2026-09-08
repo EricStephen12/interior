@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Package, Truck, CheckCircle, Clock, MapPin, Search, ChevronDown, Bell, BellOff, Printer } from 'lucide-react'
+import { Package, Truck, CheckCircle, Clock, MapPin, Search, ChevronDown, Bell, BellOff, Printer, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { playCashChime, isChimeMuted, toggleChimeMute } from '@/lib/audio'
 
@@ -67,6 +67,28 @@ export default function AdminOrders() {
       }
     } catch (err) {
       console.error('Failed to update status', err)
+    } finally {
+      setUpdating(null)
+    }
+  }
+
+  const deleteOrder = async (orderId: string) => {
+    if (!confirm('Are you sure you want to permanently delete this order? This will remove it completely from your orders list.')) {
+      return
+    }
+    setUpdating(orderId)
+    try {
+      const res = await fetch(`/api/admin/orders?orderId=${orderId}`, {
+        method: 'DELETE'
+      })
+      if (res.ok) {
+        setOrders(prev => prev.filter(o => o.id !== orderId))
+      } else {
+        alert('Failed to delete order')
+      }
+    } catch (err) {
+      console.error('Failed to delete order', err)
+      alert('Error deleting order')
     } finally {
       setUpdating(null)
     }
@@ -335,6 +357,17 @@ export default function AdminOrders() {
                     <Printer className="w-3 h-3 text-accent" />
                     <span>View / Print Receipt</span>
                   </Link>
+
+                  {/* Permanently Delete Order */}
+                  <button 
+                    onClick={() => deleteOrder(order.id)}
+                    disabled={updating === order.id}
+                    className="w-full px-4 py-2 bg-transparent border border-gray-200 hover:border-red-400 text-gray-400 hover:text-red-500 hover:bg-red-50 text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all duration-150 disabled:opacity-50 mt-1 cursor-pointer"
+                    title="Permanently delete this order from the system"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    <span>Delete Order</span>
+                  </button>
                 </div>
               </div>
             </motion.div>
