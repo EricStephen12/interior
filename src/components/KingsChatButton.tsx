@@ -18,13 +18,11 @@ export default function KingsChatButton({
 
   const handleKingsChatLogin = () => {
     setLoading(true);
-    // Direct navigation to the NEW official KingsChat auth portal
-    const origin = 'https://www.sharersgym.com';
+    // Reliable official KingsChat OAuth portal (renders form immediately without blue spinner)
     const callbackUrl = 'https://www.sharersgym.com/api/auth/kingschat/callback';
 
     const params = new URLSearchParams({
-      clientId,
-      origin,
+      client_id: clientId,
       redirect_uri: callbackUrl,
     });
     window.location.href = `https://accounts.kingschat.online/log-in?${params.toString()}`;
