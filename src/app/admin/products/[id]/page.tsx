@@ -32,6 +32,7 @@ export default function EditProductPage() {
     type: '',
     description: '',
     images: [] as string[],
+    stock: '10',
     isActive: true,
     isBestseller: false,
   })
@@ -87,6 +88,7 @@ export default function EditProductPage() {
             type: pr.type || '',
             description: pr.description || '',
             images: loadedImages,
+            stock: pr.stock !== undefined && pr.stock !== null ? pr.stock.toString() : '10',
             isActive: pr.isActive !== false,
             isBestseller: Boolean(pr.isBestseller),
           })
@@ -544,6 +546,34 @@ export default function EditProductPage() {
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-green-600 text-xl font-black tabular-nums focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
                     placeholder="e.g. 120000"
                   />
+                </div>
+              </div>
+            </div>
+
+            {/* Inventory & Stock */}
+            <div className="bg-white rounded-2xl border border-gray-200/80 shadow-sm overflow-hidden">
+              <div className="px-8 py-5 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                <h2 className="text-xs font-black text-gray-900 uppercase tracking-widest">Inventory & Stock</h2>
+                <span className="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200/60 px-2.5 py-0.5 rounded-full">
+                  Auto-Tracked
+                </span>
+              </div>
+              <div className="p-8 space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                    Available Units in Stock
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={formData.stock}
+                    onChange={e => setFormData({ ...formData, stock: e.target.value })}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-xl font-black tabular-nums focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                    placeholder="10"
+                  />
+                  <p className="text-xs text-gray-400 mt-2">
+                    Decrements on customer purchase. Alerts sent automatically at ≤ 3 units.
+                  </p>
                 </div>
               </div>
             </div>

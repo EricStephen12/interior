@@ -238,6 +238,25 @@ export async function POST(req: Request) {
       }).catch(() => {})
     }
 
+    // Milestone Recognition & Loyalty Perk Trigger (10, 25, 50, 100 check-ins)
+    const lifetimeSessions = updatedUser.checkIns.length
+    if ([10, 25, 50, 100].includes(lifetimeSessions)) {
+      const tierTitle = lifetimeSessions >= 50 ? 'SHARERS LEGEND 👑' : lifetimeSessions >= 25 ? 'ELITE TITAN 🥇' : 'IRON MEMBER 🥈'
+      const rewardDesc = lifetimeSessions >= 50
+        ? 'Complimentary VIP Protein Smoothie + Free Guest Pass'
+        : lifetimeSessions >= 25
+        ? 'Complimentary Recovery & Protein Shake at reception'
+        : 'Complimentary Energy Drink & Electrolyte Booster at reception'
+
+      emailService.sendMilestoneRewardEmail({
+        userEmail: email,
+        userName: updatedUser.name || 'Champion',
+        milestoneCount: lifetimeSessions,
+        tierTitle,
+        rewardDesc,
+      }).catch((err) => console.error('[Milestone Email Error]:', err))
+    }
+
     const orders = await prisma.order.findMany({
       where: { 
         userEmail: { equals: email, mode: 'insensitive' }

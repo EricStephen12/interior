@@ -72,20 +72,21 @@ export default function AdminProductsPage() {
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Product</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Brand</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Price</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Stock</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Visibility</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wide text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-20 text-center">
+                  <td colSpan={6} className="px-6 py-20 text-center">
                     <Loader2 className="w-6 h-6 text-gray-300 animate-spin mx-auto" />
                   </td>
                 </tr>
               ) : products.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-20 text-center text-gray-400 text-sm">No products yet. Add your first one.</td>
+                  <td colSpan={6} className="px-6 py-20 text-center text-gray-400 text-sm">No products yet. Add your first one.</td>
                 </tr>
               ) : (
                 products.map((product: any) => {
@@ -100,6 +101,8 @@ export default function AdminProductsPage() {
                       firstImg = product.images
                     }
                   }
+
+                  const stockVal = typeof product.stock === 'number' ? product.stock : 10;
 
                   return (
                     <tr key={product.id} className="hover:bg-gray-50/50 transition-colors group">
@@ -134,8 +137,25 @@ export default function AdminProductsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide ${product.isActive !== false ? 'bg-green-50 text-green-700 border border-green-200/60' : 'bg-red-50 text-red-700 border border-red-200/60'}`}>
-                          {product.isActive !== false ? '● In Stock' : '○ Out of Stock'}
+                        <div className="flex items-center gap-2">
+                          {stockVal <= 0 ? (
+                            <span className="text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider bg-red-100 text-red-700 border border-red-200">
+                              ⛔ Sold Out (0)
+                            </span>
+                          ) : stockVal <= 3 ? (
+                            <span className="text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">
+                              ⚠️ Low ({stockVal})
+                            </span>
+                          ) : (
+                            <span className="text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
+                              ✓ {stockVal} units
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide ${product.isActive !== false ? 'bg-blue-50 text-blue-700 border border-blue-200/60' : 'bg-gray-100 text-gray-600 border border-gray-200'}`}>
+                          {product.isActive !== false ? 'Active' : 'Draft'}
                         </span>
                       </td>
                       <td className="px-6 py-4">

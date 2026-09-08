@@ -1,31 +1,57 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Package, Truck, CheckCircle, Clock, MapPin, Search, ChevronDown } from 'lucide-react'
+import { Package, Truck, CheckCircle, Clock, MapPin, Search, ChevronDown, Bell, BellOff, Printer } from 'lucide-react'
+import Link from 'next/link'
+import { playCashChime, isChimeMuted, toggleChimeMute } from '@/lib/audio'
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('ALL')
   const [updating, setUpdating] = useState<string | null>(null)
+  const [muted, setMuted] = useState(false)
+  const [lastOrderCount, setLastOrderCount] = useState<number | null>(null)
+  const [newOrderAlert, setNewOrderAlert] = useState<string | null>(null)
 
   useEffect(() => {
-    fetchOrders()
-  }, [])
+    setMuted(isChimeMuted())
+    fetchOrders(true)
 
-  const fetchOrders = async () => {
+    // Background live poll every 25 seconds
+    const interval = setInterval(() => {
+      fetchOrders(false)
+    }, 25000)
+
+    return () => clearInterval(interval)
+  }, [lastOrderCount])
+
+  const fetchOrders = async (isInitial = false) => {
     try {
       const res = await fetch('/api/admin/orders')
       const data = await res.json()
-      if (res.ok) {
-        setOrders(data.orders || [])
+      if (res.ok && data.orders) {
+        setOrders(data.orders)
+
+        // If new order arrived on background poll, play chime!
+        if (!isInitial && lastOrderCount !== null && data.orders.length > lastOrderCount) {
+          playCashChime()
+          setNewOrderAlert('⚡ New order arrived!')
+          setTimeout(() => setNewOrderAlert(null), 6000)
+        }
+        setLastOrderCount(data.orders.length)
       }
     } catch (err) {
       console.error('Failed to fetch orders', err)
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleToggleSound = () => {
+    const nextMuted = toggleChimeMute()
+    setMuted(nextMuted)
   }
 
   const updateStatus = async (orderId: string, newStatus: string) => {
@@ -60,6 +86,27 @@ export default function AdminOrders() {
         <div>
           <h1 className="text-4xl font-black text-primary tracking-tight uppercase">Order <span className="text-accent italic font-light lowercase">Fulfillment</span></h1>
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Manage customer deliveries</p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {newOrderAlert && (
+            <div className="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-[10px] font-black uppercase tracking-wider animate-bounce shadow-md">
+              {newOrderAlert}
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={handleToggleSound}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-colors ${
+              muted
+                ? 'bg-gray-100 text-gray-400 border-gray-200'
+                : 'bg-amber-50 text-amber-900 border-amber-300 shadow-sm'
+            }`}
+          >
+            {muted ? <BellOff className="w-3.5 h-3.5" /> : <Bell className="w-3.5 h-3.5 text-amber-600 animate-pulse" />}
+            <span>{muted ? 'Sound: Muted' : 'Sound: Live Chime'}</span>
+          </button>
         </div>
       </div>
 
@@ -278,6 +325,16 @@ export default function AdminOrders() {
                       Cancel Order
                     </button>
                   )}
+
+                  {/* Print / View Official Receipt */}
+                  <Link
+                    href={`/receipt/${order.id}`}
+                    target="_blank"
+                    className="w-full px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 text-[9px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors mt-2"
+                  >
+                    <Printer className="w-3 h-3 text-accent" />
+                    <span>View / Print Receipt</span>
+                  </Link>
                 </div>
               </div>
             </motion.div>

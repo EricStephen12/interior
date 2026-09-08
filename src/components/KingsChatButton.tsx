@@ -18,9 +18,20 @@ export default function KingsChatButton({
 
   const handleKingsChatLogin = () => {
     setLoading(true);
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://sharersgym.com';
-    // Direct navigation to the NEW official KingsChat 2026 login portal
-    window.location.href = `https://accounts.kingschat.online/log-in?clientId=${clientId}&origin=${encodeURIComponent(origin)}`;
+    const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://www.sharersgym.com';
+    const callbackUrl = 'https://www.sharersgym.com/api/auth/kingschat/callback';
+    const originToUse = currentOrigin.includes('localhost') ? currentOrigin : 'https://www.sharersgym.com';
+
+    // Direct navigation to the official KingsChat login portal with approved callback and origin
+    const params = new URLSearchParams({
+      clientId,
+      client_id: clientId,
+      origin: originToUse,
+      redirect_uri: callbackUrl,
+      redirectUri: callbackUrl,
+      scopes: '["profile"]',
+    });
+    window.location.href = `https://accounts.kingschat.online/log-in?${params.toString()}`;
   };
 
   return (

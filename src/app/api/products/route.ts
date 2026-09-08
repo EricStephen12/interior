@@ -91,6 +91,7 @@ export async function POST(req: Request) {
         sizeId: sizeId,
         promoCodeId: data.promoCodeId || null,
         isBestseller: Boolean(data.isBestseller),
+        stock: (data.stock !== undefined && data.stock !== '' && !isNaN(parseInt(data.stock.toString()))) ? parseInt(data.stock.toString()) : 10,
       },
       include: {
         brand: true,
@@ -132,6 +133,10 @@ export async function PUT(req: Request) {
     if (updateData.promoCodeId !== undefined) payload.promoCodeId = updateData.promoCodeId || null
     if (updateData.isActive !== undefined) payload.isActive = Boolean(updateData.isActive)
     if (updateData.isBestseller !== undefined) payload.isBestseller = Boolean(updateData.isBestseller)
+    if (updateData.stock !== undefined && updateData.stock !== '') {
+      const s = parseInt(updateData.stock.toString())
+      payload.stock = isNaN(s) ? 0 : s
+    }
 
     if (updateData.images !== undefined) {
       let images: string[] = []

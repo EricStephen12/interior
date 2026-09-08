@@ -91,6 +91,7 @@ model Product {
   images      Json?
   isActive    Boolean  @default(true)
   isBestseller Boolean @default(false)
+  stock       Int      @default(10)
   createdAt   DateTime @default(now())
   
   promoCodeId String?

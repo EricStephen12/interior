@@ -92,6 +92,28 @@ export async function PATCH(req: Request) {
         }
       }
 
+      // Decrement physical product stock
+      for (const item of parsedItems) {
+        const pId = item.productId || item.id
+        if (pId) {
+          try {
+            const updatedProduct = await prisma.product.update({
+              where: { id: pId },
+              data: { stock: { decrement: item.quantity || 1 } }
+            })
+            if (updatedProduct && updatedProduct.stock <= 3) {
+              emailService.sendLowStockAlert({
+                productName: updatedProduct.name,
+                remainingStock: updatedProduct.stock,
+                productId: updatedProduct.id,
+              }).catch(() => {})
+            }
+          } catch (stockErr) {
+            console.warn(`Could not update stock for product ${pId}:`, stockErr)
+          }
+        }
+      }
+
       emailService.sendOrderConfirmationEmail({
         orderId: existingOrder.id,
         userEmail: existingOrder.userEmail,
@@ -118,6 +140,7 @@ export async function PATCH(req: Request) {
         userEmail: existingOrder.userEmail,
         userName: (existingOrder.shippingDetails as any)?.name || 'Valued Member',
         newStatus: status,
+        items: existingOrder.items,
       }).catch((err) => console.error('[Email Error] Status update email:', err))
 
       emailService.triggerResendEvent({

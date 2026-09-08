@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { useMembership, getActivePassInfo } from '@/lib/membership-context'
 import { useCart } from '@/lib/cart-context'
 import MemberPass from '@/components/MemberPass'
-import { Activity, Clock, Award, ChevronRight, ShoppingBag, Sparkles } from 'lucide-react'
+import { Activity, Clock, Award, ChevronRight, ShoppingBag, Sparkles, Printer, Trophy } from 'lucide-react'
 import Link from 'next/link'
 import TopupCredits from '@/components/TopupCredits'
 import { useUser } from '@clerk/nextjs'
@@ -22,6 +22,33 @@ export default function DashboardPage() {
         if (hour < 17) return 'GOOD AFTERNOON'
         return 'GOOD EVENING'
     }
+
+    // Athlete Milestone Logic
+    const sessionCount = state.checkInHistory.length
+    let athleteTier = 'ROOKIE ATHLETE'
+    let tierIcon = '🥉'
+    let nextTarget = 10
+    let nextPerk = 'Complimentary Energy Drink at Reception'
+
+    if (sessionCount >= 50) {
+        athleteTier = 'SHARERS LEGEND'
+        tierIcon = '👑'
+        nextTarget = 100
+        nextPerk = 'Free 1-Month VIP Black Pass Top-Up'
+    } else if (sessionCount >= 25) {
+        athleteTier = 'ELITE TITAN'
+        tierIcon = '🥇'
+        nextTarget = 50
+        nextPerk = 'VIP Protein Smoothie + Guest Day Pass'
+    } else if (sessionCount >= 10) {
+        athleteTier = 'IRON MEMBER'
+        tierIcon = '🥈'
+        nextTarget = 25
+        nextPerk = 'Complimentary Recovery & Protein Shake'
+    }
+
+    const progressPercent = Math.min(100, Math.round((sessionCount / nextTarget) * 100))
+    const sessionsRemaining = Math.max(0, nextTarget - sessionCount)
 
     useEffect(() => {
         if (typeof window !== 'undefined' && window.location.search.includes('payment=success')) {
@@ -134,6 +161,38 @@ export default function DashboardPage() {
                                 />
                             </motion.div>
 
+                            {/* Athlete Loyalty & Milestone Progress */}
+                            <motion.div variants={item} className="p-6 sm:p-8 bg-white border border-primary/10 shadow-sm">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="text-xl">{tierIcon}</span>
+                                            <h4 className="text-base font-black tracking-tight text-primary uppercase">
+                                                {athleteTier}
+                                            </h4>
+                                            <span className="text-[9px] font-black uppercase tracking-widest px-2.5 py-0.5 bg-accent/15 text-accent rounded-full">
+                                                {sessionCount} Workouts
+                                            </span>
+                                        </div>
+                                        <p className="text-xs text-text-muted">
+                                            Next Milestone Reward: <strong className="text-primary font-bold">{nextPerk}</strong>
+                                        </p>
+                                    </div>
+                                    <div className="text-left sm:text-right">
+                                        <span className="text-[11px] font-black text-accent uppercase tracking-wider">
+                                            {sessionsRemaining === 0 ? '🏆 Milestone Complete!' : `${sessionsRemaining} workout${sessionsRemaining === 1 ? '' : 's'} to unlock next perk`}
+                                        </span>
+                                    </div>
+                                </div>
+                                {/* Progress Bar */}
+                                <div className="w-full h-2 bg-secondary overflow-hidden rounded-full border border-primary/5">
+                                    <div
+                                        className="h-full bg-gradient-to-r from-accent to-red-500 transition-all duration-1000 ease-out"
+                                        style={{ width: `${progressPercent}%` }}
+                                    />
+                                </div>
+                            </motion.div>
+
                             {/* Activity Log - Editorial List */}
                             <motion.div variants={item} className="space-y-12">
                                 <div className="flex items-end justify-between border-b border-primary/10 pb-8">
@@ -238,6 +297,17 @@ export default function DashboardPage() {
                                                             {order.status}
                                                         </div>
                                                     )}
+
+                                                    {/* Printable Official Receipt Link */}
+                                                    <Link
+                                                        href={`/receipt/${order.id}`}
+                                                        target="_blank"
+                                                        className="px-3 py-2 bg-secondary hover:bg-primary hover:text-white text-primary text-[9px] font-black tracking-widest uppercase flex items-center gap-1.5 transition-colors border border-primary/10 rounded"
+                                                        title="Download Official Receipt (PDF)"
+                                                    >
+                                                        <Printer className="w-3 h-3 text-accent" />
+                                                        <span>Receipt</span>
+                                                    </Link>
                                                 </div>
                                             </motion.div>
                                         ))}

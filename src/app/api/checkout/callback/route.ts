@@ -181,6 +181,28 @@ async function fulfillPayment(orderId: string, metadata: any, userEmail: string)
       }
     }
 
+    // Decrement physical product stock
+    for (const item of parsedItems) {
+      const pId = item.productId || item.id
+      if (pId) {
+        try {
+          const updatedProduct = await tx.product.update({
+            where: { id: pId },
+            data: { stock: { decrement: item.quantity || 1 } }
+          })
+          if (updatedProduct && updatedProduct.stock <= 3) {
+            emailService.sendLowStockAlert({
+              productName: updatedProduct.name,
+              remainingStock: updatedProduct.stock,
+              productId: updatedProduct.id,
+            }).catch(() => {})
+          }
+        } catch (stockErr) {
+          console.warn(`Could not update stock for product ${pId}:`, stockErr)
+        }
+      }
+    }
+
     const shipping = order.shippingDetails as any
 
     // 1. Send Order Confirmation Email to Customer via Resend

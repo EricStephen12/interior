@@ -15,6 +15,7 @@ import {
 
 import prisma from '@/lib/prisma'
 import AdminCharts from '@/components/AdminCharts'
+import AdminQuickActions from '@/components/AdminQuickActions'
 
 export default async function AdminDashboard({ searchParams }: { searchParams: Promise<{ filter?: string }> }) {
   const params = await searchParams;
@@ -55,6 +56,15 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
     select: { name: true, email: true, tier: true, credits: true, createdAt: true },
     where: dateQuery
   })
+
+  // Fetch announcement banner settings
+  const bannerSettings = await prisma.storeSetting.findMany({
+    where: { key: { in: ['section.banner.enabled', 'section.banner.message', 'section.banner.code'] } }
+  })
+  const bannerMap = Object.fromEntries(bannerSettings.map(s => [s.key, s.value]))
+  const initialBannerEnabled = bannerMap['section.banner.enabled'] !== 'false'
+  const initialBannerMessage = bannerMap['section.banner.message'] || 'Limited Time — Free Delivery on Orders Above ₦50,000'
+  const initialBannerCode = bannerMap['section.banner.code'] || 'FREESHIP'
 
   // Fetch data for the last 7 days
   const sevenDaysAgo = new Date()
@@ -204,6 +214,13 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
           ))}
         </div>
       </div>
+
+      {/* Live Announcement & Executive Briefing Operations */}
+      <AdminQuickActions
+        initialBannerEnabled={initialBannerEnabled}
+        initialBannerMessage={initialBannerMessage}
+        initialBannerCode={initialBannerCode}
+      />
 
       {/* Registry Pulse Charts */}
       <div>

@@ -11,31 +11,52 @@ async function handleKingsChatAuth(code: string, req: NextRequest) {
     return NextResponse.redirect(new URL('/sign-in?error=kingschat_api_key_missing', req.url));
   }
 
-  // 1. Exchange code for access_token
-  const tokenRes = await fetch('https://connect.kingsch.at/developer/api/oauth2/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      grant_type: 'code',
-      client_id: clientId,
-      code,
-    }),
-  });
+  // 1. Exchange code for access_token (or reuse if token was provided directly)
+  let accessToken = code;
+  if (!code.startsWith('eyJ') && code.length < 100) {
+    const tokenRes = await fetch('https://connect.kingsch.at/developer/api/oauth2/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        grant_type: 'code',
+        client_id: clientId,
+        code,
+        redirect_uri: 'https://www.sharersgym.com/api/auth/kingschat/callback',
+      }),
+    });
 
-  if (!tokenRes.ok) {
-    const errText = await tokenRes.text();
-    console.error('[KingsChat Callback] Token exchange failed:', errText);
-    return NextResponse.redirect(new URL('/sign-in?error=token_exchange_failed', req.url));
+    if (!tokenRes.ok) {
+      // Fallback without redirect_uri if strict match is not enforced
+      const retryRes = await fetch('https://connect.kingsch.at/developer/api/oauth2/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          grant_type: 'code',
+          client_id: clientId,
+          code,
+        }),
+      });
+
+      if (!retryRes.ok) {
+        const errText = await retryRes.text();
+        console.error('[KingsChat Callback] Token exchange failed:', errText);
+        return NextResponse.redirect(new URL('/sign-in?error=token_exchange_failed', req.url));
+      }
+
+      const retryData = await retryRes.json();
+      accessToken = retryData.access_token;
+    } else {
+      const tokenData = await tokenRes.json();
+      accessToken = tokenData.access_token;
+    }
   }
-
-  const { access_token } = await tokenRes.json();
 
   // 2. Fetch User Profile
   const profileRes = await fetch('https://connect.kingsch.at/developer/api/user/profile', {
     method: 'GET',
     headers: {
       'api-key': apiKey,
-      'Authorization': `Bearer ${access_token}`,
+      'Authorization': `Bearer ${accessToken}`,
     },
   });
 
@@ -115,8 +136,11 @@ async function handleKingsChatAuth(code: string, req: NextRequest) {
     expiresInSeconds: 300,
   });
 
-  // Redirect to sign-in page with ticket — Clerk automatically completes login!
-  return NextResponse.redirect(new URL(`/sign-in?ticket=${signInToken.token}`, req.url));
+  // Redirect to sign-in page with both ticket params for seamless client SSO consumption
+  const redirectUrl = new URL('/sign-in', req.url);
+  redirectUrl.searchParams.set('ticket', signInToken.token);
+  redirectUrl.searchParams.set('__clerk_ticket', signInToken.token);
+  return NextResponse.redirect(redirectUrl);
 }
 
 export async function POST(req: NextRequest) {
@@ -126,10 +150,10 @@ export async function POST(req: NextRequest) {
 
     if (contentType.includes('application/x-www-form-urlencoded')) {
       const formData = await req.formData();
-      code = formData.get('code') as string;
+      code = (formData.get('code') || formData.get('authorization_code') || formData.get('accessToken') || formData.get('access_token')) as string;
     } else if (contentType.includes('application/json')) {
       const json = await req.json();
-      code = json.code;
+      code = json.code || json.authorization_code || json.accessToken || json.access_token;
     }
 
     if (!code) {
@@ -145,7 +169,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const code = searchParams.get('code');
+  const code = searchParams.get('code') || searchParams.get('authorization_code') || searchParams.get('access_token') || searchParams.get('accessToken');
 
   if (!code) {
     return NextResponse.redirect(new URL('/sign-in?error=missing_code', req.url));

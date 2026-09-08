@@ -60,13 +60,13 @@ export default function MemberPass() {
             ctx.lineWidth = 4
             ctx.strokeRect(20, 20, 560, 880)
 
-            ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)'
+            ctx.strokeStyle = 'rgba(242, 13, 13, 0.45)'
             ctx.lineWidth = 1.5
             ctx.strokeRect(28, 28, 544, 864)
 
-            // Gold Corner Target Brackets
+            // Red Corner Target Brackets
             const drawBracket = (x: number, y: number, dirX: number, dirY: number) => {
-                ctx.strokeStyle = '#d4af37'
+                ctx.strokeStyle = '#f20d0d'
                 ctx.lineWidth = 3.5
                 ctx.beginPath()
                 ctx.moveTo(x, y + dirY * 24)
@@ -86,13 +86,13 @@ export default function MemberPass() {
                 ? 'VIP ALL-ACCESS PASS'
                 : 'DAY ACCESS PASS'
 
-            ctx.fillStyle = 'rgba(212, 175, 55, 0.15)'
+            ctx.fillStyle = 'rgba(242, 13, 13, 0.15)'
             ctx.fillRect(200, 56, 200, 26)
-            ctx.strokeStyle = '#d4af37'
+            ctx.strokeStyle = '#f20d0d'
             ctx.lineWidth = 1
             ctx.strokeRect(200, 56, 200, 26)
 
-            ctx.fillStyle = '#d4af37'
+            ctx.fillStyle = '#f20d0d'
             ctx.font = 'bold 11px sans-serif'
             ctx.textAlign = 'center'
             ctx.fillText(badgeText, 300, 73)
@@ -130,7 +130,7 @@ export default function MemberPass() {
             ctx.font = '900 20px sans-serif'
             ctx.fillText((activePlan.planName || 'Digital Access Pass').toUpperCase(), 300, 510)
 
-            ctx.fillStyle = '#d4af37'
+            ctx.fillStyle = '#f20d0d'
             ctx.font = 'bold 13px monospace'
             ctx.fillText(`ID: ${state.memberId || 'SG-PENDING'}`, 300, 534)
 
@@ -142,7 +142,7 @@ export default function MemberPass() {
 
             // Left: Credits
             ctx.textAlign = 'left'
-            ctx.fillStyle = '#d4af37'
+            ctx.fillStyle = '#f20d0d'
             ctx.font = 'bold 11px sans-serif'
             ctx.fillText('ACCESS BALANCE', 90, 605)
 
@@ -160,7 +160,7 @@ export default function MemberPass() {
             ctx.font = 'bold 11px sans-serif'
             ctx.fillText('MEMBER TIER', 510, 605)
 
-            ctx.fillStyle = '#d4af37'
+            ctx.fillStyle = '#f20d0d'
             ctx.font = '900 18px sans-serif'
             ctx.fillText((state.tier === 'NONE' ? 'STANDARD' : state.tier).toUpperCase(), 510, 642)
 
