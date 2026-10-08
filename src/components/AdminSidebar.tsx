@@ -15,7 +15,8 @@ import {
   ArrowLeft,
   ShieldCheck,
   ChevronRight,
-  CreditCard
+  CreditCard,
+  ClipboardList
 } from 'lucide-react'
 import { UserButton } from "@clerk/nextjs"
 import { t } from '@/lib/theme'
@@ -28,6 +29,7 @@ export const adminNavItems = [
   { name: 'Payments', href: '/admin/payments', icon: CreditCard },
   { name: 'Blogs', href: '/admin/blogs', icon: FileText },
   { name: 'Members', href: '/admin/users', icon: Users },
+  { name: 'Fitness Profiles', href: '/admin/fitness-profiles', icon: ClipboardList },
   { name: 'Support', href: '/admin/support', icon: MessageSquare },
   { name: 'Scanner', href: '/admin/scanner', icon: QrCode },
   { name: 'Delivery', href: '/admin/delivery', icon: Truck },

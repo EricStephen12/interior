@@ -165,10 +165,13 @@ export default function FitnessProfilePage() {
     }))
   }
 
+  const [submitError, setSubmitError] = useState<string | null>(null)
+
   const handleSubmit = async () => {
     setSubmitting(true)
+    setSubmitError(null)
     try {
-      await fetch('/api/fitness-profile', {
+      const res = await fetch('/api/fitness-profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -177,9 +180,18 @@ export default function FitnessProfilePage() {
           agreedToDeclaration: form.agreedToDeclaration,
         }),
       })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Failed to submit profile. Please try again.')
+      }
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('fitness_banner_dismissed', '1')
+        localStorage.setItem('fitness_profile_completed', '1')
+      }
       setDone(true)
-      setTimeout(() => router.push('/dashboard'), 2000)
-    } catch {
+      setTimeout(() => router.push('/dashboard'), 1500)
+    } catch (err: any) {
+      setSubmitError(err.message || 'Failed to submit profile. Please try again.')
       setSubmitting(false)
     }
   }
@@ -452,6 +464,12 @@ export default function FitnessProfilePage() {
                   </span>
                 </label>
               </div>
+            </div>
+          )}
+
+          {submitError && (
+            <div className="mt-4 p-3.5 bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
+              {submitError}
             </div>
           )}
 

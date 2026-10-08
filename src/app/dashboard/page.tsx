@@ -128,18 +128,31 @@ export default function DashboardPage() {
     // Check if fitness profile has been submitted
     useEffect(() => {
         if (!isLoaded || !isSignedIn) return
-        const dismissed = sessionStorage.getItem('fitness_banner_dismissed')
-        if (dismissed) return
+        if (typeof window !== 'undefined') {
+            if (localStorage.getItem('fitness_profile_completed') === '1' || sessionStorage.getItem('fitness_banner_dismissed') === '1') {
+                setShowProfileBanner(false)
+                return
+            }
+        }
         fetch('/api/fitness-profile')
             .then(r => r.json())
             .then(data => {
-                if (!data.hasProfile) setShowProfileBanner(true)
+                if (data.hasProfile) {
+                    if (typeof window !== 'undefined') {
+                        localStorage.setItem('fitness_profile_completed', '1')
+                    }
+                    setShowProfileBanner(false)
+                } else {
+                    setShowProfileBanner(true)
+                }
             })
             .catch(() => {})
     }, [isLoaded, isSignedIn])
 
     const dismissBanner = () => {
-        sessionStorage.setItem('fitness_banner_dismissed', '1')
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem('fitness_banner_dismissed', '1')
+        }
         setBannerDismissed(true)
         setShowProfileBanner(false)
     }
