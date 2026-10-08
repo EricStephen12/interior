@@ -1,13 +1,14 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useMembership, getActivePassInfo } from '@/lib/membership-context'
 import { useCart } from '@/lib/cart-context'
 import { useCustomization } from '@/lib/customization-context'
 import MemberPass from '@/components/MemberPass'
-import { Activity, Clock, Award, ChevronRight, ShoppingBag, Printer, Trophy, Truck } from 'lucide-react'
+import { Activity, Clock, Award, ChevronRight, ShoppingBag, Printer, Trophy, Truck, ClipboardList, X, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import TopupCredits from '@/components/TopupCredits'
 import { useUser } from '@clerk/nextjs'
 
@@ -103,6 +104,10 @@ export default function DashboardPage() {
     const progressPercent = Math.min(100, Math.round((sessionCount / Math.max(1, nextTarget)) * 100))
     const sessionsRemaining = Math.max(0, nextTarget - sessionCount)
 
+    const router = useRouter()
+    const [showProfileBanner, setShowProfileBanner] = useState(false)
+    const [bannerDismissed, setBannerDismissed] = useState(false)
+
     useEffect(() => {
         if (typeof window !== 'undefined' && window.location.search.includes('payment=success')) {
             clearCart()
@@ -114,6 +119,30 @@ export default function DashboardPage() {
             window.location.href = '/sign-in?redirect_url=/dashboard'
         }
     }, [isLoaded, isSignedIn])
+
+    // Prefetch fitness profile route for instant navigation
+    useEffect(() => {
+        router.prefetch('/dashboard/fitness-profile')
+    }, [router])
+
+    // Check if fitness profile has been submitted
+    useEffect(() => {
+        if (!isLoaded || !isSignedIn) return
+        const dismissed = sessionStorage.getItem('fitness_banner_dismissed')
+        if (dismissed) return
+        fetch('/api/fitness-profile')
+            .then(r => r.json())
+            .then(data => {
+                if (!data.hasProfile) setShowProfileBanner(true)
+            })
+            .catch(() => {})
+    }, [isLoaded, isSignedIn])
+
+    const dismissBanner = () => {
+        sessionStorage.setItem('fitness_banner_dismissed', '1')
+        setBannerDismissed(true)
+        setShowProfileBanner(false)
+    }
 
     if (!isLoaded || !isSignedIn) return (
         <div className="min-h-screen bg-secondary flex items-center justify-center">
@@ -153,6 +182,41 @@ export default function DashboardPage() {
                         <TopupCredits />
                     </div>
                 </div>
+
+                {/* ── Fitness Profile Banner ── */}
+                {showProfileBanner && !bannerDismissed && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        className="mb-6 relative overflow-hidden border border-[#f20d0d]/20 bg-white"
+                    >
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#f20d0d]" />
+                        <div className="flex items-center justify-between gap-4 px-5 py-4 sm:px-6">
+                            <div className="flex items-center gap-4">
+                                <div className="w-9 h-9 bg-[#f20d0d]/10 flex items-center justify-center flex-shrink-0">
+                                    <ClipboardList className="w-4.5 h-4.5 text-[#f20d0d]" />
+                                </div>
+                                <div>
+                                    <p className="text-xs font-black uppercase tracking-wider text-primary">Complete Your Fitness Profile</p>
+                                    <p className="text-[11px] text-slate-500 mt-0.5">Help us personalise your training experience — takes about 3 minutes.</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3 flex-shrink-0">
+                                <button
+                                    onClick={() => router.push('/dashboard/fitness-profile')}
+                                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#f20d0d] text-white text-[10px] font-black uppercase tracking-wider hover:bg-[#d40b0b] transition-colors"
+                                >
+                                    Get Started
+                                    <ArrowRight className="w-3 h-3" />
+                                </button>
+                                <button onClick={dismissBanner} className="text-slate-400 hover:text-slate-700 transition-colors p-1">
+                                    <X className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
 
                 {/* Pending Verification Notice */}
                 {state.orderHistory.some(o => o.status === 'PENDING_VERIFICATION') && (

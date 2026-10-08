@@ -750,79 +750,125 @@ export const emailService = {
     lowStockItems?: Array<{ name: string; stock: number }>;
   }) {
     const formattedTotal = `₦${Number(totalRevenue).toLocaleString()}`;
-    const lowStockHtml = lowStockItems.length > 0
+    const hasLowStock = lowStockItems.length > 0;
+
+    const metricCard = (label: string, value: string, sub: string, accentColor: string) => `
+      <td style="width: 33.33%; padding: 0 8px 0 0; vertical-align: top;">
+        <div style="background: #ffffff; border: 1px solid #e8eaf0; border-radius: 8px; padding: 20px 18px;">
+          <div style="font-size: 11px; font-weight: 700; color: #9ba3af; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;">${label}</div>
+          <div style="font-size: 28px; font-weight: 900; color: ${accentColor}; line-height: 1; margin-bottom: 6px; font-family: monospace;">${value}</div>
+          <div style="font-size: 11px; color: #b0b7c3;">${sub}</div>
+        </div>
+      </td>
+    `;
+
+    const lowStockRows = hasLowStock
       ? lowStockItems.map(item => `
-          <tr style="border-bottom: 1px solid #1f232e;">
-            <td style="padding: 10px 0; color: #ffffff; font-size: 12px;">${item.name}</td>
-            <td style="padding: 10px 0; text-align: right; color: ${item.stock <= 0 ? '#ef4444' : '#f59e0b'}; font-weight: 900; font-size: 13px;">
-              ${item.stock <= 0 ? 'SOLD OUT' : `${item.stock} left`}
+          <tr style="border-bottom: 1px solid #f0f2f5;">
+            <td style="padding: 10px 0; font-size: 13px; color: #374151;">${item.name}</td>
+            <td style="padding: 10px 0; text-align: right; font-weight: 800; font-size: 13px; color: ${item.stock <= 0 ? '#ef4444' : '#f59e0b'}; font-family: monospace;">
+              ${item.stock <= 0 ? '✕ OUT OF STOCK' : `${item.stock} left`}
             </td>
           </tr>
         `).join('')
-      : `<tr><td colspan="2" style="padding: 12px 0; color: #4ade80; font-size: 12px;">All inventory healthy (all items > 3 units)</td></tr>`;
+      : `<tr><td colspan="2" style="padding: 12px 0; font-size: 13px; color: #22c55e;">✓ All inventory healthy</td></tr>`;
 
     const html = `
-      <div style="background-color: #0b0c10; font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #ffffff; border: 1px solid #1f232e;">
-        <div style="padding: 32px 24px 20px; text-align: center; border-bottom: 1px solid #1f232e;">
-          <div style="display: inline-block; padding: 4px 12px; background: rgba(242, 13, 13, 0.15); border: 1px solid rgba(242, 13, 13, 0.35); color: #f20d0d; font-size: 9px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px;">
-            DAILY EXECUTIVE BRIEFING
-          </div>
-          <h1 style="margin: 0; font-size: 24px; font-weight: 900; color: #ffffff;">SHARERS GYM</h1>
-          <p style="margin: 6px 0 0; color: #8a93a5; font-size: 12px;">Report for ${dateStr}</p>
-        </div>
+      <!DOCTYPE html>
+      <html>
+      <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+      <body style="margin: 0; padding: 0; background-color: #f4f6fa; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;">
 
-        <div style="padding: 28px 24px;">
-          <!-- Key Metrics Grid -->
-          <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
-            <tr>
-              <td style="width: 50%; padding: 14px; background: #12141c; border: 1px solid #1f232e; vertical-align: top;">
-                <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #8a93a5; display: block;">24h Revenue</span>
-                <span style="font-size: 22px; font-weight: 900; color: #ffffff; display: block; margin-top: 4px;">${formattedTotal}</span>
-                <span style="font-size: 11px; color: #626a7a;">${paidOrderCount} paid orders</span>
-              </td>
-              <td style="width: 50%; padding: 14px; background: #12141c; border: 1px solid #1f232e; vertical-align: top;">
-                <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #8a93a5; display: block;">Gym Check-Ins</span>
-                <span style="font-size: 22px; font-weight: 900; color: #ffffff; display: block; margin-top: 4px;">${checkInCount}</span>
-                <span style="font-size: 11px; color: #626a7a;">Facility visits</span>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2" style="padding: 14px; background: #12141c; border: 1px solid #1f232e; border-top: none;">
-                <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #8a93a5; display: block;">New Member Signups</span>
-                <span style="font-size: 20px; font-weight: 900; color: #ffffff; display: block; margin-top: 4px;">+${newMemberCount} Members</span>
-              </td>
-            </tr>
-          </table>
+        <div style="max-width: 640px; margin: 32px auto; background: #f4f6fa; padding: 0 16px 32px;">
 
-          <!-- Low Stock Watchlist -->
-          <div style="background: #12141c; border: 1px solid #1f232e; padding: 20px; margin-bottom: 24px;">
-            <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #f20d0d; font-weight: 800; display: block; margin-bottom: 12px;">
-              Inventory Watchlist
-            </span>
-            <table style="width: 100%; border-collapse: collapse;">
-              ${lowStockHtml}
-            </table>
+          <!-- Header Card -->
+          <div style="background: #111827; border-radius: 12px 12px 0 0; padding: 32px 36px; margin-bottom: 2px;">
+            <div style="display: inline-block; padding: 4px 10px; background: rgba(242,13,13,0.15); border: 1px solid rgba(242,13,13,0.35); border-radius: 20px; color: #f20d0d; font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;">
+              Daily Executive Briefing
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+              <div>
+                <div style="font-size: 26px; font-weight: 900; color: #ffffff; letter-spacing: -0.5px; line-height: 1;">SHARERS GYM</div>
+                <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">Operations Report</div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 13px; font-weight: 700; color: #9ca3af;">${dateStr}</div>
+                <div style="font-size: 11px; color: #4b5563; margin-top: 2px;">Automated Daily Digest</div>
+              </div>
+            </div>
           </div>
 
-          <div style="text-align: center; margin-top: 28px;">
-            <a href="https://sharersgym.com/admin" style="display: inline-block; background: #ffffff; color: #0b0c10; padding: 12px 32px; font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-decoration: none;">
-              OPEN ADMIN COMMAND
-            </a>
-          </div>
-        </div>
+          <!-- Body -->
+          <div style="background: #ffffff; border-radius: 0 0 12px 12px; padding: 32px 36px; margin-bottom: 16px;">
 
-        <div style="padding: 16px 24px; background: #08090c; border-top: 1px solid #1f232e; text-align: center; font-size: 11px; color: #626a7a;">
-          <p style="margin: 0;">Sharers Gym Operations • Automated Executive Report</p>
+            <!-- KPI Row -->
+            <div style="margin-bottom: 28px;">
+              <div style="font-size: 11px; font-weight: 800; color: #9ba3af; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px;">Key Metrics</div>
+              <table style="width: 100%; border-collapse: separate; border-spacing: 8px 0; margin: 0 -8px;">
+                <tr>
+                  ${metricCard('24h Revenue', formattedTotal, `${paidOrderCount} paid orders`, '#111827')}
+                  ${metricCard('Check-ins', checkInCount.toString(), 'gym visits today', '#7c3aed')}
+                  ${metricCard('New Members', `+${newMemberCount}`, 'signups today', '#0ea5e9')}
+                </tr>
+              </table>
+            </div>
+
+            <!-- Divider -->
+            <div style="height: 1px; background: #f0f2f5; margin: 0 0 24px;"></div>
+
+            <!-- Revenue Highlight -->
+            <div style="background: linear-gradient(135deg, #111827 0%, #1f2937 100%); border-radius: 8px; padding: 24px 28px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-size: 10px; font-weight: 800; color: #6b7280; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px;">Total Revenue — ${dateStr}</div>
+                <div style="font-size: 36px; font-weight: 900; color: #ffffff; font-family: monospace; line-height: 1;">${formattedTotal}</div>
+                <div style="font-size: 12px; color: #4b5563; margin-top: 6px;">${paidOrderCount} confirmed order${paidOrderCount !== 1 ? 's' : ''} • ${checkInCount} check-in${checkInCount !== 1 ? 's' : ''}</div>
+              </div>
+              <div style="width: 48px; height: 48px; background: rgba(242,13,13,0.15); border: 1px solid rgba(242,13,13,0.3); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">
+                📊
+              </div>
+            </div>
+
+            <!-- Inventory Watchlist -->
+            <div style="border: 1px solid #e8eaf0; border-radius: 8px; overflow: hidden;">
+              <div style="background: #f9fafb; padding: 14px 20px; border-bottom: 1px solid #e8eaf0;">
+                <span style="font-size: 11px; font-weight: 800; color: #374151; text-transform: uppercase; letter-spacing: 1.5px;">
+                  ${hasLowStock ? '⚠️ Inventory Watchlist' : '✓ Inventory Status'}
+                </span>
+              </div>
+              <div style="padding: 4px 20px 8px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                  ${lowStockRows}
+                </table>
+              </div>
+            </div>
+
+            <!-- CTA -->
+            <div style="text-align: center; margin-top: 28px;">
+              <a href="https://sharersgym.com/admin" style="display: inline-block; background: #111827; color: #ffffff; padding: 13px 32px; border-radius: 6px; font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; text-decoration: none;">
+                Open Admin Dashboard →
+              </a>
+            </div>
+
+          </div>
+
+          <!-- Footer -->
+          <div style="text-align: center; padding: 0 16px;">
+            <p style="font-size: 11px; color: #9ca3af; margin: 0;">Sharers Gym Operations • Automated Daily Report</p>
+            <p style="font-size: 11px; color: #9ca3af; margin: 4px 0 0;">Lagos, Nigeria • support@sharersgym.com</p>
+          </div>
+
         </div>
-      </div>
+      </body>
+      </html>
     `;
 
     return this.sendEmail({
       to: ADMIN_EMAIL,
-      subject: `📊 [Executive Briefing] ${formattedTotal} Revenue • ${checkInCount} Check-ins (${dateStr})`,
+      subject: `📊 Daily Briefing — ${formattedTotal} Revenue • ${checkInCount} Check-ins (${dateStr})`,
       html,
     });
   },
+
 
   /**
    * 8. Member: Workout Milestone Reward & VIP Tier Celebration

@@ -2,186 +2,237 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, X, Zap, ArrowRight, Loader2, Clock, Calendar, ShieldCheck } from 'lucide-react'
+import { Plus, X, ArrowRight, Loader2, ShieldCheck } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { t } from '@/lib/theme'
 
 export default function TopupCredits() {
-    const [isOpen, setIsOpen] = useState(false)
-    const [packs, setPacks] = useState<any[]>([])
-    const [loading, setLoading] = useState(true)
-    const [filter, setFilter] = useState<'ALL' | 'HOURS' | 'DAYS'>('ALL')
-    const router = useRouter()
+  const [isOpen, setIsOpen] = useState(false)
+  const [packs, setPacks] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState<'ALL' | 'HOURS' | 'DAYS'>('ALL')
+  const router = useRouter()
 
-    useEffect(() => {
-        if (isOpen) {
-            setLoading(true)
-            fetch('/api/credit-packs')
-                .then(r => r.json())
-                .then(data => {
-                    setPacks(data.packs || [])
-                    setLoading(false)
-                })
-                .catch(() => setLoading(false))
-        }
-    }, [isOpen])
-
-    const isHourlyPack = (pack: any) => {
-        const name = (pack.name || '').toLowerCase()
-        const desc = (pack.description || '').toLowerCase()
-        return name.includes('hour') || name.includes('hr') || desc.includes('hour') || desc.includes('session')
-    }
-
-    const filteredPacks = packs.filter(p => {
-        if (filter === 'ALL') return true
-        if (filter === 'HOURS') return isHourlyPack(p)
-        if (filter === 'DAYS') return !isHourlyPack(p)
-        return true
-    })
-
-    const handleSelect = (pack: any) => {
-        const isHourly = isHourlyPack(pack)
-        const unit = isHourly ? 'hours' : 'days'
-        const params = new URLSearchParams({
-            type: 'credits',
-            amount: pack.credits.toString(),
-            unit: unit,
-            price: pack.price.toString(),
-            label: pack.name
+  useEffect(() => {
+    if (isOpen) {
+      setLoading(true)
+      fetch('/api/credit-packs')
+        .then((r) => r.json())
+        .then((data) => {
+          setPacks(data.packs || [])
+          setLoading(false)
         })
-        router.push(`/checkout?${params.toString()}`)
+        .catch(() => setLoading(false))
     }
+  }, [isOpen])
 
-    return (
-        <>
-            <button 
-                onClick={() => setIsOpen(true)}
-                className="w-full sm:w-auto flex items-center justify-center gap-2.5 bg-accent text-white px-6 sm:px-8 py-3.5 sm:py-4 text-[11px] sm:text-xs font-black uppercase tracking-[0.15em] sm:tracking-[0.25em] hover:bg-primary transition-all shadow-xl active:scale-95 shimmer-btn rounded"
-                style={{ borderRadius: 'var(--radius-brand-none, 0px)' }}
+  const isHourlyPack = (pack: any) => {
+    const name = (pack.name || '').toLowerCase()
+    const desc = (pack.description || '').toLowerCase()
+    return name.includes('hour') || name.includes('hr') || desc.includes('hour') || desc.includes('session')
+  }
+
+  const cleanDescription = (desc: string | null) => {
+    if (!desc) return 'Full gym and equipment access included.'
+    return desc
+      .replace(/^\[hourly\]\s*/i, '')
+      .replace(/^\[daily\]\s*/i, '')
+      .replace(/^\[membership\]\s*/i, '')
+      .trim()
+  }
+
+  const formatPlanTier = (name: string) => {
+    if (!name) return ''
+    return name
+      .replace(/\//g, ' • ')
+      .replace(/_/g, ' ')
+      .toLowerCase()
+      .split(' ')
+      .map((w) => (w.length > 0 ? w[0].toUpperCase() + w.slice(1) : ''))
+      .join(' ')
+  }
+
+  const filteredPacks = packs.filter((p) => {
+    if (filter === 'ALL') return true
+    if (filter === 'HOURS') return isHourlyPack(p)
+    if (filter === 'DAYS') return !isHourlyPack(p)
+    return true
+  })
+
+  const handleSelect = (pack: any) => {
+    const isHourly = isHourlyPack(pack)
+    const unit = isHourly ? 'hours' : 'days'
+    const params = new URLSearchParams({
+      type: 'credits',
+      amount: pack.credits.toString(),
+      unit: unit,
+      price: pack.price.toString(),
+      label: pack.name,
+    })
+    router.push(`/checkout?${params.toString()}`)
+  }
+
+  return (
+    <>
+      {/* Sleek Minimal Trigger Button */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-[#f20d0d] text-white px-5 py-3 text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-sm active:scale-[0.99]"
+      >
+        <Plus className="w-3.5 h-3.5" />
+        Get Access Pass
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOpen(false)}
+              className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
+            />
+
+            {/* Modal Dialog */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: 8 }}
+              transition={{ duration: 0.2 }}
+              className="relative w-full max-w-lg max-h-[88vh] bg-white rounded-2xl shadow-2xl border border-slate-200/80 flex flex-col overflow-hidden z-10"
             >
-                <Plus className="w-4 h-4" />
-                Get Access Pass (Hours / Days)
-            </button>
+              {/* Header */}
+              <div className="px-6 pt-6 pb-4 border-b border-slate-100 flex items-start justify-between">
+                <div>
+                  <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-400 font-bold">
+                    Official Passes
+                  </p>
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight mt-0.5">
+                    Gym Access Passes
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Select an hourly training session or full monthly membership.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors -mr-1 -mt-1"
+                  aria-label="Close"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
 
-            <AnimatePresence>
-                {isOpen && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4">
-                        <motion.div 
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setIsOpen(false)}
-                            className="absolute inset-0 backdrop-blur-md bg-black/70"
-                        />
-                        
-                        <motion.div 
-                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                            className="relative w-full max-w-xl sm:max-w-2xl max-h-[90dvh] bg-white p-4 sm:p-8 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-primary/10 flex flex-col z-10"
-                        >
-                            <button 
-                                onClick={() => setIsOpen(false)}
-                                className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 text-primary/40 hover:text-primary transition-colors z-20"
-                                aria-label="Close"
-                            >
-                                <X className="w-5 h-5 sm:w-6 sm:h-6" />
-                            </button>
+              {/* Segmented Filter Control */}
+              <div className="px-6 pt-4 pb-2">
+                <div className="grid grid-cols-3 p-1 bg-slate-100 rounded-lg text-center">
+                  {[
+                    { id: 'ALL', label: 'All Passes' },
+                    { id: 'HOURS', label: 'Hourly' },
+                    { id: 'DAYS', label: 'Day & Month' },
+                  ].map((f) => (
+                    <button
+                      key={f.id}
+                      onClick={() => setFilter(f.id as any)}
+                      className={`py-1.5 text-xs font-semibold transition-all rounded-md ${
+                        filter === f.id
+                          ? 'bg-white text-slate-900 shadow-xs'
+                          : 'text-slate-500 hover:text-slate-900'
+                      }`}
+                    >
+                      {f.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-                            <div className="text-center mb-4 sm:mb-6 shrink-0 pt-2 sm:pt-0">
-                                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] text-accent block mb-1.5">Sharers Official Passes</span>
-                                <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-primary uppercase tracking-tight font-heading">
-                                    Gym Access <span className="text-accent italic font-light lowercase">Passes.</span>
-                                </h2>
-                                <p className="text-[11px] sm:text-xs font-medium text-text-muted mt-1 max-w-md mx-auto">
-                                    Choose an hourly training session or full day/monthly membership pass.
-                                </p>
-                            </div>
+              {/* Passes List */}
+              <div className="px-6 py-3 space-y-2.5 overflow-y-auto flex-1 min-h-0">
+                {loading ? (
+                  <div className="py-16 flex justify-center">
+                    <Loader2 className="w-6 h-6 text-slate-400 animate-spin" />
+                  </div>
+                ) : filteredPacks.length === 0 ? (
+                  <div className="text-center py-12 border border-dashed border-slate-200 rounded-xl">
+                    <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                      No passes found in this category
+                    </p>
+                  </div>
+                ) : (
+                  filteredPacks.map((pack) => {
+                    const isHourly = isHourlyPack(pack)
+                    const durationText = isHourly
+                      ? `${pack.credits} ${pack.credits === 1 ? 'Hour Access' : 'Hours Access'}`
+                      : `${pack.credits} ${pack.credits === 1 ? 'Day Pass' : 'Days Pass'}`
 
-                            {/* Filter Tabs - Horizontal Scroll on Narrow Viewports */}
-                            <div className="flex items-center justify-start sm:justify-center gap-1.5 sm:gap-2 mb-4 overflow-x-auto pb-1 no-scrollbar shrink-0">
-                                {[
-                                    { id: 'ALL', label: 'All Passes' },
-                                    { id: 'HOURS', label: '⏱️ Hourly' },
-                                    { id: 'DAYS', label: '📅 Day & Month' },
-                                ].map(f => (
-                                    <button
-                                        key={f.id}
-                                        onClick={() => setFilter(f.id as any)}
-                                        className={`px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-lg transition-all shrink-0 ${
-                                            filter === f.id
-                                                ? 'bg-primary text-white shadow-sm'
-                                                : 'bg-secondary/60 text-text-muted hover:text-primary hover:bg-secondary'
-                                        }`}
-                                    >
-                                        {f.label}
-                                    </button>
-                                ))}
-                            </div>
+                    return (
+                      <div
+                        key={pack.id}
+                        onClick={() => handleSelect(pack)}
+                        className={`group relative p-4 rounded-xl border transition-all cursor-pointer text-left flex items-center justify-between gap-4 ${
+                          pack.isPopular
+                            ? 'border-slate-900 bg-slate-900/[0.02] hover:bg-slate-900/[0.04]'
+                            : 'border-slate-200/80 hover:border-slate-400 bg-white hover:bg-slate-50/50'
+                        }`}
+                      >
+                        <div className="space-y-1 min-w-0 flex-1">
+                          {/* Tags row */}
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-sm">
+                              {isHourly ? 'Hourly' : 'Membership'}
+                            </span>
+                            {pack.isPopular && (
+                              <span className="text-[9px] font-bold uppercase tracking-wider bg-slate-900 text-white px-2 py-0.5 rounded-sm">
+                                Popular
+                              </span>
+                            )}
+                          </div>
 
-                            <div className="space-y-2.5 sm:space-y-3.5 overflow-y-auto pr-1 custom-scrollbar flex-1 min-h-0">
-                                {loading ? (
-                                    <div className="py-16 flex justify-center">
-                                        <Loader2 className="w-8 h-8 text-accent animate-spin" />
-                                    </div>
-                                ) : filteredPacks.length === 0 ? (
-                                    <div className="text-center py-12 bg-secondary/10 rounded-xl border border-dashed border-primary/10">
-                                        <p className="text-xs font-bold text-text-muted uppercase tracking-widest">No passes found in this category.</p>
-                                    </div>
-                                ) : (
-                                    filteredPacks.map((pack) => {
-                                        const isHourly = isHourlyPack(pack)
-                                        return (
-                                            <button
-                                                key={pack.id}
-                                                onClick={() => handleSelect(pack)}
-                                                className={`w-full group flex items-center justify-between p-3.5 sm:p-5 border-2 rounded-xl transition-all relative overflow-hidden text-left
-                                                    ${pack.isPopular 
-                                                        ? 'border-accent bg-accent/5 shadow-xs' 
-                                                        : 'border-primary/10 bg-white hover:border-accent/40 hover:bg-secondary/20'}`}
-                                            >
-                                                <div className="relative z-10 space-y-0.5 sm:space-y-1 min-w-0 pr-3">
-                                                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                                                        <span className="text-[11px] sm:text-xs font-black text-primary uppercase tracking-wider">{pack.name}</span>
-                                                        <span className={`text-[8px] sm:text-[9px] font-black px-1.5 sm:px-2 py-0.5 uppercase rounded shrink-0 ${
-                                                            isHourly ? 'bg-amber-100 text-amber-800' : 'bg-indigo-100 text-indigo-800'
-                                                        }`}>
-                                                            {isHourly ? '⏱️ Hourly' : '📅 Day'}
-                                                        </span>
-                                                        {pack.isPopular && (
-                                                            <span className="text-[8px] sm:text-[9px] font-black bg-accent text-white px-1.5 sm:px-2 py-0.5 uppercase rounded shrink-0">
-                                                                Featured
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    <h3 className="text-base sm:text-xl font-black text-primary tabular-nums">
-                                                        {pack.credits} {isHourly ? (pack.credits === 1 ? 'Hour Access' : 'Hours Access') : (pack.credits === 1 ? 'Day Pass' : 'Days Pass')}
-                                                    </h3>
-                                                    <p className="text-[10px] sm:text-[11px] font-medium text-text-muted truncate max-w-[240px] sm:max-w-none">{pack.description || 'Full Arena & Biomechanics Access'}</p>
-                                                </div>
-                                                <div className="text-right relative z-10 shrink-0">
-                                                    <p className="text-base sm:text-lg font-black text-primary tabular-nums font-mono">₦{pack.price.toLocaleString()}</p>
-                                                    <div className="flex items-center justify-end gap-1 text-[10px] sm:text-xs font-bold text-accent uppercase tracking-wider mt-1 group-hover:translate-x-1 transition-transform">
-                                                        Select <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        )
-                                    })
-                                )}
-                            </div>
+                          {/* Plan duration title */}
+                          <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight leading-snug">
+                            {durationText}
+                          </h3>
 
-                            <div className="mt-4 pt-3 border-t border-primary/5 flex items-center justify-between text-[10px] sm:text-[11px] text-text-muted font-medium shrink-0">
-                                <span className="flex items-center gap-1.5">
-                                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                                    Instant QR Pass Activation
-                                </span>
-                                <span className="hidden xs:inline">Verified Payment Gateway</span>
-                            </div>
-                        </motion.div>
-                    </div>
+                          {/* Subtitle / tier name */}
+                          <p className="text-[11px] font-medium text-slate-600 truncate">
+                            {formatPlanTier(pack.name)}
+                          </p>
+
+                          {/* Description */}
+                          <p className="text-[10px] text-slate-400 line-clamp-1">
+                            {cleanDescription(pack.description)}
+                          </p>
+                        </div>
+
+                        {/* Price & Action */}
+                        <div className="text-right shrink-0">
+                          <p className="text-base sm:text-lg font-mono font-bold text-slate-900">
+                            ₦{Number(pack.price).toLocaleString()}
+                          </p>
+                          <div className="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold text-slate-500 group-hover:text-slate-900 group-hover:translate-x-0.5 transition-all">
+                            Select
+                            <ArrowRight className="w-3 h-3" />
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })
                 )}
-            </AnimatePresence>
-        </>
-    )
+              </div>
+
+              {/* Footer */}
+              <div className="px-6 py-3.5 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between text-[11px] text-slate-400">
+                <span className="flex items-center gap-1.5 font-medium text-slate-500">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  Instant QR Pass Activation
+                </span>
+                <span className="font-mono text-[10px]">Secure Payment</span>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
+  )
 }

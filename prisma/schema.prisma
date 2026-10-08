@@ -187,3 +187,52 @@ model Review {
 
   @@index([productId])
 }
+
+model FitnessProfile {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  userEmail           String
+  userName            String
+
+  // Personal
+  dateOfBirth         String?
+  age                 String?
+  gender              String?
+  phone               String?
+
+  // Membership
+  membershipType      String?
+  membershipStartDate String?
+  preferredTrainingTime String?
+
+  // Fitness Goals (stored as JSON array)
+  fitnessGoals        Json?
+  specificGoal        String?  @db.Text
+
+  // Health Info
+  exercisedBefore     Boolean?
+  exerciseHistory     String?  @db.Text
+  currentPainOrInjury Boolean?
+  painDetails         String?  @db.Text
+  doctorAdviceLimit   Boolean?
+  doctorAdviceDetails String?  @db.Text
+  medicalCondition    Boolean?
+  medicalDetails      String?  @db.Text
+  currentMedication   Boolean?
+  medicationDetails   String?  @db.Text
+  allergies           Boolean?
+  allergyDetails      String?  @db.Text
+
+  // Fitness Details
+  height              String?
+  weight              String?
+  fitnessLevel        String?  // Beginner, Intermediate, Advanced
+
+  // Agreement
+  agreedToRules       Boolean  @default(false)
+  agreedToDeclaration Boolean  @default(false)
+  signatureName       String?
+
+  submittedAt         DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}

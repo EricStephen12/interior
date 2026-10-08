@@ -130,13 +130,58 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
   // @ts-ignore
   const ticketCount = prisma.supportTicket ? await prisma.supportTicket.count({ where: { status: 'OPEN', ...dateQuery } }) : 0
   
+  const revenue = totalRevenue._sum.totalAmount || 0
   const stats = [
-    { name: 'Revenue', value: `₦${(totalRevenue._sum.totalAmount || 0).toLocaleString()}`, icon: TrendingUp, color: 'text-green-500' },
-    { name: 'Orders', value: orderCount.toString(), icon: ShoppingBag, color: 'text-accent' },
-    { name: 'Pending Support', value: ticketCount.toString(), icon: MessageSquare, color: 'text-red-500' },
-    { name: 'Members', value: userCount.toString(), icon: Users, color: 'text-blue-500' },
-    { name: 'Check-ins', value: totalCheckIns.toString(), icon: Activity, color: 'text-purple-500' },
-    { name: 'Articles', value: blogCount.toString(), icon: FileText, color: 'text-pink-500' },
+    { 
+      name: 'Total Revenue', 
+      value: `₦${revenue >= 1000000 ? (revenue / 1000000).toFixed(1) + 'M' : revenue >= 1000 ? (revenue / 1000).toFixed(1) + 'K' : revenue.toLocaleString()}`,
+      rawValue: `₦${Number(revenue).toLocaleString()}`,
+      icon: TrendingUp, 
+      color: 'text-emerald-500',
+      bg: 'bg-emerald-50',
+      desc: `${orderCount} paid order${orderCount !== 1 ? 's' : ''}`,
+      primary: true
+    },
+    { 
+      name: 'Active Members', 
+      value: userCount.toLocaleString(), 
+      icon: Users, 
+      color: 'text-blue-500',
+      bg: 'bg-blue-50',
+      desc: 'registered accounts'
+    },
+    { 
+      name: 'Gym Check-ins', 
+      value: totalCheckIns.toLocaleString(), 
+      icon: Activity, 
+      color: 'text-purple-500',
+      bg: 'bg-purple-50',
+      desc: 'facility visits'
+    },
+    { 
+      name: 'Open Support', 
+      value: ticketCount.toString(), 
+      icon: MessageSquare, 
+      color: 'text-rose-500',
+      bg: 'bg-rose-50',
+      desc: 'tickets awaiting reply'
+    },
+    { 
+      name: 'Total Orders', 
+      value: orderCount.toLocaleString(), 
+      icon: ShoppingBag, 
+      color: 'text-accent',
+      bg: 'bg-red-50',
+      desc: 'completed & paid'
+    },
+    { 
+      name: 'Blog Articles', 
+      value: blogCount.toString(), 
+      icon: FileText, 
+      color: 'text-pink-500',
+      bg: 'bg-pink-50',
+      desc: 'published posts'
+    },
   ]
 
   const quickActions = [
@@ -181,15 +226,21 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
         </div>
       </div>
 
-      {/* Analytics Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+      {/* Analytics Grid — broad 3-col layout */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {stats.map((item) => (
-          <div key={item.name} className="bg-white p-4 sm:p-6 border border-primary/5 group hover:border-accent/20 transition-all">
-            <div className="flex items-center justify-between mb-3">
-              <item.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${item.color}`} />
-              <span className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest">{item.name}</span>
+          <div key={item.name} className={`bg-white border border-primary/5 p-6 sm:p-8 group hover:border-accent/20 hover:shadow-sm transition-all ${item.primary ? 'sm:col-span-2 lg:col-span-1' : ''}`}>
+            <div className="flex items-start justify-between mb-4">
+              <div className={`w-10 h-10 rounded-xl ${item.bg || 'bg-slate-100'} flex items-center justify-center`}>
+                <item.icon className={`w-5 h-5 ${item.color}`} />
+              </div>
+              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest pt-1">{item.name}</span>
             </div>
-            <p className="text-lg sm:text-2xl font-black text-primary tracking-tight tabular-nums">{item.value}</p>
+            <p className="text-3xl sm:text-4xl font-black text-primary tracking-tight tabular-nums mb-1">{item.value}</p>
+            {item.rawValue && item.rawValue !== item.value && (
+              <p className="text-xs text-slate-400 font-mono mb-1">{item.rawValue}</p>
+            )}
+            <p className="text-[10px] text-slate-400 uppercase tracking-widest">{item.desc}</p>
           </div>
         ))}
       </div>
