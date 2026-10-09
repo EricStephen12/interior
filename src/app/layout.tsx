@@ -80,6 +80,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import { ToastProvider } from "@/components/ToastProvider";
 import { WishlistProvider } from "@/lib/wishlist-context";
 
+import { Suspense } from "react";
 import DynamicTheme from "@/components/DynamicTheme";
 
 import { CustomizationProvider } from "@/lib/customization-context";
@@ -120,7 +121,6 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <head>
-          <DynamicTheme />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -129,6 +129,9 @@ export default function RootLayout({
         <body
           className={`${cormorant.variable} ${outfit.variable} font-outfit antialiased`}
         >
+          <Suspense fallback={null}>
+            <DynamicTheme />
+          </Suspense>
           <ScrollToTop />
           <CustomizationProvider>
             <MembershipProvider>

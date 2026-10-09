@@ -153,21 +153,21 @@ const INITIAL_STATE: MembershipState = {
 }
 
 export function MembershipProvider({ children }: { children: React.ReactNode }) {
-    const [state, setState] = useState<MembershipState>(() => {
+    const [state, setState] = useState<MembershipState>(INITIAL_STATE)
+    const { isSignedIn, user, isLoaded } = useUser()
+    const { getToken } = useAuth()
+
+    // Hydrate cached state on client mount only to prevent hydration mismatch
+    useEffect(() => {
         if (typeof window !== 'undefined') {
             const cached = sessionStorage.getItem('membership_state')
             if (cached) {
                 try {
-                    return JSON.parse(cached)
-                } catch (e) {
-                    // ignore
-                }
+                    setState(JSON.parse(cached))
+                } catch (e) {}
             }
         }
-        return INITIAL_STATE
-    })
-    const { isSignedIn, user, isLoaded } = useUser()
-    const { getToken } = useAuth()
+    }, [])
 
     const fetchMembership = async () => {
         try {
